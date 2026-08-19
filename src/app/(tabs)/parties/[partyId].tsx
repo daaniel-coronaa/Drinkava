@@ -33,6 +33,7 @@ export default function PartyDetailScreen() {
   const [section, setSection] = useState<Section>('feed');
   const [selectedEntry, setSelectedEntry] = useState<LeaderboardEntry | null>(null);
   const [finishing, setFinishing] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   if (!party) {
     return (
@@ -75,6 +76,29 @@ export default function PartyDetailScreen() {
     ]);
   };
 
+  const leaveParty = async () => {
+    if (!session) return;
+    setLeaving(true);
+    try {
+      await services.parties.leave(party.id, session.user.id);
+      router.replace('/(tabs)/parties');
+    } finally {
+      setLeaving(false);
+    }
+  };
+
+  const handleLeaveParty = () => {
+    const message = `¿Seguro que quieres salir de "${party.name}"? Tendrás que volver a unirte con el código si cambias de opinión.`;
+    if (Platform.OS === 'web') {
+      if (window.confirm(message)) leaveParty();
+      return;
+    }
+    Alert.alert('Salir de la fiesta', message, [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Salir', style: 'destructive', onPress: leaveParty },
+    ]);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
       <View style={{ padding: spacing.md, gap: spacing.xs }}>
@@ -111,6 +135,16 @@ export default function PartyDetailScreen() {
             label="Terminar fiesta"
             onPress={handleFinishParty}
             loading={finishing}
+            variant="secondary"
+            style={{ marginTop: spacing.xs }}
+          />
+        ) : null}
+
+        {!isAdmin && myRole ? (
+          <Button
+            label="Salir de la fiesta"
+            onPress={handleLeaveParty}
+            loading={leaving}
             variant="secondary"
             style={{ marginTop: spacing.xs }}
           />

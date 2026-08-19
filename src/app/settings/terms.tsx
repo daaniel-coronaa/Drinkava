@@ -23,9 +23,23 @@ export default function TermsScreen() {
         Debes usar Drinkava de forma responsable y respetuosa con los demás miembros de tus fiestas. Nos reservamos
         el derecho de suspender cuentas que infrinjan estos términos.
       </Text>
+      <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>Registro de consumo y exención de responsabilidad</Text>
+      <Text style={[typography.body, { color: colors.textSecondary }]}>
+        Drinkava no limita la cantidad de bebidas que puedes registrar: el registro es un reporte personal hecho por
+        ti, bajo tu propia responsabilidad, y no representa una recomendación, límite sugerido ni aprobación de
+        Drinkava sobre cuánto es seguro consumir. Tú eres el único responsable de decidir cuánto y qué consumes, de
+        conocer tus propios límites y de cumplir las leyes de tu localidad (incluyendo no conducir bajo los efectos
+        del alcohol).
+      </Text>
+      <Text style={[typography.body, { color: colors.textSecondary }]}>
+        En la máxima medida permitida por la ley, Drinkava, sus creadores y colaboradores no se hacen responsables
+        por lesiones, daños, pérdidas o consecuencias legales derivadas del consumo de alcohol por parte de los
+        usuarios, ya sea que dicho consumo haya sido registrado en la app o no. El uso de Drinkava es bajo tu propio
+        riesgo.
+      </Text>
       <Text style={[typography.caption, { color: colors.textSecondary }]}>
-        Este es un texto de marcador de posición para el MVP — reemplazar con términos legales revisados antes del
-        lanzamiento.
+        Este es un texto de marcador de posición para el MVP — reemplazar con términos legales revisados por un
+        abogado antes del lanzamiento.
       </Text>
     </ScrollView>
   );

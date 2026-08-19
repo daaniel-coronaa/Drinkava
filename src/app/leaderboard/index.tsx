@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LeaderboardRow } from '@/components/leaderboard/LeaderboardRow';
 import { ScoreBreakdownSheet } from '@/components/leaderboard/ScoreBreakdownSheet';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Header } from '@/components/ui/Header';
 import { useAuth } from '@/context/AuthContext';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useUsersMap } from '@/hooks/useUsersMap';
@@ -20,8 +19,7 @@ export default function GlobalLeaderboardScreen() {
   const [selectedEntry, setSelectedEntry] = useState<LeaderboardEntry | null>(null);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
-      <Header title="Ranking" subtitle="Tu grupo de amigos, todas las fiestas" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
       <FlatList
         data={entries}
         keyExtractor={(e) => e.userId}

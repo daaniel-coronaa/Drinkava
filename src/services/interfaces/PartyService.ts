@@ -10,4 +10,7 @@ export interface PartyService {
   // throws NotAuthorizedError otherwise.
   updateStatus(id: string, status: PartyStatus, requestingUserId: string): Promise<Party>;
   listMembers(partyId: string): Promise<PartyMember[]>;
+  // Guests can leave a party they joined. Admins can't leave via this method — throws
+  // NotAuthorizedError — since a party always needs at least one admin.
+  leave(partyId: string, userId: string): Promise<void>;
 }

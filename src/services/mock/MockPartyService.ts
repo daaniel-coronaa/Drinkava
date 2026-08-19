@@ -97,4 +97,17 @@ export const MockPartyService: PartyService = {
     await delay();
     return mockDb.get('partyMembers').filter((m) => m.partyId === partyId);
   },
+
+  async leave(partyId: string, userId: string) {
+    await mockDb.ensureLoaded();
+    await delay();
+    const member = mockDb.get('partyMembers').find((m) => m.partyId === partyId && m.userId === userId);
+    if (!member) return;
+    if (member.role === 'admin') throw new NotAuthorizedError();
+
+    mockDb.set(
+      'partyMembers',
+      mockDb.get('partyMembers').filter((m) => !(m.partyId === partyId && m.userId === userId)),
+    );
+  },
 };

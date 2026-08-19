@@ -8,6 +8,7 @@ import { AchievementBadge } from '@/components/profile/AchievementBadge';
 import { ScoringTable } from '@/components/profile/ScoringTable';
 import { StatTile } from '@/components/profile/StatTile';
 import { Avatar } from '@/components/ui/Avatar';
+import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/context/AuthContext';
 import { useAchievements } from '@/hooks/useAchievements';
 import { useProfileStats } from '@/hooks/useProfileStats';
@@ -34,17 +35,39 @@ export default function MyProfileScreen() {
         <View style={{ alignItems: 'center', gap: spacing.xs, marginBottom: spacing.lg }}>
           <Avatar uri={session.user.avatarUrl} name={session.user.name} size={80} />
           <Text style={[typography.h2, { color: colors.textPrimary }]}>{session.user.name}</Text>
-          {globalEntry ? (
-            <Text style={[typography.caption, { color: colors.accentPrimary }]}>
-              #{globalEntry.rank} en el ranking · {globalEntry.score} pts
-            </Text>
-          ) : null}
         </View>
 
-        <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
+        <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.md, marginBottom: spacing.md }}>
           <StatTile label="Bebidas totales" value={totalDrinks} />
           <StatTile label="Fiestas" value={parties.length} />
           <StatTile label="Favorito" value={favoriteType ?? '—'} />
+        </View>
+
+        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
+          <Pressable onPress={() => router.push('/leaderboard')}>
+            <Card style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: colors.accentPrimaryMuted,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: spacing.sm,
+                }}
+              >
+                <MaterialCommunityIcons name="trophy" size={22} color={colors.accentPrimary} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>Ranking</Text>
+                <Text style={[typography.caption, { color: colors.textSecondary }]}>
+                  {globalEntry ? `#${globalEntry.rank} de tu grupo · ${globalEntry.score} pts` : 'Ver ranking del grupo'}
+                </Text>
+              </View>
+              <MaterialCommunityIcons name="chevron-right" size={20} color={colors.textSecondary} />
+            </Card>
+          </Pressable>
         </View>
 
         <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>

@@ -1,14 +1,13 @@
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
+import { DateTimePickerField } from '@/components/ui/DateTimePickerField';
 import { useAuth } from '@/context/AuthContext';
 import { AgeRestrictedError } from '@/services';
 import { useTheme } from '@/theme';
-import { formatDate } from '@/utils/date';
 
 export default function AgeGateScreen() {
   const { colors, spacing, typography, radius } = useTheme();
@@ -16,17 +15,6 @@ export default function AgeGateScreen() {
   const [date, setDate] = useState(new Date(2000, 0, 1));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const openAndroidPicker = () => {
-    DateTimePickerAndroid.open({
-      value: date,
-      mode: 'date',
-      maximumDate: new Date(),
-      onChange: (_event, selected) => {
-        if (selected) setDate(selected);
-      },
-    });
-  };
 
   const handleContinue = async () => {
     setLoading(true);
@@ -54,18 +42,8 @@ export default function AgeGateScreen() {
         </Text>
       </View>
 
-      <View style={{ marginTop: spacing.xl, alignItems: 'center' }}>
-        {Platform.OS === 'ios' ? (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="spinner"
-            maximumDate={new Date()}
-            onChange={(_event, selected) => selected && setDate(selected)}
-          />
-        ) : (
-          <Button label={formatDate(date.toISOString())} onPress={openAndroidPicker} variant="secondary" />
-        )}
+      <View style={{ marginTop: spacing.xl, alignItems: 'center', width: '100%' }}>
+        <DateTimePickerField value={date} onChange={setDate} mode="date" maximumDate={new Date()} />
       </View>
 
       {error ? (

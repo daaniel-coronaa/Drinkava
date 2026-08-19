@@ -39,6 +39,7 @@ function RootNavigator() {
         <Stack.Screen name="party/join" options={{ presentation: 'modal', headerShown: true, title: 'Unirse a fiesta' }} />
         <Stack.Screen name="drink-log/new" options={{ presentation: 'modal', headerShown: true, title: 'Registrar bebida' }} />
         <Stack.Screen name="achievements/index" options={{ headerShown: true, title: 'Logros' }} />
+        <Stack.Screen name="leaderboard/index" options={{ headerShown: true, title: 'Ranking' }} />
         <Stack.Screen name="safe-mode/index" options={{ headerShown: true, title: 'Modo Seguro' }} />
         <Stack.Screen name="settings/index" options={{ headerShown: true, title: 'Ajustes' }} />
         <Stack.Screen name="settings/terms" options={{ headerShown: true, title: 'Términos de servicio' }} />

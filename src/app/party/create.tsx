@@ -1,13 +1,12 @@
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Platform, ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 
 import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { Button } from '@/components/ui/Button';
+import { DateTimePickerField } from '@/components/ui/DateTimePickerField';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
-import { formatDateTime } from '@/utils/date';
 
 export default function CreatePartyScreen() {
   const { colors, spacing, radius, typography } = useTheme();
@@ -16,21 +15,6 @@ export default function CreatePartyScreen() {
   const [date, setDate] = useState(new Date());
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
-
-  const openAndroidPicker = () => {
-    DateTimePickerAndroid.open({
-      value: date,
-      mode: 'date',
-      onChange: (_e, selected) => {
-        if (!selected) return;
-        DateTimePickerAndroid.open({
-          value: selected,
-          mode: 'time',
-          onChange: (_e2, time) => time && setDate(time),
-        });
-      },
-    });
-  };
 
   const handleCreate = async () => {
     if (!name.trim()) return;
@@ -69,11 +53,7 @@ export default function CreatePartyScreen() {
 
       <View>
         <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>Fecha y hora</Text>
-        {Platform.OS === 'ios' ? (
-          <DateTimePicker value={date} mode="datetime" display="compact" onChange={(_e, d) => d && setDate(d)} />
-        ) : (
-          <Button label={formatDateTime(date.toISOString())} onPress={openAndroidPicker} variant="secondary" />
-        )}
+        <DateTimePickerField value={date} onChange={setDate} mode="datetime" />
       </View>
 
       <View>
