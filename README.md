@@ -1,56 +1,44 @@
-# Welcome to your Expo app 👋
+# Drinkava
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+App social estilo Strava para trackear bebidas en fiestas con tu grupo de amigos:
+crea fiestas, registra lo que tomas, dale kudos a tus amigos y compite en un ranking
+que premia variedad y asistencia, no solo volumen.
 
-## Get started
+Este build corre completamente contra una capa de **datos mock** (en memoria +
+`AsyncStorage`) — no requiere backend real todavía. Ver
+[`docs/supabase-migration.md`](docs/supabase-migration.md) para el plan de
+integración con Supabase.
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Empezar
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Abre el proyecto en Expo Go, un simulador de iOS o un emulador de Android.
 
-### Other setup steps
+## Estructura
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- `src/app/` — pantallas (Expo Router, file-based routing).
+- `src/components/` — componentes de UI reutilizables.
+- `src/services/` — capa de servicios: interfaces (`interfaces/`), implementación
+  mock actual (`mock/`), y el punto de swap único (`index.ts`).
+- `src/domain/` — lógica de negocio pura (algoritmo de ranking, evaluación de logros).
+- `src/theme/` — sistema de diseño (colores, tipografía, espaciado, modo oscuro).
+- `src/data/seed/` — datos de ejemplo que alimentan la capa mock.
 
-## Learn more
+## Cumplimiento en tiendas de apps (alcohol)
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- El ranking (`src/domain/leaderboard/computeBalancedScore.ts`) pondera variedad,
+  kudos y asistencia por encima del volumen de bebidas — no es un concurso de "quién
+  tomó más". Ver `ScoreBreakdownSheet` para la explicación visible al usuario.
+- Disclaimer "Bebe con responsabilidad" visible en Feed y en el flujo de registro
+  de bebidas (`src/components/compliance/DisclaimerBanner.tsx`).
+- Age-gate obligatorio (18+) antes de acceder a la app (`src/app/(auth)/age-gate.tsx`).
+- "Modo Seguro" opcional con recordatorios de agua y accesos directos a pedir un
+  viaje (`src/app/safe-mode/index.tsx`).
+- **Pendiente antes de publicar**: completar el cuestionario de clasificación de
+  edad (17+/18+) en App Store Connect y Google Play Console — esto no se puede
+  configurar solo desde `app.json`, requiere respuestas manuales en cada consola
+  indicando referencias a alcohol.
