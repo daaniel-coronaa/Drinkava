@@ -18,18 +18,6 @@ export const MockDrinkLogService: DrinkLogService = {
     return sortByTimestampDesc(mockDb.get('drinkLogs').filter((d) => d.partyId === partyId));
   },
 
-  async listFeed(userId: string) {
-    await mockDb.ensureLoaded();
-    await delay();
-    const myPartyIds = new Set(
-      mockDb
-        .get('partyMembers')
-        .filter((m) => m.userId === userId)
-        .map((m) => m.partyId),
-    );
-    return sortByTimestampDesc(mockDb.get('drinkLogs').filter((d) => myPartyIds.has(d.partyId)));
-  },
-
   async listByUser(userId: string) {
     await mockDb.ensureLoaded();
     await delay();

@@ -15,6 +15,8 @@ export type MockSession = {
   tosAccepted: boolean;
 };
 
+type OnboardingRecord = { ageVerified: boolean; tosAccepted: boolean; birthDate?: string };
+
 type Snapshot = {
   users: User[];
   parties: Party[];
@@ -24,6 +26,9 @@ type Snapshot = {
   comments: Comment[];
   achievements: Achievement[];
   session: MockSession;
+  // Onboarding (age verification / ToS acceptance) persists per user across sign-outs,
+  // so a returning user isn't sent through the age-gate/ToS screens every sign-in.
+  onboardingByUser: Record<string, OnboardingRecord>;
 };
 
 function freshSnapshot(): Snapshot {
@@ -36,6 +41,7 @@ function freshSnapshot(): Snapshot {
     comments: [...seedComments],
     achievements: [...seedAchievements],
     session: { userId: null, ageVerified: false, tosAccepted: false },
+    onboardingByUser: {},
   };
 }
 

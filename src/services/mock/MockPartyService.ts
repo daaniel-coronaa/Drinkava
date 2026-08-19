@@ -4,6 +4,12 @@ import { generateId, generateInviteCode } from '@/utils/id';
 
 import { DEFAULT_DEMO_USER_ID, delay, mockDb } from './mockDb';
 
+export class NotAuthorizedError extends Error {
+  constructor() {
+    super('NOT_AUTHORIZED');
+  }
+}
+
 export const MockPartyService: PartyService = {
   async list(filter?: PartyStatus) {
     await mockDb.ensureLoaded();
@@ -50,7 +56,7 @@ export const MockPartyService: PartyService = {
     mockDb.set('parties', [...mockDb.get('parties'), party]);
     mockDb.set('partyMembers', [
       ...mockDb.get('partyMembers'),
-      { partyId: party.id, userId: DEFAULT_DEMO_USER_ID, joinedAt: new Date().toISOString() },
+      { partyId: party.id, userId: DEFAULT_DEMO_USER_ID, joinedAt: new Date().toISOString(), role: 'admin' },
     ]);
     return party;
   },
@@ -67,15 +73,20 @@ export const MockPartyService: PartyService = {
     if (!already) {
       mockDb.set('partyMembers', [
         ...mockDb.get('partyMembers'),
-        { partyId: party.id, userId: DEFAULT_DEMO_USER_ID, joinedAt: new Date().toISOString() },
+        { partyId: party.id, userId: DEFAULT_DEMO_USER_ID, joinedAt: new Date().toISOString(), role: 'guest' },
       ]);
     }
     return party;
   },
 
-  async updateStatus(id: string, status: PartyStatus) {
+  async updateStatus(id: string, status: PartyStatus, requestingUserId: string) {
     await mockDb.ensureLoaded();
     await delay();
+    const requester = mockDb
+      .get('partyMembers')
+      .find((m) => m.partyId === id && m.userId === requestingUserId);
+    if (!requester || requester.role !== 'admin') throw new NotAuthorizedError();
+
     const parties = mockDb.get('parties').map((p) => (p.id === id ? { ...p, status } : p));
     mockDb.set('parties', parties);
     return parties.find((p) => p.id === id)!;

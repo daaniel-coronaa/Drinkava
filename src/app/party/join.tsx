@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
@@ -6,9 +6,12 @@ import { Button } from '@/components/ui/Button';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
+// Reachable via the drinkava://party/join?code=XXXXXX deep link shared from a party's
+// "Compartir invitación" — the code param pre-fills the input below.
 export default function JoinPartyScreen() {
+  const { code: codeParam } = useLocalSearchParams<{ code?: string }>();
   const { colors, spacing, radius, typography } = useTheme();
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(codeParam?.toUpperCase() ?? '');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -29,7 +32,9 @@ export default function JoinPartyScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, padding: spacing.lg, gap: spacing.md }}>
       <Text style={[typography.body, { color: colors.textSecondary }]}>
-        Ingresa el código de invitación que te compartió el anfitrión.
+        {codeParam
+          ? 'Detectamos un código de invitación. Confirma para unirte.'
+          : 'Ingresa el código de invitación que te compartió el anfitrión.'}
       </Text>
       <TextInput
         value={code}

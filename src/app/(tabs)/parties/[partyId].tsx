@@ -1,9 +1,10 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Platform, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { DisclaimerBanner } from '@/components/compliance/DisclaimerBanner';
 import { LeaderboardRow } from '@/components/leaderboard/LeaderboardRow';
 import { ScoreBreakdownSheet } from '@/components/leaderboard/ScoreBreakdownSheet';
 import { DrinkLogCard } from '@/components/feed/DrinkLogCard';
@@ -11,9 +12,11 @@ import { ParticipantRow } from '@/components/party/ParticipantRow';
 import { PartyStatusBadge } from '@/components/party/PartyStatusBadge';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { useAuth } from '@/context/AuthContext';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useParty } from '@/hooks/useParty';
 import { useUsersMap } from '@/hooks/useUsersMap';
+import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { LeaderboardEntry } from '@/types';
 import { formatDateTime } from '@/utils/date';
@@ -23,11 +26,13 @@ type Section = 'feed' | 'members' | 'leaderboard';
 export default function PartyDetailScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>();
   const { colors, spacing, radius, typography } = useTheme();
-  const { party, members, memberUsers, logs, loading } = useParty(partyId);
+  const { session } = useAuth();
+  const { party, members, memberUsers, logs, loading, refetch } = useParty(partyId);
   const { usersById } = useUsersMap();
   const { entries } = useLeaderboard(partyId ? { partyId } : null);
   const [section, setSection] = useState<Section>('feed');
   const [selectedEntry, setSelectedEntry] = useState<LeaderboardEntry | null>(null);
+  const [finishing, setFinishing] = useState(false);
 
   if (!party) {
     return (
@@ -37,8 +42,37 @@ export default function PartyDetailScreen() {
     );
   }
 
+  const myRole = members.find((m) => m.userId === session?.user.id)?.role;
+  const isAdmin = myRole === 'admin';
+
   const handleShare = () => {
-    Share.share({ message: `Únete a "${party.name}" en Drinkava con el código ${party.inviteCode}` });
+    Share.share({
+      message: `Únete a "${party.name}" en Drinkava con el código ${party.inviteCode} o este link: drinkava://party/join?code=${party.inviteCode}`,
+    });
+  };
+
+  const finishParty = async () => {
+    if (!session) return;
+    setFinishing(true);
+    try {
+      await services.parties.updateStatus(party.id, 'finished', session.user.id);
+      await refetch();
+    } finally {
+      setFinishing(false);
+    }
+  };
+
+  const handleFinishParty = () => {
+    const message = `¿Seguro que quieres terminar "${party.name}"? Ya no se podrán registrar más bebidas.`;
+    // Alert.alert has no visual implementation on web — fall back to window.confirm there.
+    if (Platform.OS === 'web') {
+      if (window.confirm(message)) finishParty();
+      return;
+    }
+    Alert.alert('Terminar fiesta', message, [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Terminar', style: 'destructive', onPress: finishParty },
+    ]);
   };
 
   return (
@@ -60,11 +94,27 @@ export default function PartyDetailScreen() {
           </Text>
         </Pressable>
 
-        <Button
-          label="Registrar bebida en esta fiesta"
-          onPress={() => router.push({ pathname: '/drink-log/new', params: { partyId: party.id } })}
-          style={{ marginTop: spacing.sm }}
-        />
+        {party.status === 'active' ? (
+          <Button
+            label="Registrar bebida en esta fiesta"
+            onPress={() => router.push({ pathname: '/drink-log/new', params: { partyId: party.id } })}
+            style={{ marginTop: spacing.sm }}
+          />
+        ) : (
+          <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>
+            Esta fiesta ya terminó — no se pueden registrar más bebidas.
+          </Text>
+        )}
+
+        {isAdmin && party.status === 'active' ? (
+          <Button
+            label="Terminar fiesta"
+            onPress={handleFinishParty}
+            loading={finishing}
+            variant="secondary"
+            style={{ marginTop: spacing.xs }}
+          />
+        ) : null}
       </View>
 
       <View style={[styles.segmented, { marginHorizontal: spacing.md, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
@@ -91,6 +141,7 @@ export default function PartyDetailScreen() {
         <FlatList
           data={logs}
           keyExtractor={(item) => item.id}
+          ListHeaderComponent={<DisclaimerBanner />}
           ListEmptyComponent={<EmptyState icon="glass-cocktail" title="Nadie ha registrado nada aún" />}
           renderItem={({ item }) => <DrinkLogCard drinkLog={item} usersById={usersById} />}
         />
@@ -103,7 +154,7 @@ export default function PartyDetailScreen() {
           renderItem={({ item }) => {
             const user = memberUsers.find((u) => u.id === item.userId);
             if (!user) return null;
-            return <ParticipantRow user={user} joinedAt={item.joinedAt} isHost={item.userId === party.hostId} />;
+            return <ParticipantRow user={user} joinedAt={item.joinedAt} role={item.role} />;
           }}
         />
       )}

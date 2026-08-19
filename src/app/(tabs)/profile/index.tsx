@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PartyCard } from '@/components/party/PartyCard';
 import { AchievementBadge } from '@/components/profile/AchievementBadge';
+import { ScoringTable } from '@/components/profile/ScoringTable';
 import { StatTile } from '@/components/profile/StatTile';
 import { Avatar } from '@/components/ui/Avatar';
 import { useAuth } from '@/context/AuthContext';
@@ -44,6 +45,10 @@ export default function MyProfileScreen() {
           <StatTile label="Bebidas totales" value={totalDrinks} />
           <StatTile label="Fiestas" value={parties.length} />
           <StatTile label="Favorito" value={favoriteType ?? '—'} />
+        </View>
+
+        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
+          <ScoringTable />
         </View>
 
         <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.sm }}>

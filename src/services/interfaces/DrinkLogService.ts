@@ -5,7 +5,6 @@ import type { Comment, CreateDrinkLogInput, DrinkLog } from '@/types';
 // validation (Claude/GPT-4V) would hook in, before or after upload.
 export interface DrinkLogService {
   listByParty(partyId: string): Promise<DrinkLog[]>;
-  listFeed(userId: string): Promise<DrinkLog[]>;
   listByUser(userId: string): Promise<DrinkLog[]>;
   create(input: CreateDrinkLogInput): Promise<DrinkLog>;
   addKudos(drinkLogId: string, userId: string): Promise<void>;

@@ -23,6 +23,7 @@ export const MockAchievementService: AchievementService = {
       partyMembers: mockDb.get('partyMembers'),
       parties: mockDb.get('parties'),
       kudos: mockDb.get('kudos'),
+      comments: mockDb.get('comments'),
     });
 
     const existing = mockDb.get('achievements').filter((a) => a.userId === userId);

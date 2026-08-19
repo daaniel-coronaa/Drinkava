@@ -18,4 +18,5 @@ export const services = {
 };
 
 export { AgeRestrictedError } from './mock/MockAuthService';
+export { NotAuthorizedError } from './mock/MockPartyService';
 export { mockDb } from './mock/mockDb';

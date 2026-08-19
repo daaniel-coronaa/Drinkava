@@ -18,6 +18,17 @@ const VOLUME_CAP = 10;
 const VARIETY_ALLOWANCE_MULTIPLE = 3;
 const PENALTY_WEIGHT = 3;
 
+// UI-facing description of the formula above — used by the "how scoring works" table
+// on the profile screen. Keep this in sync with the weights/logic above.
+export const SCORE_FACTORS: { label: string; points: string; description: string }[] = [
+  { label: 'Bebidas registradas', points: `+${WEIGHTS.drinkCount} c/u (tope ${VOLUME_CAP})`, description: 'Cuenta, pero con límite — no es el factor principal.' },
+  { label: 'Variedad probada', points: `+${WEIGHTS.variety} c/u`, description: 'Cada tipo de bebida distinto que probaste. El factor con más peso.' },
+  { label: 'Kudos recibidos', points: `+${WEIGHTS.kudos} c/u`, description: 'Reconocimiento social de tus amigos en tus registros.' },
+  { label: 'Fiestas asistidas', points: `+${WEIGHTS.partiesAttended} c/u`, description: 'Asistencia constante a fiestas (solo ranking global).' },
+  { label: 'Comentarios recibidos', points: `+${WEIGHTS.comments} c/u`, description: 'Cada comentario que te dejan en un registro.' },
+  { label: 'Exceso de volumen', points: `−${PENALTY_WEIGHT} c/u`, description: `Si registras muchas más bebidas de las que tu variedad justifica (más de ${VARIETY_ALLOWANCE_MULTIPLE}× tu variedad), se penaliza el exceso.` },
+];
+
 export type BalancedScoreInput = {
   drinkCount: number;
   uniqueTypes: number;

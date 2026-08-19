@@ -16,10 +16,9 @@ import { drinkLabel, drinkTypeIcons } from '@/utils/drinkType';
 type Props = {
   drinkLog: DrinkLog;
   usersById: Record<string, User>;
-  partyName?: string;
 };
 
-export function DrinkLogCard({ drinkLog, usersById, partyName }: Props) {
+export function DrinkLogCard({ drinkLog, usersById }: Props) {
   const { colors, spacing, radius, typography, drinkTypeColors } = useTheme();
   const [commentsOpen, setCommentsOpen] = useState(false);
   const author = usersById[drinkLog.userId];
@@ -33,10 +32,7 @@ export function DrinkLogCard({ drinkLog, usersById, partyName }: Props) {
         </Pressable>
         <View style={{ flex: 1, marginLeft: spacing.sm }}>
           <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{author?.name ?? 'Alguien'}</Text>
-          <Text style={[typography.tiny, { color: colors.textSecondary }]}>
-            {timeAgo(drinkLog.timestamp)}
-            {partyName ? ` · ${partyName}` : ''}
-          </Text>
+          <Text style={[typography.tiny, { color: colors.textSecondary }]}>{timeAgo(drinkLog.timestamp)}</Text>
         </View>
         <View style={[styles.iconCircle, { backgroundColor: `${accent}22`, borderRadius: radius.pill }]}>
           <MaterialCommunityIcons name={drinkTypeIcons[drinkLog.drinkType]} size={20} color={accent} />

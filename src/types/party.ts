@@ -13,10 +13,13 @@ export type Party = {
   inviteCode: string;
 };
 
+export type PartyMemberRole = 'admin' | 'guest';
+
 export type PartyMember = {
   partyId: string; // party_id
   userId: string; // user_id
   joinedAt: string;
+  role: PartyMemberRole; // creator/host is 'admin', everyone who joins later is 'guest'
 };
 
 export type CreatePartyInput = {

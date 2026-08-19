@@ -17,6 +17,11 @@ function buildSession(): Session | null {
   return { user, ageVerified: session.ageVerified, tosAccepted: session.tosAccepted };
 }
 
+function updateOnboarding(userId: string, patch: { ageVerified?: boolean; tosAccepted?: boolean; birthDate?: string }) {
+  const existing = mockDb.get('onboardingByUser')[userId] ?? { ageVerified: false, tosAccepted: false };
+  mockDb.set('onboardingByUser', { ...mockDb.get('onboardingByUser'), [userId]: { ...existing, ...patch } });
+}
+
 // SEAM: replace mocked delay + fake session with expo-auth-session (Google) /
 // expo-apple-authentication (Apple), backed by Supabase Auth.
 export const MockAuthService: AuthService = {
@@ -27,13 +32,23 @@ export const MockAuthService: AuthService = {
 
   async signInWithGoogle() {
     await delay();
-    mockDb.set('session', { userId: DEFAULT_DEMO_USER_ID, ageVerified: false, tosAccepted: false });
+    const onboarding = mockDb.get('onboardingByUser')[DEFAULT_DEMO_USER_ID];
+    mockDb.set('session', {
+      userId: DEFAULT_DEMO_USER_ID,
+      ageVerified: onboarding?.ageVerified ?? false,
+      tosAccepted: onboarding?.tosAccepted ?? false,
+    });
     return buildSession()!;
   },
 
   async signInWithApple() {
     await delay();
-    mockDb.set('session', { userId: DEFAULT_DEMO_USER_ID, ageVerified: false, tosAccepted: false });
+    const onboarding = mockDb.get('onboardingByUser')[DEFAULT_DEMO_USER_ID];
+    mockDb.set('session', {
+      userId: DEFAULT_DEMO_USER_ID,
+      ageVerified: onboarding?.ageVerified ?? false,
+      tosAccepted: onboarding?.tosAccepted ?? false,
+    });
     return buildSession()!;
   },
 
@@ -48,6 +63,7 @@ export const MockAuthService: AuthService = {
     const users = mockDb.get('users').map((u) => (u.id === session.userId ? { ...u, birthDate } : u));
     mockDb.set('users', users);
     mockDb.set('session', { ...session, ageVerified: true });
+    updateOnboarding(session.userId, { ageVerified: true, birthDate });
     return buildSession()!;
   },
 
@@ -56,6 +72,7 @@ export const MockAuthService: AuthService = {
     const session = mockDb.get('session');
     if (!session.userId) throw new Error('NOT_AUTHENTICATED');
     mockDb.set('session', { ...session, tosAccepted: true });
+    updateOnboarding(session.userId, { tosAccepted: true });
     return buildSession()!;
   },
 

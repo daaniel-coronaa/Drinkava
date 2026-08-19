@@ -17,13 +17,6 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="feed"
-        options={{
-          title: 'Feed',
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="fire" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="parties"
         options={{
           title: 'Fiestas',

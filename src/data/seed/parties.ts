@@ -34,20 +34,20 @@ export const seedParties: Party[] = [
 ];
 
 export const seedPartyMembers: PartyMember[] = [
-  // p1 — active
-  { partyId: 'p1', userId: 'u1', joinedAt: '2026-08-18T21:50:00.000Z' },
-  { partyId: 'p1', userId: 'u2', joinedAt: '2026-08-18T21:40:00.000Z' },
-  { partyId: 'p1', userId: 'u3', joinedAt: '2026-08-18T21:55:00.000Z' },
-  { partyId: 'p1', userId: 'u4', joinedAt: '2026-08-18T22:05:00.000Z' },
-  // p2 — finished
-  { partyId: 'p2', userId: 'u1', joinedAt: '2026-08-02T20:50:00.000Z' },
-  { partyId: 'p2', userId: 'u2', joinedAt: '2026-08-02T20:50:00.000Z' },
-  { partyId: 'p2', userId: 'u3', joinedAt: '2026-08-02T20:45:00.000Z' },
-  { partyId: 'p2', userId: 'u5', joinedAt: '2026-08-02T21:10:00.000Z' },
-  { partyId: 'p2', userId: 'u6', joinedAt: '2026-08-02T21:15:00.000Z' },
-  // p3 — finished
-  { partyId: 'p3', userId: 'u1', joinedAt: '2026-07-19T19:50:00.000Z' },
-  { partyId: 'p3', userId: 'u4', joinedAt: '2026-07-19T19:55:00.000Z' },
-  { partyId: 'p3', userId: 'u5', joinedAt: '2026-07-19T20:00:00.000Z' },
-  { partyId: 'p3', userId: 'u6', joinedAt: '2026-07-19T20:10:00.000Z' },
+  // p1 — active (host u2 = admin)
+  { partyId: 'p1', userId: 'u1', joinedAt: '2026-08-18T21:50:00.000Z', role: 'guest' },
+  { partyId: 'p1', userId: 'u2', joinedAt: '2026-08-18T21:40:00.000Z', role: 'admin' },
+  { partyId: 'p1', userId: 'u3', joinedAt: '2026-08-18T21:55:00.000Z', role: 'guest' },
+  { partyId: 'p1', userId: 'u4', joinedAt: '2026-08-18T22:05:00.000Z', role: 'guest' },
+  // p2 — finished (host u3 = admin)
+  { partyId: 'p2', userId: 'u1', joinedAt: '2026-08-02T20:50:00.000Z', role: 'guest' },
+  { partyId: 'p2', userId: 'u2', joinedAt: '2026-08-02T20:50:00.000Z', role: 'guest' },
+  { partyId: 'p2', userId: 'u3', joinedAt: '2026-08-02T20:45:00.000Z', role: 'admin' },
+  { partyId: 'p2', userId: 'u5', joinedAt: '2026-08-02T21:10:00.000Z', role: 'guest' },
+  { partyId: 'p2', userId: 'u6', joinedAt: '2026-08-02T21:15:00.000Z', role: 'guest' },
+  // p3 — finished (host u1 = admin)
+  { partyId: 'p3', userId: 'u1', joinedAt: '2026-07-19T19:50:00.000Z', role: 'admin' },
+  { partyId: 'p3', userId: 'u4', joinedAt: '2026-07-19T19:55:00.000Z', role: 'guest' },
+  { partyId: 'p3', userId: 'u5', joinedAt: '2026-07-19T20:00:00.000Z', role: 'guest' },
+  { partyId: 'p3', userId: 'u6', joinedAt: '2026-07-19T20:10:00.000Z', role: 'guest' },
 ];

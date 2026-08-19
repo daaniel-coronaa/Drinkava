@@ -8,5 +8,5 @@ export default function Index() {
   if (!session) return <Redirect href="/(auth)/welcome" />;
   if (!session.ageVerified) return <Redirect href="/(auth)/age-gate" />;
   if (!session.tosAccepted) return <Redirect href="/(auth)/onboarding-tos" />;
-  return <Redirect href="/(tabs)/feed" />;
+  return <Redirect href="/(tabs)/parties" />;
 }
