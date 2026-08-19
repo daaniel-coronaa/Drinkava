@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import { useState } from 'react';
-import { Alert, Linking, Pressable, Switch, Text, View } from 'react-native';
+import { Alert, Linking, Platform, Pressable, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/ui/Card';
@@ -29,17 +29,21 @@ export default function SafeModeScreen() {
   const handleToggle = async (value: boolean) => {
     setBusy(true);
     try {
-      if (value) {
-        const { granted } = await Notifications.requestPermissionsAsync();
-        if (granted) {
-          await Notifications.scheduleNotificationAsync({
-            identifier: WATER_REMINDER_ID,
-            content: { title: 'Drinkava', body: '💧 Hora de tomar agua. Cuídate en la fiesta.' },
-            trigger: { seconds: 45 * 60, repeats: true } as Notifications.TimeIntervalTriggerInput,
-          });
+      // Local scheduled notifications aren't supported on web — skip native
+      // scheduling there but still let the user toggle the setting.
+      if (Platform.OS !== 'web') {
+        if (value) {
+          const { granted } = await Notifications.requestPermissionsAsync();
+          if (granted) {
+            await Notifications.scheduleNotificationAsync({
+              identifier: WATER_REMINDER_ID,
+              content: { title: 'Drinkava', body: '💧 Hora de tomar agua. Cuídate en la fiesta.' },
+              trigger: { seconds: 45 * 60, repeats: true } as Notifications.TimeIntervalTriggerInput,
+            });
+          }
+        } else {
+          await Notifications.cancelScheduledNotificationAsync(WATER_REMINDER_ID);
         }
-      } else {
-        await Notifications.cancelScheduledNotificationAsync(WATER_REMINDER_ID);
       }
       setSafeModeEnabled(value);
     } finally {
