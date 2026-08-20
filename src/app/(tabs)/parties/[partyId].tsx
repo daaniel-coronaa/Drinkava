@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Alert, FlatList, Platform, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ChallengeCard } from '@/components/challenge/ChallengeCard';
+import { ChallengeSettingsSheet } from '@/components/challenge/ChallengeSettingsSheet';
 import { DisclaimerBanner } from '@/components/compliance/DisclaimerBanner';
 import { LeaderboardRow } from '@/components/leaderboard/LeaderboardRow';
 import { ScoreBreakdownSheet } from '@/components/leaderboard/ScoreBreakdownSheet';
@@ -18,22 +20,26 @@ import { useParty } from '@/hooks/useParty';
 import { useUsersMap } from '@/hooks/useUsersMap';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
-import type { LeaderboardEntry } from '@/types';
+import type { ChallengeAssignment, DrinkLog, LeaderboardEntry } from '@/types';
 import { formatDateTime } from '@/utils/date';
 
 type Section = 'feed' | 'members' | 'leaderboard';
+type FeedItem =
+  | { type: 'drink'; timestamp: string; log: DrinkLog }
+  | { type: 'challenge'; timestamp: string; assignment: ChallengeAssignment };
 
 export default function PartyDetailScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>();
   const { colors, spacing, radius, typography } = useTheme();
   const { session } = useAuth();
-  const { party, members, memberUsers, logs, loading, refetch } = useParty(partyId);
+  const { party, members, memberUsers, logs, challengeAssignments, loading, refetch } = useParty(partyId);
   const { usersById } = useUsersMap();
   const { entries } = useLeaderboard(partyId ? { partyId } : null);
   const [section, setSection] = useState<Section>('feed');
   const [selectedEntry, setSelectedEntry] = useState<LeaderboardEntry | null>(null);
   const [finishing, setFinishing] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [challengeSettingsVisible, setChallengeSettingsVisible] = useState(false);
 
   if (!party) {
     return (
@@ -45,6 +51,17 @@ export default function PartyDetailScreen() {
 
   const myRole = members.find((m) => m.userId === session?.user.id)?.role;
   const isAdmin = myRole === 'admin';
+  const isHost = session?.user.id === party.hostId;
+
+  const feedItems: FeedItem[] = [
+    ...logs.map((log): FeedItem => ({ type: 'drink', timestamp: log.timestamp, log })),
+    ...challengeAssignments.map((assignment): FeedItem => ({ type: 'challenge', timestamp: assignment.sentAt, assignment })),
+  ].sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+
+  const handleChallengeChanged = async (countsAsTurn: boolean) => {
+    if (countsAsTurn) await services.challenges.maybeTriggerNextChallenge(party.id);
+    await refetch();
+  };
 
   const handleShare = () => {
     Share.share({
@@ -130,6 +147,15 @@ export default function PartyDetailScreen() {
           </Text>
         )}
 
+        {isHost && party.status === 'active' ? (
+          <Button
+            label="Configurar retos"
+            onPress={() => setChallengeSettingsVisible(true)}
+            variant="secondary"
+            style={{ marginTop: spacing.xs }}
+          />
+        ) : null}
+
         {isAdmin && party.status === 'active' ? (
           <Button
             label="Terminar fiesta"
@@ -173,11 +199,23 @@ export default function PartyDetailScreen() {
 
       {section === 'feed' && (
         <FlatList
-          data={logs}
-          keyExtractor={(item) => item.id}
+          data={feedItems}
+          keyExtractor={(item) => (item.type === 'drink' ? item.log.id : item.assignment.id)}
           ListHeaderComponent={<DisclaimerBanner />}
           ListEmptyComponent={<EmptyState icon="glass-cocktail" title="Nadie ha registrado nada aún" />}
-          renderItem={({ item }) => <DrinkLogCard drinkLog={item} usersById={usersById} />}
+          renderItem={({ item }) =>
+            item.type === 'drink' ? (
+              <DrinkLogCard drinkLog={item.log} usersById={usersById} />
+            ) : (
+              <ChallengeCard
+                assignment={item.assignment}
+                usersById={usersById}
+                currentUserId={session?.user.id ?? ''}
+                isHost={isHost}
+                onChanged={handleChallengeChanged}
+              />
+            )
+          }
         />
       )}
 
@@ -209,6 +247,13 @@ export default function PartyDetailScreen() {
         onClose={() => setSelectedEntry(null)}
         entry={selectedEntry}
         userName={selectedEntry ? usersById[selectedEntry.userId]?.name : undefined}
+      />
+
+      <ChallengeSettingsSheet
+        visible={challengeSettingsVisible}
+        onClose={() => setChallengeSettingsVisible(false)}
+        partyId={party.id}
+        onSaved={refetch}
       />
     </SafeAreaView>
   );

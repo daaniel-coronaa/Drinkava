@@ -12,4 +12,5 @@ export type LeaderboardEntry = {
   uniqueTypes: number;
   kudosReceived: number;
   partiesAttended: number;
+  challengePoints: number;
 };

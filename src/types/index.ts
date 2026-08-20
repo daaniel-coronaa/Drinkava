@@ -1,4 +1,5 @@
 export * from './achievement';
+export * from './challenge';
 export * from './drinkLog';
 export * from './kudos';
 export * from './leaderboard';

@@ -46,6 +46,8 @@ export default function NewDrinkLogScreen() {
         quantity,
       });
       const unlocked = await services.achievements.evaluateAndUnlock(session.user.id);
+      // Every logged drink is a "turno" for the party's random challenge pacing.
+      await services.challenges.maybeTriggerNextChallenge(partyId);
       router.back();
       if (unlocked.length > 0) {
         setTimeout(() => Alert.alert('¡Nuevo logro!', unlocked.map((a) => a.achievementKey).join(', ')), 300);

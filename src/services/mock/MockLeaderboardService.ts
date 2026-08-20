@@ -1,11 +1,17 @@
 import { computeBalancedScore } from '@/domain/leaderboard/computeBalancedScore';
 import type { LeaderboardService } from '@/services/interfaces/LeaderboardService';
-import type { DrinkLog, LeaderboardEntry } from '@/types';
+import type { ChallengeAssignment, DrinkLog, LeaderboardEntry } from '@/types';
 
-import { delay, mockDb } from './mockDb';
+import { challengeCatalog, delay, mockDb } from './mockDb';
 
 function uniqueTypeCount(logs: DrinkLog[]) {
   return new Set(logs.map((l) => (l.drinkType === 'other' ? `other:${l.customLabel ?? ''}` : l.drinkType))).size;
+}
+
+function challengePointsFor(userId: string, assignments: ChallengeAssignment[]) {
+  return assignments
+    .filter((a) => a.status === 'validado' && (a.userIdA === userId || a.userIdB === userId))
+    .reduce((sum, a) => sum + (challengeCatalog.find((c) => c.id === a.challengeId)?.points ?? 0), 0);
 }
 
 function rankEntries(entries: Omit<LeaderboardEntry, 'rank'>[]): LeaderboardEntry[] {
@@ -21,6 +27,7 @@ export const MockLeaderboardService: LeaderboardService = {
 
     const members = mockDb.get('partyMembers').filter((m) => m.partyId === partyId);
     const partyLogs = mockDb.get('drinkLogs').filter((d) => d.partyId === partyId);
+    const partyAssignments = mockDb.get('challengeAssignments').filter((a) => a.partyId === partyId);
     const kudos = mockDb.get('kudos');
     const comments = mockDb.get('comments');
 
@@ -31,6 +38,7 @@ export const MockLeaderboardService: LeaderboardService = {
       const commentsReceived = comments.filter((c) => userLogIds.has(c.drinkLogId)).length;
       const drinkCount = userLogs.reduce((sum, l) => sum + l.quantity, 0);
       const uniqueTypes = uniqueTypeCount(userLogs);
+      const challengePoints = challengePointsFor(member.userId, partyAssignments);
 
       const { score, breakdown } = computeBalancedScore({
         drinkCount,
@@ -38,9 +46,19 @@ export const MockLeaderboardService: LeaderboardService = {
         kudosReceived,
         partiesAttended: 0,
         commentsReceived,
+        challengePoints,
       });
 
-      return { userId: member.userId, score, breakdown, drinkCount, uniqueTypes, kudosReceived, partiesAttended: 0 };
+      return {
+        userId: member.userId,
+        score,
+        breakdown,
+        drinkCount,
+        uniqueTypes,
+        kudosReceived,
+        partiesAttended: 0,
+        challengePoints,
+      };
     });
 
     return rankEntries(entries);
@@ -64,6 +82,7 @@ export const MockLeaderboardService: LeaderboardService = {
     );
 
     const allLogs = mockDb.get('drinkLogs');
+    const allAssignments = mockDb.get('challengeAssignments');
     const kudos = mockDb.get('kudos');
     const comments = mockDb.get('comments');
     const allMembers = mockDb.get('partyMembers');
@@ -76,6 +95,7 @@ export const MockLeaderboardService: LeaderboardService = {
       const drinkCount = userLogs.reduce((sum, l) => sum + l.quantity, 0);
       const uniqueTypes = uniqueTypeCount(userLogs);
       const partiesAttended = new Set(allMembers.filter((m) => m.userId === id).map((m) => m.partyId)).size;
+      const challengePoints = challengePointsFor(id, allAssignments);
 
       const { score, breakdown } = computeBalancedScore({
         drinkCount,
@@ -83,9 +103,10 @@ export const MockLeaderboardService: LeaderboardService = {
         kudosReceived,
         partiesAttended,
         commentsReceived,
+        challengePoints,
       });
 
-      return { userId: id, score, breakdown, drinkCount, uniqueTypes, kudosReceived, partiesAttended };
+      return { userId: id, score, breakdown, drinkCount, uniqueTypes, kudosReceived, partiesAttended, challengePoints };
     });
 
     return rankEntries(entries);

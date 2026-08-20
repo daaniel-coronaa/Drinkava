@@ -1,3 +1,5 @@
+import type { ChallengeCategory, ChallengePaceMode } from './challenge';
+
 // Spanish schema reference: parties(id, nombre, fecha, host_id, ubicación, estado)
 // party_members(party_id, user_id)
 export type PartyStatus = 'active' | 'finished'; // estado
@@ -11,6 +13,16 @@ export type Party = {
   status: PartyStatus; // estado
   coverImageUrl?: string;
   inviteCode: string;
+  // Challenge minigame settings — host-configurable, see party.modo_ritmo_retos /
+  // intervalo_minutos in the brief.
+  challengePaceMode: ChallengePaceMode; // modo_ritmo_retos
+  challengeIntervalMinutes: number; // intervalo_minutos (used when 'fijo')
+  challengeCategories: ChallengeCategory[]; // categories enabled for this party
+  // Runtime pacing state for 'aleatorio' mode: fires the next challenge once
+  // turnsSinceLastChallenge reaches turnsUntilNextChallenge (re-rolled 5–20 each time).
+  turnsSinceLastChallenge: number;
+  turnsUntilNextChallenge: number;
+  lastChallengeFiredAt?: string; // ISO — used to evaluate 'fijo' mode's interval
 };
 
 export type PartyMemberRole = 'admin' | 'guest';

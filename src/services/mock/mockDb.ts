@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { achievementDefinitions, seedAchievements } from '@/data/seed/achievementDefinitions';
+import { challengeCatalog as seedChallengeCatalog, seedChallengeAssignments } from '@/data/seed/challenges';
 import { seedDrinkLogs } from '@/data/seed/drinkLogs';
 import { seedComments, seedKudos } from '@/data/seed/kudosAndComments';
 import { seedParties, seedPartyMembers } from '@/data/seed/parties';
 import { CURRENT_USER_ID, seedUsers } from '@/data/seed/users';
-import type { Achievement, Comment, DrinkLog, Kudos, Party, PartyMember, User } from '@/types';
+import type { Achievement, ChallengeAssignment, Comment, DrinkLog, Kudos, Party, PartyMember, User } from '@/types';
 
 const STORAGE_KEY = 'drinkava:mockDb:v1';
 
@@ -25,6 +26,7 @@ type Snapshot = {
   kudos: Kudos[];
   comments: Comment[];
   achievements: Achievement[];
+  challengeAssignments: ChallengeAssignment[];
   session: MockSession;
   // Onboarding (age verification / ToS acceptance) persists per user across sign-outs,
   // so a returning user isn't sent through the age-gate/ToS screens every sign-in.
@@ -40,6 +42,7 @@ function freshSnapshot(): Snapshot {
     kudos: [...seedKudos],
     comments: [...seedComments],
     achievements: [...seedAchievements],
+    challengeAssignments: [...seedChallengeAssignments],
     session: { userId: null, ageVerified: false, tosAccepted: false },
     onboardingByUser: {},
   };
@@ -93,6 +96,7 @@ class MockDb {
 
 export const mockDb = new MockDb();
 export const achievementCatalog = achievementDefinitions;
+export const challengeCatalog = seedChallengeCatalog;
 export const DEFAULT_DEMO_USER_ID = CURRENT_USER_ID;
 
 // Simulated network latency so loading states get exercised now and behavior

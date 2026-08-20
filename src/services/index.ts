@@ -1,5 +1,6 @@
 import { MockAchievementService } from './mock/MockAchievementService';
 import { MockAuthService } from './mock/MockAuthService';
+import { MockChallengeService } from './mock/MockChallengeService';
 import { MockDrinkLogService } from './mock/MockDrinkLogService';
 import { MockLeaderboardService } from './mock/MockLeaderboardService';
 import { MockPartyService } from './mock/MockPartyService';
@@ -14,9 +15,10 @@ export const services = {
   drinkLogs: MockDrinkLogService,
   leaderboard: MockLeaderboardService,
   achievements: MockAchievementService,
+  challenges: MockChallengeService,
   users: MockUserService,
 };
 
 export { AgeRestrictedError } from './mock/MockAuthService';
 export { NotAuthorizedError } from './mock/MockPartyService';
-export { mockDb } from './mock/mockDb';
+export { challengeCatalog, mockDb } from './mock/mockDb';

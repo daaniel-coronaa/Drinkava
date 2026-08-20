@@ -10,6 +10,11 @@ export const seedParties: Party[] = [
     status: 'active',
     inviteCode: 'PREV26',
     coverImageUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800',
+    challengePaceMode: 'aleatorio',
+    challengeIntervalMinutes: 20,
+    challengeCategories: ['bebida', 'social', 'fisico', 'social_premium'],
+    turnsSinceLastChallenge: 0,
+    turnsUntilNextChallenge: 5,
   },
   {
     id: 'p2',
@@ -20,6 +25,11 @@ export const seedParties: Party[] = [
     status: 'finished',
     inviteCode: 'DIEGO25',
     coverImageUrl: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
+    challengePaceMode: 'fijo',
+    challengeIntervalMinutes: 30,
+    challengeCategories: ['bebida', 'social'],
+    turnsSinceLastChallenge: 0,
+    turnsUntilNextChallenge: 8,
   },
   {
     id: 'p3',
@@ -30,6 +40,11 @@ export const seedParties: Party[] = [
     status: 'finished',
     inviteCode: 'ASADO7',
     coverImageUrl: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800',
+    challengePaceMode: 'fijo',
+    challengeIntervalMinutes: 30,
+    challengeCategories: ['bebida', 'social', 'fisico'],
+    turnsSinceLastChallenge: 0,
+    turnsUntilNextChallenge: 8,
   },
 ];
 

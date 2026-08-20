@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 import { services } from '@/services';
 import type { Session } from '@/services/interfaces/AuthService';
+import type { User } from '@/types';
 
 type AuthContextValue = {
   session: Session | null;
@@ -11,7 +12,9 @@ type AuthContextValue = {
   submitBirthDate: (birthDate: string) => Promise<void>;
   acceptTerms: () => Promise<void>;
   signOut: () => Promise<void>;
-  updateAvatar: (avatarUrl: string) => Promise<void>;
+  // Persists a profile patch and keeps the cached session in sync, so changes (avatar,
+  // subscription toggle, etc.) show up immediately anywhere session.user is read.
+  updateProfile: (patch: Partial<Pick<User, 'name' | 'avatarUrl' | 'hasActiveSubscription'>>) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -52,18 +55,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
   }, []);
 
-  const updateAvatar = useCallback(
-    async (avatarUrl: string) => {
+  const updateProfile = useCallback(
+    async (patch: Partial<Pick<User, 'name' | 'avatarUrl' | 'hasActiveSubscription'>>) => {
       if (!session) return;
-      const updatedUser = await services.users.updateProfile(session.user.id, { avatarUrl });
+      const updatedUser = await services.users.updateProfile(session.user.id, patch);
       setSession({ ...session, user: updatedUser });
     },
     [session],
   );
 
   const value = useMemo(
-    () => ({ session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateAvatar }),
-    [session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateAvatar],
+    () => ({ session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateProfile }),
+    [session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

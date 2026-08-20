@@ -1,3 +1,5 @@
+import type { ChallengeCategory } from '@/types/challenge';
+
 export type DrinkType = 'shot' | 'cocktail' | 'beer' | 'wine' | 'other';
 
 const base = {
@@ -14,6 +16,13 @@ export const drinkTypeColors: Record<DrinkType, string> = {
   beer: '#F5A623',
   wine: '#B8123B',
   other: '#4A90D9',
+};
+
+export const challengeCategoryColors: Record<ChallengeCategory, string> = {
+  bebida: '#F5A623',
+  social: '#3D8BFF',
+  fisico: '#2ED573',
+  social_premium: '#C24DFF',
 };
 
 export type ThemeColors = typeof base & {

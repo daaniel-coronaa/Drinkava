@@ -10,6 +10,7 @@ const WEIGHTS = {
   kudos: 2,
   partiesAttended: 5,
   comments: 1,
+  challengePoints: 1,
 } as const;
 
 // UI-facing description of the formula above — used by the "how scoring works" table
@@ -20,6 +21,7 @@ export const SCORE_FACTORS: { label: string; points: string; description: string
   { label: 'Kudos recibidos', points: `+${WEIGHTS.kudos} c/u`, description: 'Reconocimiento social de tus amigos en tus registros.' },
   { label: 'Fiestas asistidas', points: `+${WEIGHTS.partiesAttended} c/u`, description: 'Asistencia constante a fiestas (solo ranking global).' },
   { label: 'Comentarios recibidos', points: `+${WEIGHTS.comments} c/u`, description: 'Cada comentario que te dejan en un registro.' },
+  { label: 'Retos validados', points: 'según el reto', description: 'Puntos del reto, sumados solo cuando el anfitrión valida que se cumplió.' },
 ];
 
 export type BalancedScoreInput = {
@@ -28,6 +30,7 @@ export type BalancedScoreInput = {
   kudosReceived: number;
   partiesAttended: number;
   commentsReceived: number;
+  challengePoints: number;
 };
 
 export type BalancedScoreResult = {
@@ -42,6 +45,7 @@ export function computeBalancedScore(stats: BalancedScoreInput): BalancedScoreRe
     { label: 'Kudos recibidos', contribution: stats.kudosReceived * WEIGHTS.kudos },
     { label: 'Fiestas asistidas', contribution: stats.partiesAttended * WEIGHTS.partiesAttended },
     { label: 'Comentarios recibidos', contribution: stats.commentsReceived * WEIGHTS.comments },
+    { label: 'Retos validados', contribution: stats.challengePoints * WEIGHTS.challengePoints },
   ];
 
   const score = Math.max(0, Math.round(breakdown.reduce((sum, item) => sum + item.contribution, 0)));

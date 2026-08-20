@@ -11,6 +11,7 @@ export const seedUsers: User[] = [
     birthDate: '1999-04-12',
     createdAt: '2026-01-05T10:00:00.000Z',
     avatarUrl: 'https://i.pravatar.cc/150?u=u1',
+    hasActiveSubscription: false,
   },
   {
     id: 'u2',
@@ -20,6 +21,7 @@ export const seedUsers: User[] = [
     birthDate: '1998-08-22',
     createdAt: '2026-01-05T10:00:00.000Z',
     avatarUrl: 'https://i.pravatar.cc/150?u=u2',
+    hasActiveSubscription: true,
   },
   {
     id: 'u3',
@@ -29,6 +31,7 @@ export const seedUsers: User[] = [
     birthDate: '1997-02-14',
     createdAt: '2026-01-05T10:00:00.000Z',
     avatarUrl: 'https://i.pravatar.cc/150?u=u3',
+    hasActiveSubscription: false,
   },
   {
     id: 'u4',
@@ -38,6 +41,7 @@ export const seedUsers: User[] = [
     birthDate: '2000-11-30',
     createdAt: '2026-01-05T10:00:00.000Z',
     avatarUrl: 'https://i.pravatar.cc/150?u=u4',
+    hasActiveSubscription: false,
   },
   {
     id: 'u5',
@@ -47,6 +51,7 @@ export const seedUsers: User[] = [
     birthDate: '1996-06-18',
     createdAt: '2026-01-05T10:00:00.000Z',
     avatarUrl: 'https://i.pravatar.cc/150?u=u5',
+    hasActiveSubscription: false,
   },
   {
     id: 'u6',
@@ -56,5 +61,6 @@ export const seedUsers: User[] = [
     birthDate: '1999-09-09',
     createdAt: '2026-01-05T10:00:00.000Z',
     avatarUrl: 'https://i.pravatar.cc/150?u=u6',
+    hasActiveSubscription: false,
   },
 ];

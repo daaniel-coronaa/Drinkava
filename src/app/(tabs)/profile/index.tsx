@@ -16,7 +16,7 @@ import { useTheme } from '@/theme';
 
 export default function MyProfileScreen() {
   const { colors, spacing, typography } = useTheme();
-  const { session, updateAvatar } = useAuth();
+  const { session, updateProfile } = useAuth();
   const { parties, totalDrinks, favoriteType, globalEntry } = useProfileStats(session?.user.id);
   const { definitions, unlocked } = useAchievements(session?.user.id);
   const unlockedByKey = Object.fromEntries(unlocked.map((a) => [a.achievementKey, a.unlockedAt]));
@@ -33,7 +33,12 @@ export default function MyProfileScreen() {
         </View>
 
         <View style={{ alignItems: 'center', gap: spacing.xs, marginBottom: spacing.lg }}>
-          <EditableAvatar uri={session.user.avatarUrl} name={session.user.name} size={80} onChange={updateAvatar} />
+          <EditableAvatar
+            uri={session.user.avatarUrl}
+            name={session.user.name}
+            size={80}
+            onChange={(avatarUrl) => updateProfile({ avatarUrl })}
+          />
           <Text style={[typography.h2, { color: colors.textPrimary }]}>{session.user.name}</Text>
         </View>
 

@@ -9,4 +9,7 @@ export type User = {
   authProvider: AuthProvider; // auth_provider
   birthDate: string; // fecha_nacimiento — ISO date string
   createdAt: string;
+  // SEAM: mock-only flag standing in for a real subscriptions/billing system, so the
+  // social_premium challenge category's access gate can be built and tested now.
+  hasActiveSubscription: boolean;
 };

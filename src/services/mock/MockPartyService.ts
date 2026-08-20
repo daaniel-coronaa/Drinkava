@@ -52,6 +52,11 @@ export const MockPartyService: PartyService = {
       coverImageUrl: input.coverImageUrl,
       status: 'active',
       inviteCode: generateInviteCode(),
+      challengePaceMode: 'aleatorio',
+      challengeIntervalMinutes: 20,
+      challengeCategories: ['bebida', 'social', 'fisico', 'social_premium'],
+      turnsSinceLastChallenge: 0,
+      turnsUntilNextChallenge: Math.floor(Math.random() * 16) + 5,
     };
     mockDb.set('parties', [...mockDb.get('parties'), party]);
     mockDb.set('partyMembers', [

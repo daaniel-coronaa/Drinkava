@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/ui/Card';
@@ -20,11 +21,28 @@ function Row({ icon, label, onPress }: { icon: React.ComponentProps<typeof Mater
 
 export default function SettingsScreen() {
   const { colors, spacing, typography, modeOverride, setModeOverride } = useTheme();
-  const { signOut } = useAuth();
+  const { session, signOut, updateProfile } = useAuth();
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
+  const [savingSubscription, setSavingSubscription] = useState(false);
+
+  useEffect(() => {
+    setHasActiveSubscription(!!session?.user.hasActiveSubscription);
+  }, [session?.user.hasActiveSubscription]);
 
   const handleSignOut = async () => {
     await signOut();
     router.replace('/');
+  };
+
+  const toggleSubscription = async (value: boolean) => {
+    if (!session) return;
+    setSavingSubscription(true);
+    setHasActiveSubscription(value);
+    try {
+      await updateProfile({ hasActiveSubscription: value });
+    } finally {
+      setSavingSubscription(false);
+    }
   };
 
   return (
@@ -54,6 +72,19 @@ export default function SettingsScreen() {
                 </Text>
               </Pressable>
             ))}
+          </View>
+        </Card>
+
+        <Card>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="crown-outline" size={20} color={colors.textPrimary} style={{ marginRight: spacing.sm }} />
+            <View style={{ flex: 1 }}>
+              <Text style={[typography.body, { color: colors.textPrimary }]}>Suscripción activa</Text>
+              <Text style={[typography.tiny, { color: colors.textSecondary }]}>
+                Prueba: desbloquea retos “social premium” en tus fiestas.
+              </Text>
+            </View>
+            <Switch value={hasActiveSubscription} onValueChange={toggleSubscription} disabled={savingSubscription} />
           </View>
         </Card>
 

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useColorScheme as useSystemColorScheme } from 'react-native';
 
-import { Colors, drinkTypeColors, type ThemeColors, type ThemeMode } from './colors';
+import { Colors, challengeCategoryColors, drinkTypeColors, type ThemeColors, type ThemeMode } from './colors';
 import { Radius, Spacing } from './spacing';
 import { Typography } from './typography';
 
@@ -17,6 +17,7 @@ type ThemeContextValue = {
   radius: typeof Radius;
   typography: typeof Typography;
   drinkTypeColors: typeof drinkTypeColors;
+  challengeCategoryColors: typeof challengeCategoryColors;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -50,6 +51,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       radius: Radius,
       typography: Typography,
       drinkTypeColors,
+      challengeCategoryColors,
     }),
     [mode, modeOverride],
   );

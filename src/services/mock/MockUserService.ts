@@ -10,7 +10,7 @@ export const MockUserService: UserService = {
     return mockDb.get('users').find((u) => u.id === userId) ?? null;
   },
 
-  async updateProfile(userId: string, patch: Partial<Pick<User, 'name' | 'avatarUrl'>>) {
+  async updateProfile(userId: string, patch: Partial<Pick<User, 'name' | 'avatarUrl' | 'hasActiveSubscription'>>) {
     await mockDb.ensureLoaded();
     await delay();
     const users = mockDb.get('users').map((u) => (u.id === userId ? { ...u, ...patch } : u));
