@@ -11,6 +11,7 @@ type AuthContextValue = {
   submitBirthDate: (birthDate: string) => Promise<void>;
   acceptTerms: () => Promise<void>;
   signOut: () => Promise<void>;
+  updateAvatar: (avatarUrl: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -51,9 +52,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
   }, []);
 
+  const updateAvatar = useCallback(
+    async (avatarUrl: string) => {
+      if (!session) return;
+      const updatedUser = await services.users.updateProfile(session.user.id, { avatarUrl });
+      setSession({ ...session, user: updatedUser });
+    },
+    [session],
+  );
+
   const value = useMemo(
-    () => ({ session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut }),
-    [session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut],
+    () => ({ session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateAvatar }),
+    [session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateAvatar],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

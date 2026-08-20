@@ -5,9 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PartyCard } from '@/components/party/PartyCard';
 import { AchievementBadge } from '@/components/profile/AchievementBadge';
+import { EditableAvatar } from '@/components/profile/EditableAvatar';
 import { ScoringTable } from '@/components/profile/ScoringTable';
 import { StatTile } from '@/components/profile/StatTile';
-import { Avatar } from '@/components/ui/Avatar';
 import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/context/AuthContext';
 import { useAchievements } from '@/hooks/useAchievements';
@@ -16,7 +16,7 @@ import { useTheme } from '@/theme';
 
 export default function MyProfileScreen() {
   const { colors, spacing, typography } = useTheme();
-  const { session } = useAuth();
+  const { session, updateAvatar } = useAuth();
   const { parties, totalDrinks, favoriteType, globalEntry } = useProfileStats(session?.user.id);
   const { definitions, unlocked } = useAchievements(session?.user.id);
   const unlockedByKey = Object.fromEntries(unlocked.map((a) => [a.achievementKey, a.unlockedAt]));
@@ -33,7 +33,7 @@ export default function MyProfileScreen() {
         </View>
 
         <View style={{ alignItems: 'center', gap: spacing.xs, marginBottom: spacing.lg }}>
-          <Avatar uri={session.user.avatarUrl} name={session.user.name} size={80} />
+          <EditableAvatar uri={session.user.avatarUrl} name={session.user.name} size={80} onChange={updateAvatar} />
           <Text style={[typography.h2, { color: colors.textPrimary }]}>{session.user.name}</Text>
         </View>
 
