@@ -13,12 +13,13 @@ import { DrinkLogCard } from '@/components/feed/DrinkLogCard';
 import { ParticipantRow } from '@/components/party/ParticipantRow';
 import { PartyStatusBadge } from '@/components/party/PartyStatusBadge';
 import { Button } from '@/components/ui/Button';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useAuth } from '@/context/AuthContext';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useParty } from '@/hooks/useParty';
 import { useUsersMap } from '@/hooks/useUsersMap';
-import { services } from '@/services';
+import { NotAuthorizedError, services } from '@/services';
 import { useTheme } from '@/theme';
 import type { ChallengeAssignment, DrinkLog, LeaderboardEntry } from '@/types';
 import { formatDateTime } from '@/utils/date';
@@ -40,6 +41,8 @@ export default function PartyDetailScreen() {
   const [finishing, setFinishing] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [challengeSettingsVisible, setChallengeSettingsVisible] = useState(false);
+  const [finishConfirmVisible, setFinishConfirmVisible] = useState(false);
+  const [leaveConfirmVisible, setLeaveConfirmVisible] = useState(false);
 
   if (!party) {
     return (
@@ -95,28 +98,37 @@ export default function PartyDetailScreen() {
     }
   };
 
+  const notifyError = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}\n\n${message}`);
+      return;
+    }
+    Alert.alert(title, message);
+  };
+
   const finishParty = async () => {
     if (!session) return;
     setFinishing(true);
     try {
       await services.parties.updateStatus(party.id, 'finished', session.user.id);
       await refetch();
+    } catch (e) {
+      notifyError(
+        'No pudimos terminar la fiesta',
+        e instanceof NotAuthorizedError
+          ? 'Solo el anfitrión puede terminar esta fiesta.'
+          : 'Algo salió mal. Intenta de nuevo.',
+      );
     } finally {
       setFinishing(false);
     }
   };
 
-  const handleFinishParty = () => {
-    const message = `¿Seguro que quieres terminar "${party.name}"? Ya no se podrán registrar más bebidas.`;
-    // Alert.alert has no visual implementation on web — fall back to window.confirm there.
-    if (Platform.OS === 'web') {
-      if (window.confirm(message)) finishParty();
-      return;
-    }
-    Alert.alert('Terminar fiesta', message, [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Terminar', style: 'destructive', onPress: finishParty },
-    ]);
+  const handleFinishParty = () => setFinishConfirmVisible(true);
+
+  const confirmFinishParty = () => {
+    setFinishConfirmVisible(false);
+    finishParty();
   };
 
   const leaveParty = async () => {
@@ -125,21 +137,23 @@ export default function PartyDetailScreen() {
     try {
       await services.parties.leave(party.id, session.user.id);
       router.replace('/(tabs)/parties');
+    } catch (e) {
+      notifyError(
+        'No pudimos sacarte de la fiesta',
+        e instanceof NotAuthorizedError
+          ? 'El anfitrión no puede salir de su propia fiesta — termínala en su lugar.'
+          : 'Algo salió mal. Intenta de nuevo.',
+      );
     } finally {
       setLeaving(false);
     }
   };
 
-  const handleLeaveParty = () => {
-    const message = `¿Seguro que quieres salir de "${party.name}"? Tendrás que volver a unirte con el código si cambias de opinión.`;
-    if (Platform.OS === 'web') {
-      if (window.confirm(message)) leaveParty();
-      return;
-    }
-    Alert.alert('Salir de la fiesta', message, [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Salir', style: 'destructive', onPress: leaveParty },
-    ]);
+  const handleLeaveParty = () => setLeaveConfirmVisible(true);
+
+  const confirmLeaveParty = () => {
+    setLeaveConfirmVisible(false);
+    leaveParty();
   };
 
   return (
@@ -280,6 +294,26 @@ export default function PartyDetailScreen() {
         onClose={() => setChallengeSettingsVisible(false)}
         partyId={party.id}
         onSaved={refetch}
+      />
+
+      <ConfirmDialog
+        visible={finishConfirmVisible}
+        title="Terminar fiesta"
+        message={`¿Seguro que quieres terminar "${party.name}"? Ya no se podrán registrar más bebidas.`}
+        confirmLabel="Terminar"
+        destructive
+        onConfirm={confirmFinishParty}
+        onCancel={() => setFinishConfirmVisible(false)}
+      />
+
+      <ConfirmDialog
+        visible={leaveConfirmVisible}
+        title="Salir de la fiesta"
+        message={`¿Seguro que quieres salir de "${party.name}"? Tendrás que volver a unirte con el código si cambias de opinión.`}
+        confirmLabel="Salir"
+        destructive
+        onConfirm={confirmLeaveParty}
+        onCancel={() => setLeaveConfirmVisible(false)}
       />
     </SafeAreaView>
   );

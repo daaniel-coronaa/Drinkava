@@ -5,7 +5,9 @@ import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/ui/Card';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useAuth } from '@/context/AuthContext';
+import { mockDb } from '@/services';
 import { useTheme, type ThemeMode } from '@/theme';
 
 function Row({ icon, label, onPress }: { icon: React.ComponentProps<typeof MaterialCommunityIcons>['name']; label: string; onPress: () => void }) {
@@ -24,6 +26,7 @@ export default function SettingsScreen() {
   const { session, signOut, updateProfile } = useAuth();
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [savingSubscription, setSavingSubscription] = useState(false);
+  const [resetConfirmVisible, setResetConfirmVisible] = useState(false);
 
   useEffect(() => {
     setHasActiveSubscription(!!session?.user.hasActiveSubscription);
@@ -32,6 +35,21 @@ export default function SettingsScreen() {
   const handleSignOut = async () => {
     await signOut();
     router.replace('/');
+  };
+
+  const resetLocalData = async () => {
+    await mockDb.reset();
+    // mockDb.reset() only clears the underlying storage — signOut() is what actually
+    // updates AuthContext's in-memory session, which nothing else here would refresh.
+    await signOut();
+    router.replace('/');
+  };
+
+  const handleResetData = () => setResetConfirmVisible(true);
+
+  const confirmResetData = () => {
+    setResetConfirmVisible(false);
+    resetLocalData();
   };
 
   const toggleSubscription = async (value: boolean) => {
@@ -97,7 +115,21 @@ export default function SettingsScreen() {
         <Pressable onPress={handleSignOut} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
           <Text style={[typography.bodyBold, { color: '#E5484D' }]}>Cerrar sesión</Text>
         </Pressable>
+
+        <Pressable onPress={handleResetData} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>Restablecer datos de la app</Text>
+        </Pressable>
       </View>
+
+      <ConfirmDialog
+        visible={resetConfirmVisible}
+        title="Restablecer datos de la app"
+        message="Esto borra todas las fiestas, bebidas y cuentas creadas en este dispositivo (incluida la tuya) y regresa la app a sus datos de ejemplo. No se puede deshacer."
+        confirmLabel="Restablecer"
+        destructive
+        onConfirm={confirmResetData}
+        onCancel={() => setResetConfirmVisible(false)}
+      />
     </SafeAreaView>
   );
 }
