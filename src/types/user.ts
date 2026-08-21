@@ -1,5 +1,5 @@
 // Spanish schema reference: users(id, nombre, foto, email, auth_provider, fecha_nacimiento)
-export type AuthProvider = 'google' | 'apple';
+export type AuthProvider = 'google' | 'apple' | 'email';
 
 export type User = {
   id: string;

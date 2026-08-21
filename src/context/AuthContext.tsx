@@ -1,14 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { services } from '@/services';
-import type { Session } from '@/services/interfaces/AuthService';
+import type { EmailCredentials, EmailRegistration, GoogleProfile, Session } from '@/services/interfaces/AuthService';
 import type { User } from '@/types';
 
 type AuthContextValue = {
   session: Session | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (profile: GoogleProfile) => Promise<void>;
   signInWithApple: () => Promise<void>;
+  registerWithEmail: (input: EmailRegistration) => Promise<void>;
+  signInWithEmail: (input: EmailCredentials) => Promise<void>;
   submitBirthDate: (birthDate: string) => Promise<void>;
   acceptTerms: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -30,13 +32,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const signInWithGoogle = useCallback(async () => {
-    const s = await services.auth.signInWithGoogle();
+  const signInWithGoogle = useCallback(async (profile: GoogleProfile) => {
+    const s = await services.auth.signInWithGoogle(profile);
     setSession(s);
   }, []);
 
   const signInWithApple = useCallback(async () => {
     const s = await services.auth.signInWithApple();
+    setSession(s);
+  }, []);
+
+  const registerWithEmail = useCallback(async (input: EmailRegistration) => {
+    const s = await services.auth.registerWithEmail(input);
+    setSession(s);
+  }, []);
+
+  const signInWithEmail = useCallback(async (input: EmailCredentials) => {
+    const s = await services.auth.signInWithEmail(input);
     setSession(s);
   }, []);
 
@@ -65,8 +77,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateProfile }),
-    [session, loading, signInWithGoogle, signInWithApple, submitBirthDate, acceptTerms, signOut, updateProfile],
+    () => ({
+      session,
+      loading,
+      signInWithGoogle,
+      signInWithApple,
+      registerWithEmail,
+      signInWithEmail,
+      submitBirthDate,
+      acceptTerms,
+      signOut,
+      updateProfile,
+    }),
+    [
+      session,
+      loading,
+      signInWithGoogle,
+      signInWithApple,
+      registerWithEmail,
+      signInWithEmail,
+      submitBirthDate,
+      acceptTerms,
+      signOut,
+      updateProfile,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

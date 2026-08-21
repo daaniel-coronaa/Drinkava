@@ -63,10 +63,36 @@ export default function PartyDetailScreen() {
     await refetch();
   };
 
-  const handleShare = () => {
-    Share.share({
-      message: `Únete a "${party.name}" en Drinkava con el código ${party.inviteCode} o este link: drinkava://party/join?code=${party.inviteCode}`,
-    });
+  const handleShare = async () => {
+    const link = `drinkava://party/join?code=${party.inviteCode}`;
+    const message = `Únete a "${party.name}" en Drinkava con el código ${party.inviteCode} o este link: ${link}`;
+
+    if (Platform.OS === 'web') {
+      // react-native-web's Share.share only works over navigator.share, which most
+      // desktop browsers don't implement — it silently rejects there. Fall back to
+      // copying the invite to the clipboard so "compartir" always does something.
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        try {
+          await navigator.share({ title: 'Drinkava', text: message, url: link });
+        } catch {
+          // user dismissed the native share sheet — nothing to do
+        }
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(message);
+        window.alert('Invitación copiada al portapapeles.');
+      } catch {
+        window.alert(`Código de invitación: ${party.inviteCode}`);
+      }
+      return;
+    }
+
+    try {
+      await Share.share({ message });
+    } catch {
+      Alert.alert('No pudimos compartir', `Código de invitación: ${party.inviteCode}`);
+    }
   };
 
   const finishParty = async () => {

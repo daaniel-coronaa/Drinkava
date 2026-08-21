@@ -19,6 +19,6 @@ export const services = {
   users: MockUserService,
 };
 
-export { AgeRestrictedError } from './mock/MockAuthService';
+export { AgeRestrictedError, EmailInUseError, InvalidCredentialsError } from './mock/MockAuthService';
 export { NotAuthorizedError } from './mock/MockPartyService';
 export { challengeCatalog, mockDb } from './mock/mockDb';

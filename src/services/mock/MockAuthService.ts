@@ -1,4 +1,8 @@
-import type { AuthService, Session } from '@/services/interfaces/AuthService';
+import * as Crypto from 'expo-crypto';
+
+import type { AuthService, EmailCredentials, EmailRegistration, GoogleProfile, Session } from '@/services/interfaces/AuthService';
+import type { User } from '@/types';
+import { generateId } from '@/utils/id';
 import { isAdult } from '@/utils/date';
 
 import { DEFAULT_DEMO_USER_ID, delay, mockDb } from './mockDb';
@@ -7,6 +11,35 @@ export class AgeRestrictedError extends Error {
   constructor() {
     super('AGE_RESTRICTED');
   }
+}
+
+export class EmailInUseError extends Error {
+  constructor() {
+    super('EMAIL_IN_USE');
+  }
+}
+
+export class InvalidCredentialsError extends Error {
+  constructor() {
+    super('INVALID_CREDENTIALS');
+  }
+}
+
+const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+// Mock-only password storage: SHA-256 of the raw password, no salt/pepper/KDF. Good
+// enough to avoid keeping plaintext around in this local-only prototype; nowhere near
+// what a real backend should use (bcrypt/argon2 + salt) once this ships for real.
+const hashPassword = (password: string) => Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, password);
+
+function startSessionFor(user: User): Session {
+  const onboarding = mockDb.get('onboardingByUser')[user.id];
+  mockDb.set('session', {
+    userId: user.id,
+    ageVerified: onboarding?.ageVerified ?? false,
+    tosAccepted: onboarding?.tosAccepted ?? false,
+  });
+  return buildSession()!;
 }
 
 function buildSession(): Session | null {
@@ -22,34 +55,84 @@ function updateOnboarding(userId: string, patch: { ageVerified?: boolean; tosAcc
   mockDb.set('onboardingByUser', { ...mockDb.get('onboardingByUser'), [userId]: { ...existing, ...patch } });
 }
 
-// SEAM: replace mocked delay + fake session with expo-auth-session (Google) /
-// expo-apple-authentication (Apple), backed by Supabase Auth.
+// SEAM: signInWithGoogle already takes a real Google profile (see useGoogleSignIn) —
+// what's left mock here is find-or-create + local session bookkeeping, which is what
+// a real backend (e.g. Supabase Auth) would take over. signInWithApple still needs a
+// real expo-apple-authentication swap (native-only, out of scope for the web preview).
 export const MockAuthService: AuthService = {
   async getSession() {
     await mockDb.ensureLoaded();
     return buildSession();
   },
 
-  async signInWithGoogle() {
+  async signInWithGoogle(profile: GoogleProfile) {
     await delay();
-    const onboarding = mockDb.get('onboardingByUser')[DEFAULT_DEMO_USER_ID];
-    mockDb.set('session', {
-      userId: DEFAULT_DEMO_USER_ID,
-      ageVerified: onboarding?.ageVerified ?? false,
-      tosAccepted: onboarding?.tosAccepted ?? false,
-    });
-    return buildSession()!;
+    await mockDb.ensureLoaded();
+    const email = normalizeEmail(profile.email);
+    const users = mockDb.get('users');
+    const existing = users.find((u) => normalizeEmail(u.email) === email);
+
+    let user: User;
+    if (existing) {
+      // Keep name/photo in sync with the real Google account on every sign-in.
+      user = { ...existing, name: profile.name, avatarUrl: profile.avatarUrl ?? existing.avatarUrl };
+      mockDb.set('users', users.map((u) => (u.id === existing.id ? user : u)));
+    } else {
+      user = {
+        id: generateId(),
+        name: profile.name,
+        email: profile.email,
+        authProvider: 'google',
+        birthDate: '',
+        createdAt: new Date().toISOString(),
+        avatarUrl: profile.avatarUrl,
+        hasActiveSubscription: false,
+      };
+      mockDb.set('users', [...users, user]);
+    }
+    return startSessionFor(user);
   },
 
   async signInWithApple() {
     await delay();
-    const onboarding = mockDb.get('onboardingByUser')[DEFAULT_DEMO_USER_ID];
-    mockDb.set('session', {
-      userId: DEFAULT_DEMO_USER_ID,
-      ageVerified: onboarding?.ageVerified ?? false,
-      tosAccepted: onboarding?.tosAccepted ?? false,
-    });
-    return buildSession()!;
+    await mockDb.ensureLoaded();
+    const user = mockDb.get('users').find((u) => u.id === DEFAULT_DEMO_USER_ID)!;
+    return startSessionFor(user);
+  },
+
+  async registerWithEmail({ email, password, name }: EmailRegistration) {
+    await delay();
+    await mockDb.ensureLoaded();
+    const normalized = normalizeEmail(email);
+    const users = mockDb.get('users');
+    if (users.some((u) => normalizeEmail(u.email) === normalized)) {
+      throw new EmailInUseError();
+    }
+
+    const user: User = {
+      id: generateId(),
+      name: name.trim(),
+      email: email.trim(),
+      authProvider: 'email',
+      birthDate: '',
+      createdAt: new Date().toISOString(),
+      hasActiveSubscription: false,
+    };
+    mockDb.set('users', [...users, user]);
+    mockDb.set('passwordHashByEmail', { ...mockDb.get('passwordHashByEmail'), [normalized]: await hashPassword(password) });
+    return startSessionFor(user);
+  },
+
+  async signInWithEmail({ email, password }: EmailCredentials) {
+    await delay();
+    await mockDb.ensureLoaded();
+    const normalized = normalizeEmail(email);
+    const user = mockDb.get('users').find((u) => normalizeEmail(u.email) === normalized);
+    const storedHash = mockDb.get('passwordHashByEmail')[normalized];
+    if (!user || !storedHash || storedHash !== (await hashPassword(password))) {
+      throw new InvalidCredentialsError();
+    }
+    return startSessionFor(user);
   },
 
   async submitBirthDate(birthDate: string) {

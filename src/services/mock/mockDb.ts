@@ -31,6 +31,10 @@ type Snapshot = {
   // Onboarding (age verification / ToS acceptance) persists per user across sign-outs,
   // so a returning user isn't sent through the age-gate/ToS screens every sign-in.
   onboardingByUser: Record<string, OnboardingRecord>;
+  // Password hashes for email/password accounts, keyed by lowercased email. Kept out of
+  // the User type so nothing that spreads a User (profile cards, member lists, etc.) can
+  // ever leak it. Mock-only storage — see AuthService's SEAM comment.
+  passwordHashByEmail: Record<string, string>;
 };
 
 function freshSnapshot(): Snapshot {
@@ -45,6 +49,7 @@ function freshSnapshot(): Snapshot {
     challengeAssignments: [...seedChallengeAssignments],
     session: { userId: null, ageVerified: false, tosAccepted: false },
     onboardingByUser: {},
+    passwordHashByEmail: {},
   };
 }
 
