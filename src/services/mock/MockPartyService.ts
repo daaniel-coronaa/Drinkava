@@ -2,7 +2,7 @@ import type { PartyService } from '@/services/interfaces/PartyService';
 import type { CreatePartyInput, Party, PartyStatus } from '@/types';
 import { generateId, generateInviteCode } from '@/utils/id';
 
-import { DEFAULT_DEMO_USER_ID, delay, mockDb } from './mockDb';
+import { delay, mockDb } from './mockDb';
 
 export class NotAuthorizedError extends Error {
   constructor() {
@@ -40,14 +40,14 @@ export const MockPartyService: PartyService = {
     return mockDb.get('parties').find((p) => p.id === id) ?? null;
   },
 
-  async create(input: CreatePartyInput) {
+  async create(input: CreatePartyInput, hostUserId: string) {
     await mockDb.ensureLoaded();
     await delay();
     const party: Party = {
       id: generateId(),
       name: input.name,
       date: input.date,
-      hostId: DEFAULT_DEMO_USER_ID,
+      hostId: hostUserId,
       location: input.location,
       coverImageUrl: input.coverImageUrl,
       status: 'active',
@@ -61,24 +61,22 @@ export const MockPartyService: PartyService = {
     mockDb.set('parties', [...mockDb.get('parties'), party]);
     mockDb.set('partyMembers', [
       ...mockDb.get('partyMembers'),
-      { partyId: party.id, userId: DEFAULT_DEMO_USER_ID, joinedAt: new Date().toISOString(), role: 'admin' },
+      { partyId: party.id, userId: hostUserId, joinedAt: new Date().toISOString(), role: 'admin' },
     ]);
     return party;
   },
 
-  async join(inviteCode: string) {
+  async join(inviteCode: string, userId: string) {
     await mockDb.ensureLoaded();
     await delay();
     const party = mockDb.get('parties').find((p) => p.inviteCode.toUpperCase() === inviteCode.trim().toUpperCase());
     if (!party) throw new Error('PARTY_NOT_FOUND');
 
-    const already = mockDb
-      .get('partyMembers')
-      .some((m) => m.partyId === party.id && m.userId === DEFAULT_DEMO_USER_ID);
+    const already = mockDb.get('partyMembers').some((m) => m.partyId === party.id && m.userId === userId);
     if (!already) {
       mockDb.set('partyMembers', [
         ...mockDb.get('partyMembers'),
-        { partyId: party.id, userId: DEFAULT_DEMO_USER_ID, joinedAt: new Date().toISOString(), role: 'guest' },
+        { partyId: party.id, userId, joinedAt: new Date().toISOString(), role: 'guest' },
       ]);
     }
     return party;

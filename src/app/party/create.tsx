@@ -5,11 +5,13 @@ import { ScrollView, Text, TextInput, View } from 'react-native';
 import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { Button } from '@/components/ui/Button';
 import { DateTimePickerField } from '@/components/ui/DateTimePickerField';
+import { useAuth } from '@/context/AuthContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
 export default function CreatePartyScreen() {
   const { colors, spacing, radius, typography } = useTheme();
+  const { session } = useAuth();
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
   const [date, setDate] = useState(new Date());
@@ -17,15 +19,18 @@ export default function CreatePartyScreen() {
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = async () => {
-    if (!name.trim()) return;
+    if (!name.trim() || !session) return;
     setSubmitting(true);
     try {
-      const party = await services.parties.create({
-        name: name.trim(),
-        date: date.toISOString(),
-        location: location.trim() || undefined,
-        coverImageUrl,
-      });
+      const party = await services.parties.create(
+        {
+          name: name.trim(),
+          date: date.toISOString(),
+          location: location.trim() || undefined,
+          coverImageUrl,
+        },
+        session.user.id,
+      );
       router.replace(`/(tabs)/parties/${party.id}`);
     } finally {
       setSubmitting(false);

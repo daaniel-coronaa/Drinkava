@@ -4,8 +4,8 @@ export interface PartyService {
   list(filter?: PartyStatus): Promise<Party[]>;
   listForUser(userId: string): Promise<Party[]>;
   get(id: string): Promise<Party | null>;
-  create(input: CreatePartyInput): Promise<Party>;
-  join(inviteCode: string): Promise<Party>;
+  create(input: CreatePartyInput, hostUserId: string): Promise<Party>;
+  join(inviteCode: string, userId: string): Promise<Party>;
   // Only a member with role 'admin' (the host, by default) may change party status —
   // throws NotAuthorizedError otherwise.
   updateStatus(id: string, status: PartyStatus, requestingUserId: string): Promise<Party>;

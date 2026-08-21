@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/context/AuthContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
@@ -11,16 +12,17 @@ import { useTheme } from '@/theme';
 export default function JoinPartyScreen() {
   const { code: codeParam } = useLocalSearchParams<{ code?: string }>();
   const { colors, spacing, radius, typography } = useTheme();
+  const { session } = useAuth();
   const [code, setCode] = useState(codeParam?.toUpperCase() ?? '');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleJoin = async () => {
-    if (!code.trim()) return;
+    if (!code.trim() || !session) return;
     setSubmitting(true);
     setError(null);
     try {
-      const party = await services.parties.join(code.trim());
+      const party = await services.parties.join(code.trim(), session.user.id);
       router.replace(`/(tabs)/parties/${party.id}`);
     } catch {
       setError('No encontramos una fiesta con ese código.');
