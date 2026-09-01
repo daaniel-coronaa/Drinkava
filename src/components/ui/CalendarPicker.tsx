@@ -2,6 +2,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { useTranslation } from '@/context/SettingsContext';
+import { monthNames, weekdayShortNames } from '@/i18n';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -10,12 +12,6 @@ type Props = {
   minimumDate?: Date;
   maximumDate?: Date;
 };
-
-const WEEKDAY_LABELS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-const MONTH_LABELS = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-];
 
 function isSameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -41,6 +37,9 @@ function buildWeeks(year: number, month: number): (Date | null)[][] {
 // OS's native date picker chrome, so the look is consistent and on-brand everywhere.
 export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
+  const { language } = useTranslation();
+  const monthLabels = monthNames(language);
+  const weekdayLabels = weekdayShortNames(language);
   const [viewDate, setViewDate] = useState(new Date(value.getFullYear(), value.getMonth(), 1));
   const today = new Date();
 
@@ -65,7 +64,7 @@ export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Pr
             { color: colors.textPrimary, flex: 1, textAlign: 'center', textTransform: 'capitalize' },
           ]}
         >
-          {MONTH_LABELS[viewDate.getMonth()]} {viewDate.getFullYear()}
+          {monthLabels[viewDate.getMonth()]} {viewDate.getFullYear()}
         </Text>
         <Pressable
           onPress={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))}
@@ -76,7 +75,7 @@ export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Pr
       </View>
 
       <View style={{ flexDirection: 'row' }}>
-        {WEEKDAY_LABELS.map((label, i) => (
+        {weekdayLabels.map((label, i) => (
           <View key={i} style={{ flex: 1, alignItems: 'center', paddingVertical: spacing.xs }}>
             <Text style={[typography.tiny, { color: colors.textSecondary }]}>{label}</Text>
           </View>

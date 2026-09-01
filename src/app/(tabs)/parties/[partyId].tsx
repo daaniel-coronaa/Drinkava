@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useParty } from '@/hooks/useParty';
 import { useUsersMap } from '@/hooks/useUsersMap';
@@ -32,6 +33,7 @@ type FeedItem =
 export default function PartyDetailScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>();
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
   const { party, members, memberUsers, logs, challengeAssignments, loading, refetch } = useParty(partyId);
   const { usersById } = useUsersMap();
@@ -47,7 +49,7 @@ export default function PartyDetailScreen() {
   if (!party) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-        {!loading && <EmptyState icon="alert-circle-outline" title="Fiesta no encontrada" />}
+        {!loading && <EmptyState icon="alert-circle-outline" title={t('partyDetail.notFound')} />}
       </SafeAreaView>
     );
   }
@@ -68,7 +70,7 @@ export default function PartyDetailScreen() {
 
   const handleShare = async () => {
     const link = `drinkava://party/join?code=${party.inviteCode}`;
-    const message = `Únete a "${party.name}" en Drinkava con el código ${party.inviteCode} o este link: ${link}`;
+    const message = `${t('partyDetail.inviteRow', { code: party.inviteCode })} · ${link}`;
 
     if (Platform.OS === 'web') {
       // react-native-web's Share.share only works over navigator.share, which most
@@ -84,9 +86,9 @@ export default function PartyDetailScreen() {
       }
       try {
         await navigator.clipboard.writeText(message);
-        window.alert('Invitación copiada al portapapeles.');
+        window.alert(t('partyDetail.shareCopied'));
       } catch {
-        window.alert(`Código de invitación: ${party.inviteCode}`);
+        window.alert(t('partyDetail.shareCodeFallback', { code: party.inviteCode }));
       }
       return;
     }
@@ -94,7 +96,7 @@ export default function PartyDetailScreen() {
     try {
       await Share.share({ message });
     } catch {
-      Alert.alert('No pudimos compartir', `Código de invitación: ${party.inviteCode}`);
+      Alert.alert(t('partyDetail.shareErrorTitle'), t('partyDetail.shareCodeFallback', { code: party.inviteCode }));
     }
   };
 
@@ -114,10 +116,8 @@ export default function PartyDetailScreen() {
       await refetch();
     } catch (e) {
       notifyError(
-        'No pudimos terminar la fiesta',
-        e instanceof NotAuthorizedError
-          ? 'Solo el anfitrión puede terminar esta fiesta.'
-          : 'Algo salió mal. Intenta de nuevo.',
+        t('partyDetail.finishErrorTitle'),
+        e instanceof NotAuthorizedError ? t('partyDetail.finishErrorNotAuthorized') : t('common.genericError'),
       );
     } finally {
       setFinishing(false);
@@ -139,10 +139,8 @@ export default function PartyDetailScreen() {
       router.replace('/(tabs)/parties');
     } catch (e) {
       notifyError(
-        'No pudimos sacarte de la fiesta',
-        e instanceof NotAuthorizedError
-          ? 'El anfitrión no puede salir de su propia fiesta — termínala en su lugar.'
-          : 'Algo salió mal. Intenta de nuevo.',
+        t('partyDetail.leaveErrorTitle'),
+        e instanceof NotAuthorizedError ? t('partyDetail.leaveErrorNotAuthorized') : t('common.genericError'),
       );
     } finally {
       setLeaving(false);
@@ -171,25 +169,25 @@ export default function PartyDetailScreen() {
         <Pressable onPress={handleShare} style={[styles.row, { marginTop: spacing.xs }]}>
           <MaterialCommunityIcons name="share-variant-outline" size={16} color={colors.accentPrimary} />
           <Text style={[typography.caption, { color: colors.accentPrimary, marginLeft: 6 }]}>
-            Código {party.inviteCode} · Compartir invitación
+            {t('partyDetail.inviteRow', { code: party.inviteCode })}
           </Text>
         </Pressable>
 
         {party.status === 'active' ? (
           <Button
-            label="Registrar bebida en esta fiesta"
+            label={t('partyDetail.registerButton')}
             onPress={() => router.push({ pathname: '/drink-log/new', params: { partyId: party.id } })}
             style={{ marginTop: spacing.sm }}
           />
         ) : (
           <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>
-            Esta fiesta ya terminó — no se pueden registrar más bebidas.
+            {t('partyDetail.partyEndedNote')}
           </Text>
         )}
 
         {isHost && party.status === 'active' ? (
           <Button
-            label="Configurar retos"
+            label={t('partyDetail.configureButton')}
             onPress={() => setChallengeSettingsVisible(true)}
             variant="secondary"
             style={{ marginTop: spacing.xs }}
@@ -198,7 +196,7 @@ export default function PartyDetailScreen() {
 
         {isAdmin && party.status === 'active' ? (
           <Button
-            label="Terminar fiesta"
+            label={t('partyDetail.finishButton')}
             onPress={handleFinishParty}
             loading={finishing}
             variant="secondary"
@@ -208,7 +206,7 @@ export default function PartyDetailScreen() {
 
         {!isAdmin && myRole ? (
           <Button
-            label="Salir de la fiesta"
+            label={t('partyDetail.leaveButton')}
             onPress={handleLeaveParty}
             loading={leaving}
             variant="secondary"
@@ -220,9 +218,9 @@ export default function PartyDetailScreen() {
       <View style={[styles.segmented, { marginHorizontal: spacing.md, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
         {(
           [
-            ['feed', 'Feed'],
-            ['members', 'Miembros'],
-            ['leaderboard', 'Ranking'],
+            ['feed', t('partyDetail.tabFeed')],
+            ['members', t('partyDetail.tabMembers')],
+            ['leaderboard', t('partyDetail.tabRanking')],
           ] as [Section, string][]
         ).map(([key, label]) => (
           <Pressable
@@ -242,7 +240,7 @@ export default function PartyDetailScreen() {
           data={feedItems}
           keyExtractor={(item) => (item.type === 'drink' ? item.log.id : item.assignment.id)}
           ListHeaderComponent={<DisclaimerBanner />}
-          ListEmptyComponent={<EmptyState icon="glass-cocktail" title="Nadie ha registrado nada aún" />}
+          ListEmptyComponent={<EmptyState icon="glass-cocktail" title={t('partyDetail.emptyFeed')} />}
           renderItem={({ item }) =>
             item.type === 'drink' ? (
               <DrinkLogCard drinkLog={item.log} usersById={usersById} />
@@ -275,7 +273,7 @@ export default function PartyDetailScreen() {
         <FlatList
           data={entries}
           keyExtractor={(e) => e.userId}
-          ListEmptyComponent={<EmptyState icon="trophy-outline" title="Aún no hay ranking" />}
+          ListEmptyComponent={<EmptyState icon="trophy-outline" title={t('partyDetail.emptyRanking')} />}
           renderItem={({ item }) => (
             <LeaderboardRow entry={item} user={usersById[item.userId]} onPress={() => setSelectedEntry(item)} />
           )}
@@ -298,9 +296,9 @@ export default function PartyDetailScreen() {
 
       <ConfirmDialog
         visible={finishConfirmVisible}
-        title="Terminar fiesta"
-        message={`¿Seguro que quieres terminar "${party.name}"? Ya no se podrán registrar más bebidas.`}
-        confirmLabel="Terminar"
+        title={t('partyDetail.finishConfirmTitle')}
+        message={t('partyDetail.finishConfirmMessage', { name: party.name })}
+        confirmLabel={t('partyDetail.finishConfirmConfirm')}
         destructive
         onConfirm={confirmFinishParty}
         onCancel={() => setFinishConfirmVisible(false)}
@@ -308,9 +306,9 @@ export default function PartyDetailScreen() {
 
       <ConfirmDialog
         visible={leaveConfirmVisible}
-        title="Salir de la fiesta"
-        message={`¿Seguro que quieres salir de "${party.name}"? Tendrás que volver a unirte con el código si cambias de opinión.`}
-        confirmLabel="Salir"
+        title={t('partyDetail.leaveConfirmTitle')}
+        message={t('partyDetail.leaveConfirmMessage', { name: party.name })}
+        confirmLabel={t('partyDetail.leaveConfirmConfirm')}
         destructive
         onConfirm={confirmLeaveParty}
         onCancel={() => setLeaveConfirmVisible(false)}

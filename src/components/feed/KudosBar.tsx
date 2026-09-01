@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
@@ -13,6 +14,7 @@ type Props = {
 
 export function KudosBar({ drinkLogId, onOpenComments }: Props) {
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
   const [kudosUserIds, setKudosUserIds] = useState<string[]>([]);
   const [commentsCount, setCommentsCount] = useState(0);
@@ -48,13 +50,13 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
           color={given ? colors.accentPrimary : colors.textSecondary}
         />
         <Text style={[typography.caption, { color: given ? colors.accentPrimary : colors.textSecondary, marginLeft: 6 }]}>
-          {kudosUserIds.length > 0 ? kudosUserIds.length : 'Kudos'}
+          {kudosUserIds.length > 0 ? kudosUserIds.length : t('feed.kudosLabel')}
         </Text>
       </Pressable>
       <Pressable onPress={onOpenComments} style={styles.row}>
         <MaterialCommunityIcons name="comment-outline" size={18} color={colors.textSecondary} />
         <Text style={[typography.caption, { color: colors.textSecondary, marginLeft: 6 }]}>
-          {commentsCount > 0 ? commentsCount : 'Comentar'}
+          {commentsCount > 0 ? commentsCount : t('feed.commentLabel')}
         </Text>
       </Pressable>
     </View>

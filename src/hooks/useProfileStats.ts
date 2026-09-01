@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { services } from '@/services';
-import type { DrinkLog, LeaderboardEntry, Party } from '@/types';
-import { drinkTypeLabels } from '@/utils/drinkType';
+import type { DrinkLog, DrinkType, LeaderboardEntry, Party } from '@/types';
 
 export function useProfileStats(userId: string | undefined) {
   const [logs, setLogs] = useState<DrinkLog[]>([]);
@@ -28,12 +27,12 @@ export function useProfileStats(userId: string | undefined) {
     refetch();
   }, [refetch]);
 
-  const favoriteType = (() => {
+  const favoriteType: DrinkType | null = (() => {
     if (logs.length === 0) return null;
-    const counts = new Map<string, number>();
+    const counts = new Map<DrinkType, number>();
     logs.forEach((l) => counts.set(l.drinkType, (counts.get(l.drinkType) ?? 0) + l.quantity));
     const [top] = [...counts.entries()].sort((a, b) => b[1] - a[1]);
-    return top ? drinkTypeLabels[top[0] as keyof typeof drinkTypeLabels] : null;
+    return top ? top[0] : null;
   })();
 
   const totalDrinks = logs.reduce((sum, l) => sum + l.quantity, 0);

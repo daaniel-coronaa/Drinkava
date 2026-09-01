@@ -1,10 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 
 export function DisclaimerBanner() {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   return (
     <View
       style={[
@@ -20,9 +22,7 @@ export function DisclaimerBanner() {
       ]}
     >
       <MaterialCommunityIcons name="alert-circle-outline" size={16} color={colors.accentWarning} />
-      <Text style={[typography.tiny, { color: colors.textSecondary, flex: 1 }]}>
-        Bebe con responsabilidad. Debes ser mayor de edad.
-      </Text>
+      <Text style={[typography.tiny, { color: colors.textSecondary, flex: 1 }]}>{t('common.disclaimerBanner')}</Text>
     </View>
   );
 }

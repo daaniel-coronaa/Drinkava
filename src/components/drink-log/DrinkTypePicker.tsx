@@ -1,9 +1,10 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { DrinkType } from '@/types';
-import { drinkTypeIcons, drinkTypeLabels } from '@/utils/drinkType';
+import { drinkTypeIcons } from '@/utils/drinkType';
 
 const TYPES: DrinkType[] = ['beer', 'wine', 'cocktail', 'shot', 'other'];
 
@@ -14,6 +15,7 @@ type Props = {
 
 export function DrinkTypePicker({ value, onChange }: Props) {
   const { colors, spacing, radius, typography, drinkTypeColors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.wrap, { gap: spacing.sm }]}>
@@ -36,7 +38,7 @@ export function DrinkTypePicker({ value, onChange }: Props) {
           >
             <MaterialCommunityIcons name={drinkTypeIcons[type]} size={24} color={active ? accent : colors.textSecondary} />
             <Text style={[typography.caption, { color: active ? accent : colors.textSecondary, marginTop: 4 }]}>
-              {drinkTypeLabels[type]}
+              {t(`drinkTypes.${type}`)}
             </Text>
           </Pressable>
         );

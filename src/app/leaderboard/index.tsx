@@ -6,6 +6,7 @@ import { LeaderboardRow } from '@/components/leaderboard/LeaderboardRow';
 import { ScoreBreakdownSheet } from '@/components/leaderboard/ScoreBreakdownSheet';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
 import { useUsersMap } from '@/hooks/useUsersMap';
 import { useTheme } from '@/theme';
@@ -13,6 +14,7 @@ import type { LeaderboardEntry } from '@/types';
 
 export default function GlobalLeaderboardScreen() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
   const { entries, loading, refetch } = useLeaderboard(session ? { userId: session.user.id } : null);
   const { usersById } = useUsersMap();
@@ -24,7 +26,7 @@ export default function GlobalLeaderboardScreen() {
         data={entries}
         keyExtractor={(e) => e.userId}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={colors.accentPrimary} />}
-        ListEmptyComponent={!loading ? <EmptyState icon="trophy-outline" title="Aún no hay ranking" /> : null}
+        ListEmptyComponent={!loading ? <EmptyState icon="trophy-outline" title={t('leaderboard.emptyTitle')} /> : null}
         renderItem={({ item }) => (
           <LeaderboardRow entry={item} user={usersById[item.userId]} onPress={() => setSelectedEntry(item)} />
         )}

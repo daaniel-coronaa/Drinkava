@@ -4,6 +4,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
 import { Button } from '@/components/ui/Button';
 import { CalendarPicker } from '@/components/ui/CalendarPicker';
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import { formatDate, formatDateTime } from '@/utils/date';
 
@@ -23,6 +24,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 // relying on each platform's differently-styled (and, on web, broken) native picker.
 export function DateTimePickerField({ value, onChange, mode, maximumDate, minimumDate }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -71,7 +73,7 @@ export function DateTimePickerField({ value, onChange, mode, maximumDate, minimu
         >
           <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
             <Text style={[typography.h3, { color: colors.textPrimary, marginBottom: spacing.md }]}>
-              {mode === 'date' ? 'Selecciona una fecha' : 'Selecciona fecha y hora'}
+              {mode === 'date' ? t('common.selectDate') : t('common.selectDateTime')}
             </Text>
 
             <CalendarPicker value={draft} onChange={setDraft} minimumDate={minimumDate} maximumDate={maximumDate} />
@@ -84,7 +86,7 @@ export function DateTimePickerField({ value, onChange, mode, maximumDate, minimu
               </View>
             )}
 
-            <Button label="Listo" onPress={confirm} style={{ marginTop: spacing.lg }} />
+            <Button label={t('common.done')} onPress={confirm} style={{ marginTop: spacing.lg }} />
           </ScrollView>
         </View>
       </Modal>

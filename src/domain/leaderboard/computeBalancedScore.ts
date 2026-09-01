@@ -1,4 +1,4 @@
-import type { ScoreBreakdownItem } from '@/types';
+import type { ScoreBreakdownItem, ScoreFactorId } from '@/types';
 
 // Product/compliance decision: ranking must NOT be a pure "who drank the most" contest
 // (App Store / Play Store are strict about alcohol apps incentivizing excess). There's no
@@ -14,14 +14,16 @@ const WEIGHTS = {
 } as const;
 
 // UI-facing description of the formula above — used by the "how scoring works" table
-// on the profile screen. Keep this in sync with the weights/logic above.
-export const SCORE_FACTORS: { label: string; points: string; description: string }[] = [
-  { label: 'Bebidas registradas', points: `+${WEIGHTS.drinkCount} c/u`, description: 'Cuenta, pero no es el factor principal — no hay límite de registros.' },
-  { label: 'Variedad probada', points: `+${WEIGHTS.variety} c/u`, description: 'Cada tipo de bebida distinto que probaste. El factor con más peso.' },
-  { label: 'Kudos recibidos', points: `+${WEIGHTS.kudos} c/u`, description: 'Reconocimiento social de tus amigos en tus registros.' },
-  { label: 'Fiestas asistidas', points: `+${WEIGHTS.partiesAttended} c/u`, description: 'Asistencia constante a fiestas (solo ranking global).' },
-  { label: 'Comentarios recibidos', points: `+${WEIGHTS.comments} c/u`, description: 'Cada comentario que te dejan en un registro.' },
-  { label: 'Retos validados', points: 'según el reto', description: 'Puntos del reto, sumados solo cuando el anfitrión valida que se cumplió.' },
+// on the profile screen. `pointsPerUnit` is null for factors with no fixed per-unit
+// value (challengePoints varies per challenge) — the UI shows a different label for
+// those. Translated by factorId in ScoringTable/ScoreBreakdownSheet (src/i18n).
+export const SCORE_FACTORS: { factorId: ScoreFactorId; pointsPerUnit: number | null }[] = [
+  { factorId: 'drinkCount', pointsPerUnit: WEIGHTS.drinkCount },
+  { factorId: 'variety', pointsPerUnit: WEIGHTS.variety },
+  { factorId: 'kudos', pointsPerUnit: WEIGHTS.kudos },
+  { factorId: 'partiesAttended', pointsPerUnit: WEIGHTS.partiesAttended },
+  { factorId: 'comments', pointsPerUnit: WEIGHTS.comments },
+  { factorId: 'challengePoints', pointsPerUnit: null },
 ];
 
 export type BalancedScoreInput = {
@@ -40,12 +42,12 @@ export type BalancedScoreResult = {
 
 export function computeBalancedScore(stats: BalancedScoreInput): BalancedScoreResult {
   const breakdown: ScoreBreakdownItem[] = [
-    { label: 'Bebidas registradas', contribution: stats.drinkCount * WEIGHTS.drinkCount },
-    { label: 'Variedad probada', contribution: stats.uniqueTypes * WEIGHTS.variety },
-    { label: 'Kudos recibidos', contribution: stats.kudosReceived * WEIGHTS.kudos },
-    { label: 'Fiestas asistidas', contribution: stats.partiesAttended * WEIGHTS.partiesAttended },
-    { label: 'Comentarios recibidos', contribution: stats.commentsReceived * WEIGHTS.comments },
-    { label: 'Retos validados', contribution: stats.challengePoints * WEIGHTS.challengePoints },
+    { factorId: 'drinkCount', contribution: stats.drinkCount * WEIGHTS.drinkCount },
+    { factorId: 'variety', contribution: stats.uniqueTypes * WEIGHTS.variety },
+    { factorId: 'kudos', contribution: stats.kudosReceived * WEIGHTS.kudos },
+    { factorId: 'partiesAttended', contribution: stats.partiesAttended * WEIGHTS.partiesAttended },
+    { factorId: 'comments', contribution: stats.commentsReceived * WEIGHTS.comments },
+    { factorId: 'challengePoints', contribution: stats.challengePoints * WEIGHTS.challengePoints },
   ];
 
   const score = Math.max(0, Math.round(breakdown.reduce((sum, item) => sum + item.contribution, 0)));

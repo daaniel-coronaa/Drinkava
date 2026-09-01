@@ -3,6 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Avatar } from '@/components/ui/Avatar';
 import { Chip } from '@/components/ui/Chip';
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { PartyMemberRole, User } from '@/types';
 import { timeAgo } from '@/utils/date';
@@ -15,6 +16,7 @@ type Props = {
 
 export function ParticipantRow({ user, joinedAt, role }: Props) {
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
   return (
     <Pressable
       onPress={() => router.push(`/(tabs)/profile/${user.id}`)}
@@ -23,10 +25,10 @@ export function ParticipantRow({ user, joinedAt, role }: Props) {
       <Avatar uri={user.avatarUrl} name={user.name} size={36} />
       <View style={{ flex: 1 }}>
         <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{user.name}</Text>
-        <Text style={[typography.tiny, { color: colors.textSecondary }]}>Se unió {timeAgo(joinedAt)}</Text>
+        <Text style={[typography.tiny, { color: colors.textSecondary }]}>{t('partyDetail.joinedAgo', { time: timeAgo(joinedAt) })}</Text>
       </View>
       <Chip
-        label={role === 'admin' ? 'Administrador' : 'Invitado'}
+        label={role === 'admin' ? t('partyDetail.roleAdmin') : t('partyDetail.roleGuest')}
         color={role === 'admin' ? colors.accentPrimary : undefined}
         tone={role === 'admin' ? 'accent' : 'neutral'}
       />

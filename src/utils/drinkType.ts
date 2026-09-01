@@ -2,14 +2,6 @@ import type { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import type { DrinkType } from '@/types';
 
-export const drinkTypeLabels: Record<DrinkType, string> = {
-  shot: 'Shot',
-  cocktail: 'Cóctel',
-  beer: 'Cerveza',
-  wine: 'Vino',
-  other: 'Otro',
-};
-
 export const drinkTypeIcons: Record<DrinkType, React.ComponentProps<typeof MaterialCommunityIcons>['name']> = {
   shot: 'bottle-tonic-outline',
   cocktail: 'glass-cocktail',
@@ -18,7 +10,9 @@ export const drinkTypeIcons: Record<DrinkType, React.ComponentProps<typeof Mater
   other: 'cup',
 };
 
-export function drinkLabel(drinkType: DrinkType, customLabel?: string) {
+// `typeLabel` is the already-translated label for `drinkType` (see drinkTypes.* in
+// src/i18n) — kept as a plain param since this isn't a component and can't call useTranslation().
+export function drinkLabel(drinkType: DrinkType, typeLabel: string, customLabel?: string) {
   if (drinkType === 'other' && customLabel) return customLabel;
-  return customLabel ? `${drinkTypeLabels[drinkType]} · ${customLabel}` : drinkTypeLabels[drinkType];
+  return customLabel ? `${typeLabel} · ${customLabel}` : typeLabel;
 }

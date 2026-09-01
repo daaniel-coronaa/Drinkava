@@ -6,11 +6,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { DateTimePickerField } from '@/components/ui/DateTimePickerField';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { AgeRestrictedError } from '@/services';
 import { useTheme } from '@/theme';
 
 export default function AgeGateScreen() {
   const { colors, spacing, typography, radius } = useTheme();
+  const { t } = useTranslation();
   const { submitBirthDate } = useAuth();
   const [date, setDate] = useState(new Date(2000, 0, 1));
   const [error, setError] = useState<string | null>(null);
@@ -24,9 +26,9 @@ export default function AgeGateScreen() {
       router.replace('/');
     } catch (e) {
       if (e instanceof AgeRestrictedError) {
-        setError('Debes tener 18 años o más para usar Drinkava.');
+        setError(t('auth.ageGate.errorUnderage'));
       } else {
-        setError('Algo salió mal. Intenta de nuevo.');
+        setError(t('auth.ageGate.errorGeneric'));
       }
     } finally {
       setLoading(false);
@@ -36,10 +38,8 @@ export default function AgeGateScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background, padding: spacing.lg }]}>
       <View style={{ gap: spacing.sm, marginTop: spacing.xl }}>
-        <Text style={[typography.h1, { color: colors.textPrimary }]}>¿Cuándo naciste?</Text>
-        <Text style={[typography.body, { color: colors.textSecondary }]}>
-          Necesitamos verificar tu edad. Drinkava es solo para mayores de 18 años.
-        </Text>
+        <Text style={[typography.h1, { color: colors.textPrimary }]}>{t('auth.ageGate.title')}</Text>
+        <Text style={[typography.body, { color: colors.textSecondary }]}>{t('auth.ageGate.subtitle')}</Text>
       </View>
 
       <View style={{ marginTop: spacing.xl, alignItems: 'center', width: '100%' }}>
@@ -60,7 +60,7 @@ export default function AgeGateScreen() {
       ) : null}
 
       <View style={{ flex: 1 }} />
-      <Button label="Continuar" onPress={handleContinue} loading={loading} />
+      <Button label={t('auth.ageGate.continue')} onPress={handleContinue} loading={loading} />
     </SafeAreaView>
   );
 }

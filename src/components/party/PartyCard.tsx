@@ -4,12 +4,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { PartyStatusBadge } from '@/components/party/PartyStatusBadge';
 import { Card } from '@/components/ui/Card';
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { Party } from '@/types';
 import { formatDateTime } from '@/utils/date';
 
 export function PartyCard({ party }: { party: Party }) {
   const { colors, spacing, typography } = useTheme();
+  // No translated text of its own, but formatDateTime below reads a module-level
+  // date-fns locale that only updates other components when they're subscribed here —
+  // without this, tab navigators that keep this screen mounted in the background
+  // would keep showing the date in the old language until the next full remount.
+  useTranslation();
 
   return (
     <Pressable onPress={() => router.push(`/(tabs)/parties/${party.id}`)}>

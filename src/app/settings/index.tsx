@@ -7,6 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useAuth } from '@/context/AuthContext';
+import { useSettings, useTranslation } from '@/context/SettingsContext';
+import type { Language } from '@/i18n';
 import { mockDb } from '@/services';
 import { useTheme, type ThemeMode } from '@/theme';
 
@@ -23,6 +25,8 @@ function Row({ icon, label, onPress }: { icon: React.ComponentProps<typeof Mater
 
 export default function SettingsScreen() {
   const { colors, spacing, typography, modeOverride, setModeOverride } = useTheme();
+  const { t } = useTranslation();
+  const { language, setLanguage } = useSettings();
   const { session, signOut, updateProfile } = useAuth();
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [savingSubscription, setSavingSubscription] = useState(false);
@@ -67,7 +71,7 @@ export default function SettingsScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
       <View style={{ padding: spacing.lg, gap: spacing.md }}>
         <Card>
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>Apariencia</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.appearanceTitle')}</Text>
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
             {(['system', 'light', 'dark'] as (ThemeMode | 'system')[]).map((mode) => (
               <Pressable
@@ -86,7 +90,34 @@ export default function SettingsScreen() {
                     { color: modeOverride === mode ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' },
                   ]}
                 >
-                  {mode === 'system' ? 'Sistema' : mode === 'light' ? 'Claro' : 'Oscuro'}
+                  {mode === 'system' ? t('settings.systemOption') : mode === 'light' ? t('settings.lightOption') : t('settings.darkOption')}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </Card>
+
+        <Card>
+          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.languageTitle')}</Text>
+          <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+            {(['es', 'en'] as Language[]).map((lang) => (
+              <Pressable
+                key={lang}
+                onPress={() => setLanguage(lang)}
+                style={{
+                  flex: 1,
+                  paddingVertical: 8,
+                  borderRadius: 10,
+                  backgroundColor: language === lang ? colors.accentPrimary : colors.surfaceElevated,
+                }}
+              >
+                <Text
+                  style={[
+                    typography.caption,
+                    { color: language === lang ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' },
+                  ]}
+                >
+                  {lang === 'es' ? t('settings.languageSpanish') : t('settings.languageEnglish')}
                 </Text>
               </Pressable>
             ))}
@@ -97,35 +128,33 @@ export default function SettingsScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialCommunityIcons name="crown-outline" size={20} color={colors.textPrimary} style={{ marginRight: spacing.sm }} />
             <View style={{ flex: 1 }}>
-              <Text style={[typography.body, { color: colors.textPrimary }]}>Suscripción activa</Text>
-              <Text style={[typography.tiny, { color: colors.textSecondary }]}>
-                Prueba: desbloquea retos “social premium” en tus fiestas.
-              </Text>
+              <Text style={[typography.body, { color: colors.textPrimary }]}>{t('settings.subscriptionTitle')}</Text>
+              <Text style={[typography.tiny, { color: colors.textSecondary }]}>{t('settings.subscriptionSubtitle')}</Text>
             </View>
             <Switch value={hasActiveSubscription} onValueChange={toggleSubscription} disabled={savingSubscription} />
           </View>
         </Card>
 
         <Card>
-          <Row icon="shield-check-outline" label="Modo Seguro" onPress={() => router.push('/safe-mode')} />
-          <Row icon="file-document-outline" label="Términos de servicio" onPress={() => router.push('/settings/terms')} />
-          <Row icon="lock-outline" label="Privacidad" onPress={() => router.push('/settings/privacy')} />
+          <Row icon="shield-check-outline" label={t('settings.safeModeRow')} onPress={() => router.push('/safe-mode')} />
+          <Row icon="file-document-outline" label={t('settings.termsRow')} onPress={() => router.push('/settings/terms')} />
+          <Row icon="lock-outline" label={t('settings.privacyRow')} onPress={() => router.push('/settings/privacy')} />
         </Card>
 
         <Pressable onPress={handleSignOut} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
-          <Text style={[typography.bodyBold, { color: '#E5484D' }]}>Cerrar sesión</Text>
+          <Text style={[typography.bodyBold, { color: '#E5484D' }]}>{t('settings.signOut')}</Text>
         </Pressable>
 
         <Pressable onPress={handleResetData} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>Restablecer datos de la app</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('settings.resetDataButton')}</Text>
         </Pressable>
       </View>
 
       <ConfirmDialog
         visible={resetConfirmVisible}
-        title="Restablecer datos de la app"
-        message="Esto borra todas las fiestas, bebidas y cuentas creadas en este dispositivo (incluida la tuya) y regresa la app a sus datos de ejemplo. No se puede deshacer."
-        confirmLabel="Restablecer"
+        title={t('settings.resetConfirmTitle')}
+        message={t('settings.resetConfirmMessage')}
+        confirmLabel={t('settings.resetConfirmConfirm')}
         destructive
         onConfirm={confirmResetData}
         onCancel={() => setResetConfirmVisible(false)}

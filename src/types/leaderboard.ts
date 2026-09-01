@@ -1,5 +1,7 @@
+export type ScoreFactorId = 'drinkCount' | 'variety' | 'kudos' | 'partiesAttended' | 'comments' | 'challengePoints';
+
 export type ScoreBreakdownItem = {
-  label: string;
+  factorId: ScoreFactorId;
   contribution: number;
 };
 

@@ -16,8 +16,6 @@ export type AchievementKey =
 
 export type AchievementDefinition = {
   key: AchievementKey;
-  title: string;
-  description: string;
   icon: string; // @expo/vector-icons name
 };
 

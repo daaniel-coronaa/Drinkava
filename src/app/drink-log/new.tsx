@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { DisclaimerBanner } from '@/components/compliance/DisclaimerBanner';
 import { DrinkTypePicker } from '@/components/drink-log/DrinkTypePicker';
@@ -9,6 +9,7 @@ import { QuantityStepper } from '@/components/drink-log/QuantityStepper';
 import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { DrinkType, Party } from '@/types';
@@ -19,6 +20,7 @@ import type { DrinkType, Party } from '@/types';
 export default function NewDrinkLogScreen() {
   const { partyId: partyIdParam } = useLocalSearchParams<{ partyId?: string }>();
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
 
   const [activeParties, setActiveParties] = useState<Party[]>([]);
@@ -50,7 +52,11 @@ export default function NewDrinkLogScreen() {
       await services.challenges.maybeTriggerNextChallenge(partyId);
       router.back();
       if (unlocked.length > 0) {
-        setTimeout(() => Alert.alert('¡Nuevo logro!', unlocked.map((a) => a.achievementKey).join(', ')), 300);
+        const names = unlocked.map((a) => t(`achievements.${a.achievementKey}.title`)).join(', ');
+        setTimeout(() => {
+          if (Platform.OS === 'web') window.alert(`${t('drinkLog.achievementUnlockedTitle')}\n\n${names}`);
+          else Alert.alert(t('drinkLog.achievementUnlockedTitle'), names);
+        }, 300);
       }
     } finally {
       setSubmitting(false);
@@ -62,7 +68,7 @@ export default function NewDrinkLogScreen() {
       <DisclaimerBanner />
       {!partyIdParam && (
         <View style={{ gap: spacing.sm }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>¿En qué fiesta?</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('drinkLog.whichParty')}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
             {activeParties.map((p) => (
               <Pressable key={p.id} onPress={() => setPartyId(p.id)}>
@@ -74,13 +80,13 @@ export default function NewDrinkLogScreen() {
       )}
 
       <View style={{ gap: spacing.sm }}>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>Tipo de bebida</Text>
+        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('drinkLog.drinkTypeLabel')}</Text>
         <DrinkTypePicker value={drinkType} onChange={setDrinkType} />
         {drinkType === 'other' && (
           <TextInput
             value={customLabel}
             onChangeText={setCustomLabel}
-            placeholder="¿Qué estás tomando?"
+            placeholder={t('drinkLog.customPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: spacing.sm, color: colors.textPrimary }}
           />
@@ -88,16 +94,16 @@ export default function NewDrinkLogScreen() {
       </View>
 
       <View style={{ gap: spacing.sm, alignItems: 'center' }}>
-        <Text style={[typography.caption, { color: colors.textSecondary, alignSelf: 'flex-start' }]}>Cantidad</Text>
+        <Text style={[typography.caption, { color: colors.textSecondary, alignSelf: 'flex-start' }]}>{t('drinkLog.quantityLabel')}</Text>
         <QuantityStepper value={quantity} onChange={setQuantity} />
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>Foto (opcional)</Text>
-        <PhotoPicker uri={photoUrl} onChange={setPhotoUrl} label="Agregar foto del trago" />
+        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('drinkLog.photoLabel')}</Text>
+        <PhotoPicker uri={photoUrl} onChange={setPhotoUrl} label={t('drinkLog.addPhotoLabel')} />
       </View>
 
-      <Button label="Registrar" onPress={handleSubmit} loading={submitting} disabled={!partyId} />
+      <Button label={t('drinkLog.submitButton')} onPress={handleSubmit} loading={submitting} disabled={!partyId} />
     </ScrollView>
   );
 }

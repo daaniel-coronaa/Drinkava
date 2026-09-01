@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { AchievementDefinition } from '@/types';
 import { formatDate } from '@/utils/date';
@@ -12,6 +13,7 @@ type Props = {
 
 export function AchievementBadge({ definition, unlockedAt }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const unlocked = !!unlockedAt;
 
   return (
@@ -29,10 +31,10 @@ export function AchievementBadge({ definition, unlockedAt }: Props) {
         />
       </View>
       <Text style={[typography.bodyBold, { color: colors.textPrimary, textAlign: 'center', marginTop: spacing.xs }]}>
-        {definition.title}
+        {t(`achievements.${definition.key}.title`)}
       </Text>
       <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center', marginTop: 2 }]}>
-        {unlocked ? formatDate(unlockedAt) : definition.description}
+        {unlocked ? formatDate(unlockedAt) : t(`achievements.${definition.key}.description`)}
       </Text>
     </View>
   );

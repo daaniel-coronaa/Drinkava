@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 
 import { Avatar } from '@/components/ui/Avatar';
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { LeaderboardEntry, User } from '@/types';
 
@@ -14,6 +15,7 @@ type Props = {
 
 export function LeaderboardRow({ entry, user, onPress }: Props) {
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
   return (
     <Pressable
       onPress={onPress}
@@ -24,9 +26,9 @@ export function LeaderboardRow({ entry, user, onPress }: Props) {
       </Text>
       <Avatar uri={user?.avatarUrl} name={user?.name ?? '?'} size={36} />
       <View style={{ flex: 1 }}>
-        <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{user?.name ?? 'Alguien'}</Text>
+        <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{user?.name ?? t('feed.someone')}</Text>
         <Text style={[typography.tiny, { color: colors.textSecondary }]}>
-          {entry.drinkCount} bebidas · {entry.uniqueTypes} variedades · {entry.kudosReceived} kudos
+          {t('leaderboard.statsLine', { drinks: entry.drinkCount, variety: entry.uniqueTypes, kudos: entry.kudosReceived })}
         </Text>
       </View>
       <Text style={[typography.h3, { color: colors.accentPrimary }]}>{entry.score}</Text>

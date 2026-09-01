@@ -5,7 +5,7 @@ import { Alert, Linking, Platform, Pressable, Switch, Text, View } from 'react-n
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/ui/Card';
-import { useSettings } from '@/context/SettingsContext';
+import { useSettings, useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 
 const WATER_REMINDER_ID = 'drinkava-water-reminder';
@@ -40,7 +40,7 @@ const RIDE_APPS: Record<'uber' | 'didi', RideApp> = {
 // SEAM: these buttons only open the app's URL scheme (or a store/web fallback) — there's
 // no real ride-request API integration. Replace with a real Uber/DiDi integration if one
 // becomes available.
-async function openRideApp(app: RideApp) {
+async function openRideApp(app: RideApp, errorTitle: string, errorMessage: string) {
   if (Platform.OS === 'web') {
     // react-native-web's Linking.canOpenURL() always resolves true regardless of the
     // scheme, so it would try (and silently fail, since Alert.alert is also a no-op on
@@ -54,12 +54,13 @@ async function openRideApp(app: RideApp) {
     const target = canOpen ? app.scheme : Platform.OS === 'ios' ? app.iosStoreUrl : app.androidStoreUrl;
     await Linking.openURL(target);
   } catch {
-    Alert.alert(`No pudimos abrir ${app.label}`, 'Intenta abrir la app manualmente.');
+    Alert.alert(errorTitle, errorMessage);
   }
 }
 
 export default function SafeModeScreen() {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const { safeModeEnabled, setSafeModeEnabled } = useSettings();
   const [busy, setBusy] = useState(false);
 
@@ -74,7 +75,7 @@ export default function SafeModeScreen() {
           if (granted) {
             await Notifications.scheduleNotificationAsync({
               identifier: WATER_REMINDER_ID,
-              content: { title: 'Drinkava', body: '💧 Hora de tomar agua. Cuídate en la fiesta.' },
+              content: { title: t('safeMode.waterNotificationTitle'), body: t('safeMode.waterNotificationBody') },
               trigger: { seconds: 45 * 60, repeats: true } as Notifications.TimeIntervalTriggerInput,
             });
           }
@@ -95,31 +96,33 @@ export default function SafeModeScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialCommunityIcons name="cup-water" size={28} color={colors.accentInfo} style={{ marginRight: spacing.sm }} />
             <View style={{ flex: 1 }}>
-              <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>Recordatorios de agua</Text>
-              <Text style={[typography.caption, { color: colors.textSecondary }]}>
-                Te avisamos cada 45 min mientras estés en modo seguro.
-              </Text>
+              <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('safeMode.waterTitle')}</Text>
+              <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('safeMode.waterSubtitle')}</Text>
             </View>
             <Switch value={safeModeEnabled} onValueChange={handleToggle} disabled={busy} />
           </View>
         </Card>
 
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>Volver a casa</Text>
+        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('safeMode.goHomeTitle')}</Text>
         <Card>
           <View style={{ gap: spacing.sm }}>
             <Pressable
-              onPress={() => openRideApp(RIDE_APPS.uber)}
+              onPress={() =>
+                openRideApp(RIDE_APPS.uber, t('safeMode.openErrorTitle', { label: 'Uber' }), t('safeMode.openErrorMessage'))
+              }
               style={{ flexDirection: 'row', alignItems: 'center', padding: spacing.xs, borderRadius: radius.md }}
             >
               <MaterialCommunityIcons name="car" size={22} color={colors.textPrimary} style={{ marginRight: spacing.sm }} />
-              <Text style={[typography.body, { color: colors.textPrimary }]}>Pedir Uber</Text>
+              <Text style={[typography.body, { color: colors.textPrimary }]}>{t('safeMode.uberButton')}</Text>
             </Pressable>
             <Pressable
-              onPress={() => openRideApp(RIDE_APPS.didi)}
+              onPress={() =>
+                openRideApp(RIDE_APPS.didi, t('safeMode.openErrorTitle', { label: 'DiDi' }), t('safeMode.openErrorMessage'))
+              }
               style={{ flexDirection: 'row', alignItems: 'center', padding: spacing.xs, borderRadius: radius.md }}
             >
               <MaterialCommunityIcons name="car" size={22} color={colors.textPrimary} style={{ marginRight: spacing.sm }} />
-              <Text style={[typography.body, { color: colors.textPrimary }]}>Pedir DiDi</Text>
+              <Text style={[typography.body, { color: colors.textPrimary }]}>{t('safeMode.didiButton')}</Text>
             </Pressable>
           </View>
         </Card>

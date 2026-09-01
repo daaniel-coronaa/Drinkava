@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
 import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
+import { useTranslation } from '@/context/SettingsContext';
+import type { TranslationKey } from '@/i18n';
 import { challengeCatalog, services } from '@/services';
 import { useTheme } from '@/theme';
-import type { ChallengeAssignment, ChallengeAssignmentStatus, User } from '@/types';
+import type { ChallengeAssignment, User } from '@/types';
 import { timeAgo } from '@/utils/date';
-import { challengeCategoryIcons, challengeCategoryLabels } from '@/utils/challengeCategory';
+import { challengeCategoryIcons } from '@/utils/challengeCategory';
 
 type Props = {
   assignment: ChallengeAssignment;
@@ -25,16 +27,9 @@ type Props = {
   onChanged: (countsAsTurn: boolean) => void;
 };
 
-const STATUS_LABELS: Record<ChallengeAssignmentStatus, string> = {
-  pendiente: 'Pendiente',
-  completado: 'Por validar',
-  validado: 'Validado',
-  rechazado: 'Rechazado',
-  pasado: 'Pasado',
-};
-
 export function ChallengeCard({ assignment, usersById, currentUserId, isHost, onChanged }: Props) {
   const { colors, spacing, radius, typography, challengeCategoryColors } = useTheme();
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | undefined>();
   const [showPhotoPicker, setShowPhotoPicker] = useState(false);
@@ -75,29 +70,34 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
           <MaterialCommunityIcons name={challengeCategoryIcons[challenge.category]} size={20} color={accent} />
         </View>
         <View style={{ flex: 1, marginLeft: spacing.sm }}>
-          <Chip label={challengeCategoryLabels[challenge.category]} color={accent} />
+          <Chip label={t(`challenges.categories.${challenge.category}.label`)} color={accent} />
           <Text style={[typography.tiny, { color: colors.textSecondary, marginTop: 2 }]}>{timeAgo(assignment.sentAt)}</Text>
         </View>
-        <Chip label={STATUS_LABELS[assignment.status]} color={statusColor} />
+        <Chip label={t(`challenges.status.${assignment.status}`)} color={statusColor} />
       </View>
 
-      <Text style={[typography.body, { color: colors.textPrimary, marginTop: spacing.sm }]}>{challenge.text}</Text>
+      <Text style={[typography.body, { color: colors.textPrimary, marginTop: spacing.sm }]}>
+        {/* challenge.id is a plain string (not a literal union) since Challenge comes
+            from mock data — the catalog covers c1..c10 in both dictionaries, so this
+            is safe even though TS can't verify it statically. */}
+        {t(`challenges.catalog.${challenge.id}.text` as TranslationKey)}
+      </Text>
 
       <View style={[styles.targetRow, { marginTop: spacing.sm, gap: spacing.xs }]}>
         <Avatar uri={userA?.avatarUrl} name={userA?.name ?? '?'} size={24} />
-        <Text style={[typography.caption, { color: colors.textPrimary }]}>{userA?.name ?? 'Alguien'}</Text>
+        <Text style={[typography.caption, { color: colors.textPrimary }]}>{userA?.name ?? t('feed.someone')}</Text>
         {userB ? (
           <>
             <MaterialCommunityIcons name="plus" size={14} color={colors.textSecondary} />
             <Avatar uri={userB?.avatarUrl} name={userB?.name ?? '?'} size={24} />
-            <Text style={[typography.caption, { color: colors.textPrimary }]}>{userB?.name ?? 'Alguien'}</Text>
+            <Text style={[typography.caption, { color: colors.textPrimary }]}>{userB?.name ?? t('feed.someone')}</Text>
           </>
         ) : null}
-        <Text style={[typography.tiny, { color: accent, marginLeft: 'auto' }]}>+{challenge.points} pts</Text>
+        <Text style={[typography.tiny, { color: accent, marginLeft: 'auto' }]}>{t('challenges.points', { points: challenge.points })}</Text>
       </View>
 
       {assignment.photoEvidenceUrl ? (
-        <Text style={[typography.tiny, { color: colors.textSecondary, marginTop: spacing.xs }]}>📷 Con foto de evidencia</Text>
+        <Text style={[typography.tiny, { color: colors.textSecondary, marginTop: spacing.xs }]}>{t('challenges.withPhotoEvidence')}</Text>
       ) : null}
 
       {/* Doble consentimiento — retos 'fisico' */}
@@ -107,20 +107,20 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
           if (alreadyAccepted) {
             return (
               <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>
-                Ya aceptaste — esperando a {isTargetA ? userB?.name : userA?.name}.
+                {t('challenges.waitingFor', { name: (isTargetA ? userB?.name : userA?.name) ?? t('feed.someone') })}
               </Text>
             );
           }
           return (
             <View style={[styles.actionsRow, { marginTop: spacing.sm, gap: spacing.sm }]}>
               <Button
-                label="Aceptar"
+                label={t('challenges.accept')}
                 loading={busy}
                 onPress={() => run(() => services.challenges.respondToConsent(assignment.id, currentUserId, true))}
                 style={{ flex: 1 }}
               />
               <Button
-                label="Rechazar"
+                label={t('challenges.reject')}
                 loading={busy}
                 variant="secondary"
                 onPress={() => run(() => services.challenges.respondToConsent(assignment.id, currentUserId, false))}
@@ -135,23 +135,23 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
       {!isFisico && assignment.status === 'pendiente' && isTargetA ? (
         <View style={{ marginTop: spacing.sm }}>
           {showPhotoPicker ? (
-            <PhotoPicker uri={photoUrl} onChange={setPhotoUrl} label="Agregar foto de evidencia (opcional)" />
+            <PhotoPicker uri={photoUrl} onChange={setPhotoUrl} label={t('challenges.addPhotoEvidence')} />
           ) : (
             <Pressable onPress={() => setShowPhotoPicker(true)}>
               <Text style={[typography.caption, { color: colors.accentPrimary, marginBottom: spacing.sm }]}>
-                + Agregar foto de evidencia (opcional)
+                {t('challenges.addPhotoEvidence')}
               </Text>
             </Pressable>
           )}
           <View style={[styles.actionsRow, { gap: spacing.sm, marginTop: spacing.sm }]}>
             <Button
-              label="Marcar como hecho"
+              label={t('challenges.markDone')}
               loading={busy}
               onPress={() => run(() => services.challenges.markDone(assignment.id, currentUserId, photoUrl))}
               style={{ flex: 1 }}
             />
             <Button
-              label="Saltar"
+              label={t('challenges.skip')}
               loading={busy}
               variant="secondary"
               onPress={() => run(() => services.challenges.skip(assignment.id, currentUserId))}
@@ -165,13 +165,13 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
       {isHost && assignment.status === 'completado' ? (
         <View style={[styles.actionsRow, { marginTop: spacing.sm, gap: spacing.sm }]}>
           <Button
-            label="Validar"
+            label={t('challenges.validate')}
             loading={busy}
             onPress={() => run(() => services.challenges.validate(assignment.id, currentUserId))}
             style={{ flex: 1 }}
           />
           <Button
-            label="Rechazar"
+            label={t('challenges.reject')}
             loading={busy}
             variant="secondary"
             onPress={() => run(() => services.challenges.reject(assignment.id, currentUserId))}

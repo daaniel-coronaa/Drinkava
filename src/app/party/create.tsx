@@ -6,11 +6,13 @@ import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { Button } from '@/components/ui/Button';
 import { DateTimePickerField } from '@/components/ui/DateTimePickerField';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
 export default function CreatePartyScreen() {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
@@ -40,11 +42,11 @@ export default function CreatePartyScreen() {
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}>
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>Nombre</Text>
+        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.nameLabel')}</Text>
         <TextInput
           value={name}
           onChangeText={setName}
-          placeholder="Previa en mi depto"
+          placeholder={t('parties.create.namePlaceholder')}
           placeholderTextColor={colors.textSecondary}
           style={{
             borderWidth: 1,
@@ -57,16 +59,16 @@ export default function CreatePartyScreen() {
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>Fecha y hora</Text>
+        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.dateLabel')}</Text>
         <DateTimePickerField value={date} onChange={setDate} mode="datetime" />
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>Ubicación (opcional)</Text>
+        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.locationLabel')}</Text>
         <TextInput
           value={location}
           onChangeText={setLocation}
-          placeholder="Depto de Cami"
+          placeholder={t('parties.create.locationPlaceholder')}
           placeholderTextColor={colors.textSecondary}
           style={{
             borderWidth: 1,
@@ -79,11 +81,11 @@ export default function CreatePartyScreen() {
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>Portada (opcional)</Text>
-        <PhotoPicker uri={coverImageUrl} onChange={setCoverImageUrl} label="Agregar foto de portada" />
+        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('parties.create.coverLabel')}</Text>
+        <PhotoPicker uri={coverImageUrl} onChange={setCoverImageUrl} label={t('parties.create.coverButton')} />
       </View>
 
-      <Button label="Crear fiesta" onPress={handleCreate} loading={submitting} disabled={!name.trim()} />
+      <Button label={t('parties.create.submitButton')} onPress={handleCreate} loading={submitting} disabled={!name.trim()} />
     </ScrollView>
   );
 }

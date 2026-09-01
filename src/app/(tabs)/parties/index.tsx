@@ -7,19 +7,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PartyCard } from '@/components/party/PartyCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Header } from '@/components/ui/Header';
+import { useTranslation } from '@/context/SettingsContext';
 import { useParties } from '@/hooks/useParties';
 import { useTheme } from '@/theme';
 import type { PartyStatus } from '@/types';
 
 export default function PartiesScreen() {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<PartyStatus>('active');
   const { parties, loading, refetch } = useParties(filter);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
       <Header
-        title="Fiestas"
+        title={t('parties.headerTitle')}
         right={
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
             <Pressable onPress={() => router.push('/party/join')}>
@@ -48,7 +50,7 @@ export default function PartiesScreen() {
                 { color: filter === status ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' },
               ]}
             >
-              {status === 'active' ? 'Activas' : 'Finalizadas'}
+              {status === 'active' ? t('parties.filterActive') : t('parties.filterFinished')}
             </Text>
           </Pressable>
         ))}
@@ -62,8 +64,8 @@ export default function PartiesScreen() {
           !loading ? (
             <EmptyState
               icon="party-popper"
-              title={filter === 'active' ? 'No hay fiestas activas' : 'Sin fiestas finalizadas'}
-              description="Crea una fiesta o únete con un código de invitación."
+              title={filter === 'active' ? t('parties.emptyActiveTitle') : t('parties.emptyFinishedTitle')}
+              description={t('parties.emptyDescription')}
             />
           ) : null
         }

@@ -6,10 +6,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 
 export default function OnboardingTosScreen() {
   const { colors, spacing, typography, radius } = useTheme();
+  const { t } = useTranslation();
   const { acceptTerms } = useAuth();
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,7 +29,7 @@ export default function OnboardingTosScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}>
-        <Text style={[typography.h1, { color: colors.textPrimary }]}>Antes de entrar a la fiesta</Text>
+        <Text style={[typography.h1, { color: colors.textPrimary }]}>{t('auth.onboardingTos.title')}</Text>
 
         <View
           style={{
@@ -39,18 +41,12 @@ export default function OnboardingTosScreen() {
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
             <MaterialCommunityIcons name="alert-circle-outline" size={18} color={colors.accentWarning} />
-            <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>Bebe con responsabilidad</Text>
+            <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('auth.onboardingTos.disclaimerTitle')}</Text>
           </View>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>
-            Drinkava es una app social para compartir momentos con amigos, no una competencia de consumo. El ranking
-            premia variedad, asistencia y kudos — no solo cuánto tomas.
-          </Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.onboardingTos.disclaimerBody')}</Text>
         </View>
 
-        <Text style={[typography.body, { color: colors.textSecondary }]}>
-          Al continuar aceptas nuestros Términos de Servicio y Política de Privacidad, y confirmas que eres mayor de
-          edad en tu país de residencia. Drinkava no promueve el consumo excesivo de alcohol.
-        </Text>
+        <Text style={[typography.body, { color: colors.textSecondary }]}>{t('auth.onboardingTos.body')}</Text>
 
         <Pressable
           onPress={() => setAccepted((v) => !v)}
@@ -68,15 +64,12 @@ export default function OnboardingTosScreen() {
           >
             {accepted ? <MaterialCommunityIcons name="check" size={16} color="#FFFFFF" /> : null}
           </View>
-          <Text style={[typography.body, { color: colors.textPrimary, flex: 1 }]}>
-            Soy mayor de 18 años y acepto los Términos de Servicio, la Política de Privacidad y el compromiso de
-            consumo responsable.
-          </Text>
+          <Text style={[typography.body, { color: colors.textPrimary, flex: 1 }]}>{t('auth.onboardingTos.checkboxLabel')}</Text>
         </Pressable>
       </ScrollView>
 
       <View style={{ padding: spacing.lg }}>
-        <Button label="Aceptar y continuar" onPress={handleContinue} loading={loading} disabled={!accepted} />
+        <Button label={t('auth.onboardingTos.continueButton')} onPress={handleContinue} loading={loading} disabled={!accepted} />
       </View>
     </SafeAreaView>
   );

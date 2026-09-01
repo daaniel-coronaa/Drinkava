@@ -4,6 +4,7 @@ import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
@@ -12,6 +13,7 @@ import { useTheme } from '@/theme';
 export default function JoinPartyScreen() {
   const { code: codeParam } = useLocalSearchParams<{ code?: string }>();
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
   const [code, setCode] = useState(codeParam?.toUpperCase() ?? '');
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +27,7 @@ export default function JoinPartyScreen() {
       const party = await services.parties.join(code.trim(), session.user.id);
       router.replace(`/(tabs)/parties/${party.id}`);
     } catch {
-      setError('No encontramos una fiesta con ese código.');
+      setError(t('parties.join.errorNotFound'));
     } finally {
       setSubmitting(false);
     }
@@ -34,14 +36,12 @@ export default function JoinPartyScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, padding: spacing.lg, gap: spacing.md }}>
       <Text style={[typography.body, { color: colors.textSecondary }]}>
-        {codeParam
-          ? 'Detectamos un código de invitación. Confirma para unirte.'
-          : 'Ingresa el código de invitación que te compartió el anfitrión.'}
+        {codeParam ? t('parties.join.promptWithCode') : t('parties.join.promptNoCode')}
       </Text>
       <TextInput
         value={code}
-        onChangeText={(t) => setCode(t.toUpperCase())}
-        placeholder="ABC123"
+        onChangeText={(value) => setCode(value.toUpperCase())}
+        placeholder={t('parties.join.placeholder')}
         autoCapitalize="characters"
         placeholderTextColor={colors.textSecondary}
         style={{
@@ -56,7 +56,7 @@ export default function JoinPartyScreen() {
         }}
       />
       {error ? <Text style={{ color: '#E5484D' }}>{error}</Text> : null}
-      <Button label="Unirme" onPress={handleJoin} loading={submitting} disabled={!code.trim()} />
+      <Button label={t('parties.join.submitButton')} onPress={handleJoin} loading={submitting} disabled={!code.trim()} />
     </View>
   );
 }

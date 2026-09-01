@@ -2,10 +2,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, Tabs } from 'expo-router';
 import { View } from 'react-native';
 
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 
 export default function TabsLayout() {
   const { colors, radius } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -19,7 +21,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="parties"
         options={{
-          title: 'Fiestas',
+          title: t('tabs.parties'),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="party-popper" size={size} color={color} />
           ),
@@ -55,7 +57,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Perfil',
+          title: t('tabs.profile'),
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account" size={size} color={color} />,
         }}
       />

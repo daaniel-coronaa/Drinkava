@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { HeaderBackButton } from '@/components/ui/HeaderBackButton';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { EmailInUseError } from '@/services';
 import { useTheme } from '@/theme';
 
@@ -13,6 +14,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function EmailRegisterScreen() {
   const { colors, spacing, typography, radius } = useTheme();
+  const { t } = useTranslation();
   const { registerWithEmail } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,17 +33,17 @@ export default function EmailRegisterScreen() {
 
   const handleSubmit = async () => {
     setError(null);
-    if (!name.trim()) return setError('Ingresa tu nombre.');
-    if (!EMAIL_PATTERN.test(email.trim())) return setError('Ingresa un correo válido.');
-    if (password.length < 6) return setError('La contraseña debe tener al menos 6 caracteres.');
-    if (password !== confirmPassword) return setError('Las contraseñas no coinciden.');
+    if (!name.trim()) return setError(t('auth.emailRegister.errorName'));
+    if (!EMAIL_PATTERN.test(email.trim())) return setError(t('auth.emailRegister.errorEmail'));
+    if (password.length < 6) return setError(t('auth.emailRegister.errorPasswordLength'));
+    if (password !== confirmPassword) return setError(t('auth.emailRegister.errorPasswordMatch'));
 
     setLoading(true);
     try {
       await registerWithEmail({ name: name.trim(), email: email.trim(), password });
       router.replace('/');
     } catch (e) {
-      setError(e instanceof EmailInUseError ? 'Ese correo ya tiene una cuenta.' : 'Algo salió mal. Intenta de nuevo.');
+      setError(e instanceof EmailInUseError ? t('auth.emailRegister.errorInUse') : t('auth.emailRegister.errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -53,14 +55,14 @@ export default function EmailRegisterScreen() {
         <HeaderBackButton fallbackHref="/(auth)/welcome" />
       </View>
       <View style={{ padding: spacing.lg, gap: spacing.md, flex: 1 }}>
-        <Text style={[typography.h1, { color: colors.textPrimary }]}>Crea tu cuenta</Text>
+        <Text style={[typography.h1, { color: colors.textPrimary }]}>{t('auth.emailRegister.title')}</Text>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>Nombre</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.nameLabel')}</Text>
           <TextInput
             value={name}
             onChangeText={setName}
-            placeholder="Tu nombre"
+            placeholder={t('auth.emailRegister.namePlaceholder')}
             placeholderTextColor={colors.textSecondary}
             autoComplete="name"
             style={inputStyle}
@@ -68,11 +70,11 @@ export default function EmailRegisterScreen() {
         </View>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>Correo</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.emailLabel')}</Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
-            placeholder="tu@correo.com"
+            placeholder={t('auth.emailRegister.emailPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             autoCapitalize="none"
             keyboardType="email-address"
@@ -82,11 +84,11 @@ export default function EmailRegisterScreen() {
         </View>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>Contraseña</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.passwordLabel')}</Text>
           <TextInput
             value={password}
             onChangeText={setPassword}
-            placeholder="Mínimo 6 caracteres"
+            placeholder={t('auth.emailRegister.passwordPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             secureTextEntry
             autoComplete="new-password"
@@ -95,11 +97,11 @@ export default function EmailRegisterScreen() {
         </View>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>Confirmar contraseña</Text>
+          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.confirmLabel')}</Text>
           <TextInput
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            placeholder="Repite tu contraseña"
+            placeholder={t('auth.emailRegister.confirmPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             secureTextEntry
             autoComplete="new-password"
@@ -109,10 +111,10 @@ export default function EmailRegisterScreen() {
 
         {error ? <Text style={[typography.caption, { color: '#E5484D' }]}>{error}</Text> : null}
 
-        <Button label="Crear cuenta" onPress={handleSubmit} loading={loading} />
+        <Button label={t('auth.emailRegister.submitButton')} onPress={handleSubmit} loading={loading} />
 
         <Pressable onPress={() => router.replace('/(auth)/email-login')} style={{ alignItems: 'center', marginTop: spacing.sm }}>
-          <Text style={[typography.caption, { color: colors.accentPrimary }]}>¿Ya tienes cuenta? Inicia sesión</Text>
+          <Text style={[typography.caption, { color: colors.accentPrimary }]}>{t('auth.emailRegister.haveAccount')}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

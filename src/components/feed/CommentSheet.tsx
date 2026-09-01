@@ -4,6 +4,7 @@ import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet,
 
 import { Avatar } from '@/components/ui/Avatar';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { Comment, User } from '@/types';
@@ -18,6 +19,7 @@ type Props = {
 
 export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
   const { session } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState('');
@@ -46,7 +48,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
             { backgroundColor: colors.surface, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
           ]}
         >
-          <Text style={[typography.h3, { color: colors.textPrimary, padding: spacing.md }]}>Comentarios</Text>
+          <Text style={[typography.h3, { color: colors.textPrimary, padding: spacing.md }]}>{t('feed.commentsTitle')}</Text>
           <FlatList
             data={comments}
             keyExtractor={(c) => c.id}
@@ -58,7 +60,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
                   <Avatar uri={author?.avatarUrl} name={author?.name ?? '?'} size={28} />
                   <View style={{ flex: 1 }}>
                     <Text style={[typography.caption, { color: colors.textPrimary }]}>
-                      <Text style={typography.bodyBold}>{author?.name ?? 'Alguien'}</Text> {item.text}
+                      <Text style={typography.bodyBold}>{author?.name ?? t('feed.someone')}</Text> {item.text}
                     </Text>
                     <Text style={[typography.tiny, { color: colors.textSecondary }]}>{timeAgo(item.createdAt)}</Text>
                   </View>
@@ -76,7 +78,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
             <TextInput
               value={text}
               onChangeText={setText}
-              placeholder="Escribe un comentario..."
+              placeholder={t('feed.commentPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               style={[
                 styles.input,

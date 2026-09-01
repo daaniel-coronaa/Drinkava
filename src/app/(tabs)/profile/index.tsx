@@ -10,12 +10,14 @@ import { ScoringTable } from '@/components/profile/ScoringTable';
 import { StatTile } from '@/components/profile/StatTile';
 import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { useAchievements } from '@/hooks/useAchievements';
 import { useProfileStats } from '@/hooks/useProfileStats';
 import { useTheme } from '@/theme';
 
 export default function MyProfileScreen() {
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
   const { session, updateProfile } = useAuth();
   const { parties, totalDrinks, favoriteType, globalEntry } = useProfileStats(session?.user.id);
   const { definitions, unlocked } = useAchievements(session?.user.id);
@@ -43,9 +45,9 @@ export default function MyProfileScreen() {
         </View>
 
         <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.md, marginBottom: spacing.md }}>
-          <StatTile label="Bebidas totales" value={totalDrinks} />
-          <StatTile label="Fiestas" value={parties.length} />
-          <StatTile label="Favorito" value={favoriteType ?? '—'} />
+          <StatTile label={t('profile.totalDrinks')} value={totalDrinks} />
+          <StatTile label={t('profile.parties')} value={parties.length} />
+          <StatTile label={t('profile.favorite')} value={favoriteType ? t(`drinkTypes.${favoriteType}`) : t('profile.none')} />
         </View>
 
         <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
@@ -65,9 +67,11 @@ export default function MyProfileScreen() {
                 <MaterialCommunityIcons name="trophy" size={22} color={colors.accentPrimary} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>Ranking</Text>
+                <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('profile.rankingTitle')}</Text>
                 <Text style={[typography.caption, { color: colors.textSecondary }]}>
-                  {globalEntry ? `#${globalEntry.rank} de tu grupo · ${globalEntry.score} pts` : 'Ver ranking del grupo'}
+                  {globalEntry
+                    ? t('profile.rankingSubtitleWithRank', { rank: globalEntry.rank, score: globalEntry.score })
+                    : t('profile.rankingSubtitleEmpty')}
                 </Text>
               </View>
               <MaterialCommunityIcons name="chevron-right" size={20} color={colors.textSecondary} />
@@ -81,7 +85,7 @@ export default function MyProfileScreen() {
 
         <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.sm }}>
           <Pressable onPress={() => router.push('/achievements')} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={[typography.h3, { color: colors.textPrimary, flex: 1 }]}>Logros</Text>
+            <Text style={[typography.h3, { color: colors.textPrimary, flex: 1 }]}>{t('profile.achievementsTitle')}</Text>
             <MaterialCommunityIcons name="chevron-right" size={20} color={colors.textSecondary} />
           </Pressable>
         </View>
@@ -92,7 +96,7 @@ export default function MyProfileScreen() {
         </ScrollView>
 
         <View style={{ paddingHorizontal: spacing.md, marginTop: spacing.lg, marginBottom: spacing.sm }}>
-          <Text style={[typography.h3, { color: colors.textPrimary }]}>Historial de fiestas</Text>
+          <Text style={[typography.h3, { color: colors.textPrimary }]}>{t('profile.partyHistoryTitle')}</Text>
         </View>
         {parties.map((p) => (
           <PartyCard key={p.id} party={p} />

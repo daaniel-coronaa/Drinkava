@@ -1,5 +1,6 @@
 import { Modal, Pressable, Text, View } from 'react-native';
 
+import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 
 import { Button } from './Button';
@@ -20,8 +21,9 @@ type Props = {
 // browser/webview contexts silently auto-dismiss it (no dialog, no error, the action
 // just never happens), which made "Terminar fiesta" and "Salir de la fiesta" look
 // broken with zero feedback. This works the same way on every platform.
-export function ConfirmDialog({ visible, title, message, confirmLabel, cancelLabel = 'Cancelar', destructive, onConfirm, onCancel }: Props) {
+export function ConfirmDialog({ visible, title, message, confirmLabel, cancelLabel, destructive, onConfirm, onCancel }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onCancel}>
@@ -36,7 +38,7 @@ export function ConfirmDialog({ visible, title, message, confirmLabel, cancelLab
           <Text style={[typography.h3, { color: colors.textPrimary }]}>{title}</Text>
           <Text style={[typography.body, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{message}</Text>
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-            <Button label={cancelLabel} onPress={onCancel} variant="secondary" style={{ flex: 1 }} />
+            <Button label={cancelLabel ?? t('confirmDialog.cancel')} onPress={onCancel} variant="secondary" style={{ flex: 1 }} />
             <Button label={confirmLabel} onPress={onConfirm} variant={destructive ? 'danger' : 'primary'} style={{ flex: 1 }} />
           </View>
         </Pressable>

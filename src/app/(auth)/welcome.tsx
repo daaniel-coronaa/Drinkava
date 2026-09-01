@@ -6,11 +6,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/SettingsContext';
 import { useGoogleSignIn, GoogleSignInCancelledError } from '@/hooks/useGoogleSignIn';
 import { useTheme } from '@/theme';
 
 export default function WelcomeScreen() {
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
   const { signInWithGoogle, signInWithApple } = useAuth();
   const google = useGoogleSignIn();
   const [pending, setPending] = useState<'google' | 'apple' | null>(null);
@@ -25,7 +27,7 @@ export default function WelcomeScreen() {
       router.replace('/');
     } catch (e) {
       if (!(e instanceof GoogleSignInCancelledError)) {
-        setError('No pudimos iniciar sesión con Google. Intenta de nuevo.');
+        setError(t('auth.welcome.googleError'));
       }
     } finally {
       setPending(null);
@@ -50,26 +52,22 @@ export default function WelcomeScreen() {
           <MaterialCommunityIcons name="glass-cocktail" size={56} color={colors.accentPrimary} />
         </View>
         <Text style={[typography.display, { color: colors.textPrimary, textAlign: 'center' }]}>Drinkava</Text>
-        <Text style={[typography.body, { color: colors.textSecondary, textAlign: 'center' }]}>
-          Trackea tus fiestas, compite con tu grupo y comparte cada brindis.
-        </Text>
+        <Text style={[typography.body, { color: colors.textSecondary, textAlign: 'center' }]}>{t('auth.welcome.tagline')}</Text>
       </View>
 
       <View style={{ gap: spacing.sm, paddingHorizontal: spacing.lg, width: '100%' }}>
         <Button
-          label="Continuar con Google"
+          label={t('auth.welcome.continueWithGoogle')}
           onPress={handleGoogle}
           loading={pending === 'google'}
           disabled={pending !== null || !google.configured}
           icon={<MaterialCommunityIcons name="google" size={18} color="#FFFFFF" />}
         />
         {!google.configured ? (
-          <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center' }]}>
-            Google aún no está configurado (falta EXPO_PUBLIC_GOOGLE_CLIENT_ID). Ver .env.example.
-          </Text>
+          <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center' }]}>{t('auth.welcome.googleNotConfigured')}</Text>
         ) : null}
         <Button
-          label="Continuar con Apple"
+          label={t('auth.welcome.continueWithApple')}
           onPress={handleApple}
           loading={pending === 'apple'}
           disabled={pending !== null}
@@ -77,7 +75,7 @@ export default function WelcomeScreen() {
           icon={<MaterialCommunityIcons name="apple" size={18} color={colors.textPrimary} />}
         />
         <Button
-          label="Continuar con correo"
+          label={t('auth.welcome.continueWithEmail')}
           onPress={() => router.push('/(auth)/email-login')}
           disabled={pending !== null}
           variant="ghost"
@@ -89,7 +87,7 @@ export default function WelcomeScreen() {
         ) : null}
 
         <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>
-          Debes ser mayor de 18 años para usar Drinkava. Bebe con responsabilidad.
+          {t('auth.welcome.ageDisclaimer')}
         </Text>
       </View>
     </SafeAreaView>
