@@ -29,7 +29,7 @@ export function ParticipantRow({ user, joinedAt, role }: Props) {
       </View>
       <Chip
         label={role === 'admin' ? t('partyDetail.roleAdmin') : t('partyDetail.roleGuest')}
-        color={role === 'admin' ? colors.accentPrimary : undefined}
+        color={role === 'admin' ? colors.accentText : undefined}
         tone={role === 'admin' ? 'accent' : 'neutral'}
       />
     </Pressable>

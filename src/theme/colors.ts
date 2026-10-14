@@ -3,12 +3,17 @@ import type { ChallengeCategory } from '@/types/challenge';
 export type DrinkType = 'shot' | 'cocktail' | 'beer' | 'wine' | 'other';
 
 const base = {
-  accentPrimary: '#FF3D6E', // confetti magenta — vibrant, distinct from Strava orange
-  accentPrimaryMuted: '#FF3D6E22',
   accentSuccess: '#2ED573', // kudos / positive
   accentWarning: '#FFB020', // safe-mode / disclaimer
   accentInfo: '#3D8BFF',
 };
+
+// One brand rose, two roles — a single pink can't be both a filled surface under white
+// text AND readable as small text on near-black (the two pull luminance opposite ways).
+//   accentPrimary  = fills/borders (buttons, selected segments, badges). White on it: 5.50:1.
+//   accentText     = accent-colored text and icons. Dark theme gets a lighter rose
+//                    (6.0–7.3:1 on every dark surface); light theme reuses the fill (5.27:1).
+const ACCENT_FILL = '#C8244F';
 
 export const drinkTypeColors: Record<DrinkType, string> = {
   shot: '#FF6B4A',
@@ -26,6 +31,9 @@ export const challengeCategoryColors: Record<ChallengeCategory, string> = {
 };
 
 export type ThemeColors = typeof base & {
+  accentPrimary: string;
+  accentPrimaryMuted: string;
+  accentText: string;
   background: string;
   surface: string;
   surfaceElevated: string;
@@ -42,6 +50,9 @@ export const Colors: Record<'light' | 'dark', ThemeColors> = {
     textPrimary: '#14141A',
     textSecondary: '#6B6B76',
     border: '#E7E7ED',
+    accentPrimary: ACCENT_FILL,
+    accentPrimaryMuted: `${ACCENT_FILL}14`, // 8% — keeps accent text on its tint ≥ 4.5:1
+    accentText: ACCENT_FILL,
     ...base,
   },
   dark: {
@@ -51,6 +62,9 @@ export const Colors: Record<'light' | 'dark', ThemeColors> = {
     textPrimary: '#F5F5F7',
     textSecondary: '#9B9BA6',
     border: '#2A2A33',
+    accentPrimary: ACCENT_FILL,
+    accentPrimaryMuted: `${ACCENT_FILL}22`,
+    accentText: '#FF6B8E',
     ...base,
   },
 };

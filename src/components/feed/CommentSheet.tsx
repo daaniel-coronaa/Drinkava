@@ -89,7 +89,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
               <MaterialCommunityIcons
                 name="send"
                 size={22}
-                color={text.trim() ? colors.accentPrimary : colors.textSecondary}
+                color={text.trim() ? colors.accentText : colors.textSecondary}
               />
             </Pressable>
           </View>

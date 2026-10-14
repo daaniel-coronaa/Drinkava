@@ -32,7 +32,7 @@ export default function OtherUserProfileScreen() {
           <Avatar uri={user.avatarUrl} name={user.name} size={80} />
           <Text style={[typography.h2, { color: colors.textPrimary }]}>{user.name}</Text>
           {globalEntry ? (
-            <Text style={[typography.caption, { color: colors.accentPrimary }]}>
+            <Text style={[typography.caption, { color: colors.accentText }]}>
               {t('profile.otherUserRankLine', { rank: globalEntry.rank, score: globalEntry.score })}
             </Text>
           ) : null}

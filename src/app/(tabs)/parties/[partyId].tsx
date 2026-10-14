@@ -167,8 +167,8 @@ export default function PartyDetailScreen() {
         ) : null}
 
         <Pressable onPress={handleShare} style={[styles.row, { marginTop: spacing.xs }]}>
-          <MaterialCommunityIcons name="share-variant-outline" size={16} color={colors.accentPrimary} />
-          <Text style={[typography.caption, { color: colors.accentPrimary, marginLeft: 6 }]}>
+          <MaterialCommunityIcons name="share-variant-outline" size={16} color={colors.accentText} />
+          <Text style={[typography.caption, { color: colors.accentText, marginLeft: 6 }]}>
             {t('partyDetail.inviteRow', { code: party.inviteCode })}
           </Text>
         </Pressable>

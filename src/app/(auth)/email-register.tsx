@@ -114,7 +114,7 @@ export default function EmailRegisterScreen() {
         <Button label={t('auth.emailRegister.submitButton')} onPress={handleSubmit} loading={loading} />
 
         <Pressable onPress={() => router.replace('/(auth)/email-login')} style={{ alignItems: 'center', marginTop: spacing.sm }}>
-          <Text style={[typography.caption, { color: colors.accentPrimary }]}>{t('auth.emailRegister.haveAccount')}</Text>
+          <Text style={[typography.caption, { color: colors.accentText }]}>{t('auth.emailRegister.haveAccount')}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

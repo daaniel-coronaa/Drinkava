@@ -28,7 +28,7 @@ export default function PartiesScreen() {
               <MaterialCommunityIcons name="account-multiple-plus-outline" size={24} color={colors.textPrimary} />
             </Pressable>
             <Pressable onPress={() => router.push('/party/create')}>
-              <MaterialCommunityIcons name="plus-circle" size={26} color={colors.accentPrimary} />
+              <MaterialCommunityIcons name="plus-circle" size={26} color={colors.accentText} />
             </Pressable>
           </View>
         }
@@ -59,7 +59,7 @@ export default function PartiesScreen() {
       <FlatList
         data={parties}
         keyExtractor={(item) => item.id}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={colors.accentPrimary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={colors.accentText} />}
         ListEmptyComponent={
           !loading ? (
             <EmptyState

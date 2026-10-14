@@ -29,7 +29,7 @@ export function Avatar({ uri, name, size = 40 }: Props) {
         { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.accentPrimaryMuted },
       ]}
     >
-      <Text style={{ color: colors.accentPrimary, fontWeight: '800', fontSize: size * 0.38 }}>{initials}</Text>
+      <Text style={{ color: colors.accentText, fontWeight: '800', fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );
 }

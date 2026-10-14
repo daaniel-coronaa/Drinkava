@@ -84,7 +84,7 @@ export default function EmailLoginScreen() {
         <Button label={t('auth.emailLogin.submitButton')} onPress={handleSubmit} loading={loading} />
 
         <Pressable onPress={() => router.replace('/(auth)/email-register')} style={{ alignItems: 'center', marginTop: spacing.sm }}>
-          <Text style={[typography.caption, { color: colors.accentPrimary }]}>{t('auth.emailLogin.noAccount')}</Text>
+          <Text style={[typography.caption, { color: colors.accentText }]}>{t('auth.emailLogin.noAccount')}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

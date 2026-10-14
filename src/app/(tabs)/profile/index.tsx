@@ -64,7 +64,7 @@ export default function MyProfileScreen() {
                   marginRight: spacing.sm,
                 }}
               >
-                <MaterialCommunityIcons name="trophy" size={22} color={colors.accentPrimary} />
+                <MaterialCommunityIcons name="trophy" size={22} color={colors.accentText} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('profile.rankingTitle')}</Text>

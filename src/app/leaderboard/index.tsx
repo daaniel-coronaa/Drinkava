@@ -25,7 +25,7 @@ export default function GlobalLeaderboardScreen() {
       <FlatList
         data={entries}
         keyExtractor={(e) => e.userId}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={colors.accentPrimary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={colors.accentText} />}
         ListEmptyComponent={!loading ? <EmptyState icon="trophy-outline" title={t('leaderboard.emptyTitle')} /> : null}
         renderItem={({ item }) => (
           <LeaderboardRow entry={item} user={usersById[item.userId]} onPress={() => setSelectedEntry(item)} />

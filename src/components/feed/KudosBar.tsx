@@ -47,9 +47,9 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
         <MaterialCommunityIcons
           name={given ? 'thumb-up' : 'thumb-up-outline'}
           size={18}
-          color={given ? colors.accentPrimary : colors.textSecondary}
+          color={given ? colors.accentText : colors.textSecondary}
         />
-        <Text style={[typography.caption, { color: given ? colors.accentPrimary : colors.textSecondary, marginLeft: 6 }]}>
+        <Text style={[typography.caption, { color: given ? colors.accentText : colors.textSecondary, marginLeft: 6 }]}>
           {kudosUserIds.length > 0 ? kudosUserIds.length : t('feed.kudosLabel')}
         </Text>
       </Pressable>

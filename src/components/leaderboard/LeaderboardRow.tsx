@@ -31,7 +31,7 @@ export function LeaderboardRow({ entry, user, onPress }: Props) {
           {t('leaderboard.statsLine', { drinks: entry.drinkCount, variety: entry.uniqueTypes, kudos: entry.kudosReceived })}
         </Text>
       </View>
-      <Text style={[typography.h3, { color: colors.accentPrimary }]}>{entry.score}</Text>
+      <Text style={[typography.h3, { color: colors.accentText }]}>{entry.score}</Text>
     </Pressable>
   );
 }

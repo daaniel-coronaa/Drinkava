@@ -46,7 +46,7 @@ export function ScoreBreakdownSheet({ visible, onClose, entry, userName }: Props
           ))}
           <View style={[styles.row, { marginTop: spacing.sm, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border, paddingTop: spacing.sm }]}>
             <Text style={[typography.bodyBold, { color: colors.textPrimary, flex: 1 }]}>{t('leaderboard.totalLabel')}</Text>
-            <Text style={[typography.h3, { color: colors.accentPrimary }]}>{entry.score}</Text>
+            <Text style={[typography.h3, { color: colors.accentText }]}>{entry.score}</Text>
           </View>
         </Pressable>
       </Pressable>

@@ -11,7 +11,7 @@ type Props = {
 export function Chip({ label, color, tone = 'neutral' }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
   const backgroundColor = color ? `${color}22` : tone === 'accent' ? colors.accentPrimaryMuted : colors.surfaceElevated;
-  const textColor = color ?? (tone === 'accent' ? colors.accentPrimary : colors.textSecondary);
+  const textColor = color ?? (tone === 'accent' ? colors.accentText : colors.textSecondary);
 
   return (
     <View

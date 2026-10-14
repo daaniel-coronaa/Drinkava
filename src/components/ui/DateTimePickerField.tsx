@@ -55,7 +55,7 @@ export function DateTimePickerField({ value, onChange, mode, maximumDate, minimu
         <MaterialCommunityIcons
           name={mode === 'date' ? 'calendar-blank-outline' : 'calendar-clock-outline'}
           size={18}
-          color={colors.accentPrimary}
+          color={colors.accentText}
         />
         <Text style={[typography.body, { color: colors.textPrimary, flex: 1, marginLeft: spacing.sm }]}>
           {mode === 'date' ? formatDate(value.toISOString()) : formatDateTime(value.toISOString())}

@@ -49,7 +49,7 @@ export default function WelcomeScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.hero, { gap: spacing.md }]}>
         <View style={[styles.iconCircle, { backgroundColor: colors.accentPrimaryMuted }]}>
-          <MaterialCommunityIcons name="glass-cocktail" size={56} color={colors.accentPrimary} />
+          <MaterialCommunityIcons name="glass-cocktail" size={56} color={colors.accentText} />
         </View>
         <Text style={[typography.display, { color: colors.textPrimary, textAlign: 'center' }]}>Drinkava</Text>
         <Text style={[typography.body, { color: colors.textSecondary, textAlign: 'center' }]}>{t('auth.welcome.tagline')}</Text>

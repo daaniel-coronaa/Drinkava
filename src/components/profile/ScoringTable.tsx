@@ -43,7 +43,7 @@ export function ScoringTable() {
               <Text style={[typography.caption, { color: colors.textPrimary }]}>{t(`scoring.factors.${factor.factorId}.label`)}</Text>
               <Text style={[typography.tiny, { color: colors.textSecondary }]}>{t(`scoring.factors.${factor.factorId}.description`)}</Text>
             </View>
-            <Text style={[typography.bodyBold, { color: colors.accentPrimary, marginLeft: spacing.sm }]}>
+            <Text style={[typography.bodyBold, { color: colors.accentText, marginLeft: spacing.sm }]}>
               {factor.pointsPerUnit !== null ? `+${factor.pointsPerUnit} ${t('scoring.perUnit')}` : t('scoring.perChallenge')}
             </Text>
           </View>
