@@ -24,7 +24,7 @@ function Row({ icon, label, onPress }: { icon: React.ComponentProps<typeof Mater
 }
 
 export default function SettingsScreen() {
-  const { colors, spacing, typography, modeOverride, setModeOverride } = useTheme();
+  const { colors, spacing, radius, typography, modeOverride, setModeOverride } = useTheme();
   const { t } = useTranslation();
   const { language, setLanguage } = useSettings();
   const { session, signOut, updateProfile } = useAuth();
@@ -71,7 +71,7 @@ export default function SettingsScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
       <View style={{ padding: spacing.lg, gap: spacing.md }}>
         <Card>
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.appearanceTitle')}</Text>
+          <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.appearanceTitle')}</Text>
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
             {(['system', 'light', 'dark'] as (ThemeMode | 'system')[]).map((mode) => (
               <Pressable
@@ -80,7 +80,7 @@ export default function SettingsScreen() {
                 style={{
                   flex: 1,
                   paddingVertical: 8,
-                  borderRadius: 10,
+                  borderRadius: radius.pill,
                   backgroundColor: modeOverride === mode ? colors.accentPrimary : colors.surfaceElevated,
                 }}
               >
@@ -98,7 +98,7 @@ export default function SettingsScreen() {
         </Card>
 
         <Card>
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.languageTitle')}</Text>
+          <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.languageTitle')}</Text>
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
             {(['es', 'en'] as Language[]).map((lang) => (
               <Pressable
@@ -107,7 +107,7 @@ export default function SettingsScreen() {
                 style={{
                   flex: 1,
                   paddingVertical: 8,
-                  borderRadius: 10,
+                  borderRadius: radius.pill,
                   backgroundColor: language === lang ? colors.accentPrimary : colors.surfaceElevated,
                 }}
               >
@@ -142,7 +142,7 @@ export default function SettingsScreen() {
         </Card>
 
         <Pressable onPress={handleSignOut} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
-          <Text style={[typography.bodyBold, { color: '#E5484D' }]}>{t('settings.signOut')}</Text>
+          <Text style={[typography.bodyBold, { color: colors.dangerText }]}>{t('settings.signOut')}</Text>
         </Pressable>
 
         <Pressable onPress={handleResetData} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>

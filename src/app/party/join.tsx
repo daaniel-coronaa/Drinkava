@@ -46,7 +46,8 @@ export default function JoinPartyScreen() {
         placeholderTextColor={colors.textSecondary}
         style={{
           borderWidth: 1,
-          borderColor: colors.border,
+          borderColor: colors.borderStrong,
+          backgroundColor: colors.surfaceElevated,
           borderRadius: radius.md,
           padding: spacing.md,
           color: colors.textPrimary,
@@ -55,7 +56,7 @@ export default function JoinPartyScreen() {
           textAlign: 'center',
         }}
       />
-      {error ? <Text style={{ color: '#E5484D' }}>{error}</Text> : null}
+      {error ? <Text style={{ color: colors.dangerText }}>{error}</Text> : null}
       <Button label={t('parties.join.submitButton')} onPress={handleJoin} loading={submitting} disabled={!code.trim()} />
     </View>
   );

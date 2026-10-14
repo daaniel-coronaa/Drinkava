@@ -29,10 +29,10 @@ export function DrinkTypePicker({ value, onChange }: Props) {
             style={[
               styles.item,
               {
-                borderRadius: radius.md,
-                borderWidth: 1.5,
+                borderRadius: radius.lg,
+                borderWidth: active ? 1.5 : StyleSheet.hairlineWidth,
                 borderColor: active ? accent : colors.border,
-                backgroundColor: active ? `${accent}1A` : colors.surface,
+                backgroundColor: active ? `${accent}${colors.tintAlpha}` : colors.surface,
               },
             ]}
           >
@@ -49,5 +49,5 @@ export function DrinkTypePicker({ value, onChange }: Props) {
 
 const styles = StyleSheet.create({
   wrap: { flexDirection: 'row', flexWrap: 'wrap' },
-  item: { width: 76, height: 76, alignItems: 'center', justifyContent: 'center' },
+  item: { width: 80, height: 80, alignItems: 'center', justifyContent: 'center' },
 });

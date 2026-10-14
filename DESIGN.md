@@ -4,7 +4,7 @@
 
 Single source of truth for Drinkava's visual language. Format: 9-section DESIGN.md (`.claude/skills/00-design-references/design-md-format.md`), adapted for React Native / Expo — values are dp and RN style props, not CSS.
 
-**Status legend:** ✅ shipped in `src/theme` today · ◻ target (not yet in code). Appendix A lists every delta. Until a token is migrated, build with `useTheme()` — never hardcode a target value in a component.
+**Status:** shipped in `src/theme` and the shared components (✅). The few items still open are marked ◻ and listed in Appendix A. Always build with `useTheme()` — never hardcode hex in a component.
 
 Aesthetic base (read for structure, not copied): **Apple** (reductive; chromatic accent reserved for interactive elements; separate accent values for fills vs. text on light/dark; pill CTAs; SF system font) and **Stripe** (light display weights that "don't need to shout"; warm-tinted neutrals instead of pure black/white; conservative radii).
 
@@ -38,24 +38,24 @@ Always read from `useTheme().colors`.
 Rule: *fill → `accentPrimary`, foreground → `accentText`.* A single pink cannot be both a surface under white text and small text on near-black, so the system carries two values (the same split Apple uses for CTA blue vs. link blue).
 
 ### Neutrals
-| Role | Dark (target) | Light (target) | Status |
+| Role | Dark | Light | Status |
 |------|---------------|----------------|--------|
-| background | `#0A0A0B` | `#F7F5F2` | ◻ |
-| surface | `#131316` | `#FFFFFF` | ◻ |
-| surfaceElevated | `#1A1A1F` | `#FFFFFF` | ◻ |
-| textPrimary | `#F4F1EC` | `#16141A` | ◻ |
-| textSecondary | `#9C98A1` | `#6A6670` | ◻ |
-| border (decorative hairline) | `#26262B` | `#E6E2DC` | ◻ |
-| borderStrong (input boundaries) | `#68656F` | `#8A8690` | ◻ new |
+| background | `#0A0A0B` | `#F7F5F2` | ✅ |
+| surface | `#131316` | `#FFFFFF` | ✅ |
+| surfaceElevated | `#1A1A1F` | `#FFFFFF` | ✅ |
+| textPrimary | `#F4F1EC` | `#16141A` | ✅ |
+| textSecondary | `#9C98A1` | `#6A6670` | ✅ |
+| border (decorative hairline) | `#26262B` | `#E6E2DC` | ✅ |
+| borderStrong (input boundaries) | `#68656F` | `#8A8690` | ✅ new |
 
 ### Semantic (per theme — text/icon values; verified ≥ 4.5:1 on all surfaces and on their own tints)
 | Role | Dark | Light | Status |
 |------|------|-------|--------|
-| success | `#2ED573` | `#197E43` | ◻ light new |
-| warning | `#FFB020` | `#9A6400` | ◻ light new |
-| info | `#428EFF` | `#0062F5` | ◻ |
-| danger (text) | `#E9676B` | `#C0343A` | ◻ token new |
-| danger (fill, white label) | `#C0343A` | `#C0343A` | ◻ token new |
+| success | `#2ED573` | `#197E43` | ✅ light new |
+| warning | `#FFB020` | `#9A6400` | ✅ light new |
+| info | `#428EFF` | `#0062F5` | ✅ |
+| danger (text) | `#E9676B` | `#C0343A` | ✅ token new |
+| danger (fill, white label) | `#C0343A` | `#C0343A` | ✅ token new |
 
 ### Category colors (text/icon/border; per theme)
 | Hue | Used for | Dark | Light |
@@ -74,10 +74,11 @@ Tints: category color at alpha `22` (dark) / `14` (light) for chip and icon-circ
 | Pair | Ratio | Result |
 |------|-------|--------|
 | white on accentPrimary `#C8244F` | 5.50:1 | AA ✅ shipped |
-| accentText dark `#FF6B8E` on bg / surface / elevated — shipped surfaces | 7.25 / 6.58 / 6.03:1 | AA ✅ shipped |
-| accentText dark `#FF6B8E` on bg / surface / elevated — target surfaces | 7.30 / 6.84 / 6.39:1 | AA |
+| accentText dark `#FF6B8E` on bg / surface / elevated | 7.30 / 6.84 / 6.39:1 | AA |
 | accentText light `#C8244F` on `#FFFFFF` / `#F7F5F2` | 5.50 / 5.05:1 | AA |
-| accent text on its own tint — dark (`22` over `#17171D`) / light (`14` over white) | 6.03 / 4.87:1 | AA ✅ shipped |
+| accent text on its own tint — dark (`22` over surface / elevated) / light (`14` over white) | 6.30 / 5.89 / 4.87:1 | AA |
+| every category & semantic color on its own tint — dark (`22`, over surface) | 4.88 – 7.91:1 | AA |
+| every category & semantic color on its own tint — light (`14`, over white) | 4.52 – 5.77:1 | AA |
 | textPrimary dark `#F4F1EC` on bg / elevated | 17.57 / 15.39:1 | AAA |
 | textSecondary dark `#9C98A1` on surface / elevated | 6.55 / 6.12:1 | AA |
 | textPrimary light `#16141A` on page | 16.79:1 | AAA |
@@ -87,7 +88,6 @@ Tints: category color at alpha `22` (dark) / `14` (light) for chip and icon-circ
 | borderStrong dark `#68656F` on surface / elevated | 3.25 / 3.04:1 | UI ≥ 3 |
 | borderStrong light `#8A8690` on white / page | 3.56 / 3.27:1 | UI ≥ 3 |
 
-**Known gaps in shipped code (not in this table's targets):** white on today's danger `#E5484D` is 3.91:1 (fail); semantic/category text in **light** mode uses the dark-theme hues today (e.g. amber on white ≈ 2.0:1, success green ≈ 1.9:1 — visible as the faint "En vivo" badge). Both are fixed by the semantic/category rows above once migrated.
 
 ## 3. Typography Rules
 
@@ -95,21 +95,21 @@ Tints: category color at alpha `22` (dark) / `14` (light) for chip and icon-circ
 
 | Token | Size | Weight | Line height | Tracking | Status | Used for |
 |-------|------|--------|-------------|----------|--------|----------|
-| display | 40 | 300 | 44 | −1.0 | ◻ (now 38/800) | Wordmark, hero numerals. Weight 300 only at ≥ 36 |
-| h1 | 28 | 600 | 34 | −0.6 | ◻ (now 29/800) | Screen titles, big stats |
-| h2 | 21 | 600 | 27 | −0.3 | ◻ (now 21/700) | Party name, section titles |
-| h3 | 17 | 600 | 23 | −0.2 | ◻ (now 17/700) | Card & sheet titles |
-| body | 15 | 400 | 22 | −0.1 | ◻ | Paragraphs, inputs |
-| bodyBold | 15 | 600 | 22 | −0.1 | ◻ (now 700) | Names, button labels |
-| caption | 13 | 400 | 18 | 0 | ◻ (now 500) | Labels, metadata, links |
-| eyebrow | 11 | 600 | 14 | +0.8, UPPERCASE | ◻ new | Section labels, category tags |
-| tiny | 11 | 500 | 15 | 0 | ◻ (now 600) | Chips, timestamps |
+| display | 40 | 300 | 44 | −1.0 | ✅ | Wordmark, hero numerals. Weight 300 only at ≥ 36 |
+| h1 | 28 | 600 | 34 | −0.6 | ✅ | Screen titles, big stats |
+| h2 | 21 | 600 | 27 | −0.3 | ✅ | Party name, section titles |
+| h3 | 17 | 600 | 23 | −0.2 | ✅ | Card & sheet titles |
+| body | 15 | 400 | 22 | −0.1 | ✅ | Paragraphs, inputs |
+| bodyBold | 15 | 600 | 22 | −0.1 | ✅ | Names, button labels |
+| caption | 13 | 400 | 18 | 0 | ✅ | Labels, metadata, links |
+| eyebrow | 11 | 600 | 14 | +0.8, UPPERCASE | ✅ new | Section labels, category tags |
+| tiny | 11 | 500 | 15 | 0 | ✅ | Chips, timestamps |
 
 Rules: nothing below 11; weight ≥ 600 for anything under 17 that must stay prominent (light weights vanish on dark at small sizes); Spanish runs ≈ 15–30% longer than English — never fix widths.
 
 ## 4. Component Stylings
 
-| Component | Spec (target) |
+| Component | Spec |
 |-----------|---------------|
 | **Button — primary** | Fill `accentPrimary`, label `#FFFFFF` bodyBold, height 52, **pill**, no border, pressed opacity 0.9, disabled 0.4 |
 | **Button — secondary** | Transparent, 1 × `borderStrong`, label textPrimary, pill, height 52 |
@@ -117,24 +117,23 @@ Rules: nothing below 11; weight ≥ 600 for anything under 17 that must stay pro
 | **Button — danger** | Fill danger `#C0343A`, label `#FFFFFF`, pill |
 | **Card** | `surface`, 1 hairline `border`, radius 16, padding 20, no tint; challenge cards use category border |
 | **Chip** | Pill, `tiny`, padding 10 × 3, tint = color @ `22`/`14`, text = category/semantic color |
-| **Input** | Height 48, radius 12, `surfaceElevated` fill, 1 × `borderStrong`; focus border `accentText`; placeholder textSecondary |
+| **Input** | Min height 48, radius 12, `surfaceElevated` fill, 1 × `borderStrong`; placeholder textSecondary. ◻ Custom focus border (`accentText`) not implemented — platform default today |
 | **Segmented control** | Track `surfaceElevated`, radius 12, padding 4; active segment `accentPrimary` + white label; radius 8 |
 | **Bottom sheet** | `surface`, top radius 24, `maxHeight` 85%, padding 24, scrim `#00000066`, grab affordance optional, always scrollable |
 | **Dialog** (`ConfirmDialog`) | Centered, maxWidth 360, `surface`, radius 24, padding 24, scrim `#00000088`; two equal pill buttons |
 | **Tab bar** | `surface`, hairline top, active `accentText`, inactive textSecondary; center "+" = 48dp `accentPrimary` pill |
-| **Avatar** | Circle; fallback = initials 600 in textSecondary on `surfaceElevated` (accent reserved for interactive) |
+| **Avatar** | Circle; fallback = initials 600 in `textPrimary` on a `border`-tone fill (accent reserved for interactive; `border` rather than `surfaceElevated` so it still reads on white cards in light mode) |
 | **Drink tile** | 80 × 80, radius 16, hairline border; selected = category color border + `1A` tint |
 | **Disclaimer banner** | warning tint `1A`, radius 12, `tiny`; required on feed + logging screens |
 | **Empty state** | 40dp outline icon textSecondary, h3 title, body description, vertical padding 64 |
 | **Collapsible** | Whole header row tappable, chevron swaps, content mounts only when open |
 | **Option row** (theme/language) | Equal-width pills, gap 8, active = `accentPrimary` + white label |
 
-Shipped today: button/input radius 14, card radius 20, button padding 14 × 24, no eyebrow style, accent-colored avatar fallback. See Appendix A.
 
 ## 5. Layout Principles
 
-**Base unit 4.** Target scale: xs 4 · sm 8 · md 16 · inset 20 *(new)* · lg 24 · xl 32 · xxl 48 · xxxl 64 *(new)*.
-**Radius (target):** sm 6 · md 12 · lg 16 · xl 24 · pill 999 *(today: 8 · 14 · 20 · pill)*.
+**Base unit 4.** Scale: xs 4 · sm 8 · md 16 · inset 20 *(new)* · lg 24 · xl 32 · xxl 48 · xxxl 64 *(new)*.
+**Radius:** sm 6 · md 12 (inputs, segmented tracks) · lg 16 (cards) · xl 24 (sheets, dialogs) · pill 999 (buttons, chips, avatars). Inner segment radius = md − 4 (concentric).
 
 Rhythm — *one step more space than today*:
 - Screen gutters: lg (24) for forms/onboarding, md (16) → **inset (20)** for feeds
@@ -189,13 +188,13 @@ Fluid React Native — no CSS breakpoints. Phone portrait first; web preview mus
 
 - Single column; side-by-side only for paired actions and stat tiles (`flex: 1`)
 - Dialog max 360dp, breakdown card max 400dp, sheets max 85% height and scroll
-- Feeds on wide screens: cap content width at 560dp and center
+- ◻ Feeds on wide screens: cap content width at 560dp and center (not implemented yet)
 - Touch targets ≥ 44dp. Undersized today: quantity stepper 40, time stepper 32, photo-remove 28
 - Sheets with inputs use `KeyboardAvoidingView` (iOS `padding`)
 
 ## 9. Agent Prompt Guide
 
-### Quick reference (target)
+### Quick reference
 - Accent fill `#C8244F` · accent text dark `#FF6B8E` / light `#C8244F`
 - Dark: bg `#0A0A0B` · surface `#131316` · elevated `#1A1A1F` · text `#F4F1EC` · secondary `#9C98A1` · border `#26262B`
 - Light: bg `#F7F5F2` · surface `#FFFFFF` · text `#16141A` · secondary `#6A6670` · border `#E6E2DC`
@@ -210,26 +209,24 @@ Fluid React Native — no CSS breakpoints. Phone portrait first; web preview mus
 
 **Status:** “`Chip` with the per-theme semantic color (success/info/danger/warning) at 14–22% tint; label from `t('…status.<state>')`. No accent color for status.”
 
-## Appendix A — Migration status (shipped → target)
+## Appendix A — Implementation status
 
-| Token / rule | Shipped now | Target | Status |
-|--------------|-------------|--------|--------|
-| accentPrimary | `#C8244F` | `#C8244F` | ✅ |
-| accentText (new) | dark `#FF6B8E` / light `#C8244F` | same | ✅ |
-| accentPrimaryMuted alpha | `22` / `14` | same | ✅ |
-| background dark / light | `#0B0B0F` / `#FAFAFC` | `#0A0A0B` / `#F7F5F2` | ◻ |
-| surface dark | `#17171D` | `#131316` | ◻ |
-| surfaceElevated dark | `#1F1F27` | `#1A1A1F` | ◻ |
-| textPrimary dark / light | `#F5F5F7` / `#14141A` | `#F4F1EC` / `#16141A` | ◻ |
-| textSecondary dark / light | `#9B9BA6` / `#6B6B76` | `#9C98A1` / `#6A6670` | ◻ |
-| border dark / light | `#2A2A33` / `#E7E7ED` | `#26262B` / `#E6E2DC` | ◻ |
-| borderStrong | — | `#68656F` / `#8A8690` | ◻ new |
-| semantic & category colors | one value, both themes | per-theme (§2) | ◻ |
-| danger | hardcoded `#E5484D` | token `#C0343A` fill / per-theme text | ◻ |
-| type scale | 38/29/21/17 at 800/800/700/700 | §3 | ◻ |
-| radius | 8 · 14 · 20 | 6 · 12 · 16 · 24 | ◻ |
-| spacing | 4–48 | + inset 20, xxxl 64 | ◻ |
-| avatar fallback / score colors | accent | neutral | ◻ |
-| primary buttons | radius 14 | pill, height 52 | ◻ |
+All palette, type, spacing, radius and component tokens in this document are shipped in `src/theme/*` and the shared components (`Button`, `Card`, `Chip`, `Avatar`, `ConfirmDialog`, sheets, inputs). Per-theme semantic and category colors are served through `useTheme()` (`drinkTypeColors`, `challengeCategoryColors`, `accentSuccess/Warning/Info`, `danger`, `dangerText`); tint backgrounds use `colors.tintAlpha`.
 
-To migrate: change `src/theme/colors.ts`, `typography.ts`, `spacing.ts` (and the few hardcoded `#E5484D`/`#FFFFFF` sites) — components already read tokens, so most of the app updates from those files.
+| Token / rule | Value | Status |
+|--------------|-------|--------|
+| accentPrimary / accentText / accentPrimaryMuted | `#C8244F` · dark `#FF6B8E` / light `#C8244F` · `22` / `14` alpha | ✅ |
+| Neutrals (background, surface, elevated, text, border, borderStrong) | §2 | ✅ |
+| Semantic + category colors, per theme | §2 | ✅ |
+| danger / dangerText tokens (no more hardcoded `#E5484D`) | `#C0343A` · dark `#E9676B` | ✅ |
+| Type scale incl. `eyebrow` | §3 | ✅ |
+| Radius 6/12/16/24/pill, spacing + `inset` 20, `xxxl` 64 | §5 | ✅ |
+| Pill buttons (52dp), filled inputs (48dp), 80dp drink tiles, 48dp tab action | §4 | ✅ |
+| Accent removed from scores, avatar fallback, hero/trophy/achievement icons | §7 | ✅ |
+
+**Not yet implemented (◻):**
+- Input focus state (`accentText` border) — uses the platform default
+- Content max-width (560dp) on wide screens
+- Touch targets below 44dp: quantity stepper 40, time stepper 32, photo-remove badge 28
+- Optional translucent tab bar / sheets via `expo-glass-effect`
+- `eyebrow` is applied to Settings and Safe Mode section labels only; other small section labels still use `caption`

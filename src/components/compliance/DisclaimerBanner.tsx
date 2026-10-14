@@ -15,7 +15,7 @@ export function DisclaimerBanner() {
           backgroundColor: `${colors.accentWarning}1A`,
           borderRadius: radius.md,
           padding: spacing.sm,
-          marginHorizontal: spacing.md,
+          marginHorizontal: spacing.inset,
           marginBottom: spacing.sm,
           gap: spacing.xs,
         },

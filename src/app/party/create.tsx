@@ -50,9 +50,12 @@ export default function CreatePartyScreen() {
           placeholderTextColor={colors.textSecondary}
           style={{
             borderWidth: 1,
-            borderColor: colors.border,
+            borderColor: colors.borderStrong,
             borderRadius: radius.md,
-            padding: spacing.sm,
+            backgroundColor: colors.surfaceElevated,
+            minHeight: 48,
+            paddingHorizontal: spacing.md,
+            paddingVertical: spacing.sm,
             color: colors.textPrimary,
           }}
         />
@@ -72,9 +75,12 @@ export default function CreatePartyScreen() {
           placeholderTextColor={colors.textSecondary}
           style={{
             borderWidth: 1,
-            borderColor: colors.border,
+            borderColor: colors.borderStrong,
             borderRadius: radius.md,
-            padding: spacing.sm,
+            backgroundColor: colors.surfaceElevated,
+            minHeight: 48,
+            paddingHorizontal: spacing.md,
+            paddingVertical: spacing.sm,
             color: colors.textPrimary,
           }}
         />

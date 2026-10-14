@@ -156,7 +156,7 @@ export default function PartyDetailScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
-      <View style={{ padding: spacing.md, gap: spacing.xs }}>
+      <View style={{ padding: spacing.inset, gap: spacing.xs }}>
         <View style={styles.row}>
           <Text style={[typography.h2, { color: colors.textPrimary, flex: 1 }]}>{party.name}</Text>
           <PartyStatusBadge status={party.status} />
@@ -215,7 +215,7 @@ export default function PartyDetailScreen() {
         ) : null}
       </View>
 
-      <View style={[styles.segmented, { marginHorizontal: spacing.md, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
+      <View style={[styles.segmented, { marginHorizontal: spacing.inset, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
         {(
           [
             ['feed', t('partyDetail.tabFeed')],
@@ -226,7 +226,7 @@ export default function PartyDetailScreen() {
           <Pressable
             key={key}
             onPress={() => setSection(key)}
-            style={[styles.segment, { borderRadius: radius.sm, backgroundColor: section === key ? colors.accentPrimary : 'transparent' }]}
+            style={[styles.segment, { borderRadius: radius.md - spacing.xs, backgroundColor: section === key ? colors.accentPrimary : 'transparent' }]}
           >
             <Text style={[typography.caption, { color: section === key ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' }]}>
               {label}

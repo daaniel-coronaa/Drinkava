@@ -19,7 +19,7 @@ export function LeaderboardRow({ entry, user, onPress }: Props) {
   return (
     <Pressable
       onPress={onPress}
-      style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm }}
+      style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.inset, paddingVertical: spacing.sm, gap: spacing.sm }}
     >
       <Text style={[typography.bodyBold, { width: 32, color: colors.textSecondary }]}>
         {MEDALS[entry.rank] ?? `#${entry.rank}`}
@@ -31,7 +31,7 @@ export function LeaderboardRow({ entry, user, onPress }: Props) {
           {t('leaderboard.statsLine', { drinks: entry.drinkCount, variety: entry.uniqueTypes, kudos: entry.kudosReceived })}
         </Text>
       </View>
-      <Text style={[typography.h3, { color: colors.accentText }]}>{entry.score}</Text>
+      <Text style={[typography.h3, { color: colors.textPrimary }]}>{entry.score}</Text>
     </Pressable>
   );
 }

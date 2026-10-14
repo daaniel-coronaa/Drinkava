@@ -20,7 +20,7 @@ export function ScoreBreakdownSheet({ visible, onClose, entry, userName }: Props
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable
-          style={[styles.card, { backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.lg }]}
+          style={[styles.card, { backgroundColor: colors.surface, borderRadius: radius.xl, padding: spacing.lg }]}
         >
           <Text style={[typography.h3, { color: colors.textPrimary }]}>
             {userName ? t('leaderboard.breakdownTitleFor', { name: userName }) : t('leaderboard.breakdownTitleGeneric')}
@@ -36,7 +36,7 @@ export function ScoreBreakdownSheet({ visible, onClose, entry, userName }: Props
               <Text
                 style={[
                   typography.bodyBold,
-                  { color: item.contribution < 0 ? '#E5484D' : colors.textPrimary },
+                  { color: item.contribution < 0 ? colors.dangerText : colors.textPrimary },
                 ]}
               >
                 {item.contribution > 0 ? '+' : ''}
@@ -46,7 +46,7 @@ export function ScoreBreakdownSheet({ visible, onClose, entry, userName }: Props
           ))}
           <View style={[styles.row, { marginTop: spacing.sm, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border, paddingTop: spacing.sm }]}>
             <Text style={[typography.bodyBold, { color: colors.textPrimary, flex: 1 }]}>{t('leaderboard.totalLabel')}</Text>
-            <Text style={[typography.h3, { color: colors.accentText }]}>{entry.score}</Text>
+            <Text style={[typography.h3, { color: colors.textPrimary }]}>{entry.score}</Text>
           </View>
         </Pressable>
       </Pressable>

@@ -34,8 +34,8 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => (
             <View
               style={{
-                width: 44,
-                height: 44,
+                width: 48,
+                height: 48,
                 borderRadius: radius.pill,
                 backgroundColor: colors.accentPrimary,
                 alignItems: 'center',

@@ -49,13 +49,13 @@ export function DateTimePickerField({ value, onChange, mode, maximumDate, minimu
         onPress={open}
         style={[
           styles.field,
-          { borderColor: colors.border, borderRadius: radius.md, padding: spacing.sm, backgroundColor: colors.surface },
+          { borderColor: colors.borderStrong, borderRadius: radius.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, backgroundColor: colors.surfaceElevated },
         ]}
       >
         <MaterialCommunityIcons
           name={mode === 'date' ? 'calendar-blank-outline' : 'calendar-clock-outline'}
           size={18}
-          color={colors.accentText}
+          color={colors.textSecondary}
         />
         <Text style={[typography.body, { color: colors.textPrimary, flex: 1, marginLeft: spacing.sm }]}>
           {mode === 'date' ? formatDate(value.toISOString()) : formatDateTime(value.toISOString())}
@@ -68,7 +68,7 @@ export function DateTimePickerField({ value, onChange, mode, maximumDate, minimu
         <View
           style={[
             styles.sheet,
-            { backgroundColor: colors.surface, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
+            { backgroundColor: colors.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
           ]}
         >
           <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
@@ -121,7 +121,7 @@ function TimeStepper({ value, onChange, max }: { value: number; onChange: (v: nu
 }
 
 const styles = StyleSheet.create({
-  field: { flexDirection: 'row', alignItems: 'center', borderWidth: 1 },
+  field: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, minHeight: 48 },
   backdrop: { flex: 1, backgroundColor: '#00000066' },
   sheet: { position: 'absolute', bottom: 0, left: 0, right: 0, maxHeight: '85%' },
   timeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },

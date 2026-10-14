@@ -58,15 +58,15 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
     assignment.status === 'validado'
       ? colors.accentSuccess
       : assignment.status === 'rechazado'
-        ? '#E5484D'
+        ? colors.dangerText
         : assignment.status === 'completado'
           ? colors.accentInfo
           : colors.textSecondary;
 
   return (
-    <Card style={{ marginHorizontal: spacing.md, marginBottom: spacing.sm, borderColor: accent }}>
+    <Card style={{ marginHorizontal: spacing.inset, marginBottom: spacing.md, borderColor: accent }}>
       <View style={styles.headerRow}>
-        <View style={[styles.iconCircle, { backgroundColor: `${accent}22`, borderRadius: radius.pill }]}>
+        <View style={[styles.iconCircle, { backgroundColor: `${accent}${colors.tintAlpha}`, borderRadius: radius.pill }]}>
           <MaterialCommunityIcons name={challengeCategoryIcons[challenge.category]} size={20} color={accent} />
         </View>
         <View style={{ flex: 1, marginLeft: spacing.sm }}>

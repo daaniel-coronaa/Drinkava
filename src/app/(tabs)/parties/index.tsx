@@ -34,14 +34,14 @@ export default function PartiesScreen() {
         }
       />
 
-      <View style={[styles.segmented, { marginHorizontal: spacing.md, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
+      <View style={[styles.segmented, { marginHorizontal: spacing.inset, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
         {(['active', 'finished'] as PartyStatus[]).map((status) => (
           <Pressable
             key={status}
             onPress={() => setFilter(status)}
             style={[
               styles.segment,
-              { borderRadius: radius.sm, backgroundColor: filter === status ? colors.accentPrimary : 'transparent' },
+              { borderRadius: radius.md - spacing.xs, backgroundColor: filter === status ? colors.accentPrimary : 'transparent' },
             ]}
           >
             <Text

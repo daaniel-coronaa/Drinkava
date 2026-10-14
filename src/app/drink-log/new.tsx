@@ -19,7 +19,7 @@ import type { DrinkType, Party } from '@/types';
 // (Claude/GPT-4V) would run before the log is accepted.
 export default function NewDrinkLogScreen() {
   const { partyId: partyIdParam } = useLocalSearchParams<{ partyId?: string }>();
-  const { colors, spacing, typography } = useTheme();
+  const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
 
@@ -88,7 +88,7 @@ export default function NewDrinkLogScreen() {
             onChangeText={setCustomLabel}
             placeholder={t('drinkLog.customPlaceholder')}
             placeholderTextColor={colors.textSecondary}
-            style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: spacing.sm, color: colors.textPrimary }}
+            style={{ borderWidth: 1, borderColor: colors.borderStrong, backgroundColor: colors.surfaceElevated, borderRadius: radius.md, minHeight: 48, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, color: colors.textPrimary }}
           />
         )}
       </View>

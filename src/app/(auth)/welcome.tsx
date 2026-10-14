@@ -48,8 +48,8 @@ export default function WelcomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.hero, { gap: spacing.md }]}>
-        <View style={[styles.iconCircle, { backgroundColor: colors.accentPrimaryMuted }]}>
-          <MaterialCommunityIcons name="glass-cocktail" size={56} color={colors.accentText} />
+        <View style={[styles.iconCircle, { backgroundColor: colors.surfaceElevated }]}>
+          <MaterialCommunityIcons name="glass-cocktail" size={56} color={colors.textPrimary} />
         </View>
         <Text style={[typography.display, { color: colors.textPrimary, textAlign: 'center' }]}>Drinkava</Text>
         <Text style={[typography.body, { color: colors.textSecondary, textAlign: 'center' }]}>{t('auth.welcome.tagline')}</Text>
@@ -83,7 +83,7 @@ export default function WelcomeScreen() {
         />
 
         {error ? (
-          <Text style={[typography.caption, { color: '#E5484D', textAlign: 'center' }]}>{error}</Text>
+          <Text style={[typography.caption, { color: colors.dangerText, textAlign: 'center' }]}>{error}</Text>
         ) : null}
 
         <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>

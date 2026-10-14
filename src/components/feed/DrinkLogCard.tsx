@@ -27,7 +27,7 @@ export function DrinkLogCard({ drinkLog, usersById }: Props) {
   const accent = drinkTypeColors[drinkLog.drinkType];
 
   return (
-    <Card style={{ marginHorizontal: spacing.md, marginBottom: spacing.sm }}>
+    <Card style={{ marginHorizontal: spacing.inset, marginBottom: spacing.md }}>
       <View style={styles.headerRow}>
         <Pressable onPress={() => router.push(`/(tabs)/profile/${drinkLog.userId}`)}>
           <Avatar uri={author?.avatarUrl} name={author?.name ?? '?'} size={36} />
@@ -36,7 +36,7 @@ export function DrinkLogCard({ drinkLog, usersById }: Props) {
           <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{author?.name ?? t('feed.someone')}</Text>
           <Text style={[typography.tiny, { color: colors.textSecondary }]}>{timeAgo(drinkLog.timestamp)}</Text>
         </View>
-        <View style={[styles.iconCircle, { backgroundColor: `${accent}22`, borderRadius: radius.pill }]}>
+        <View style={[styles.iconCircle, { backgroundColor: `${accent}${colors.tintAlpha}`, borderRadius: radius.pill }]}>
           <MaterialCommunityIcons name={drinkTypeIcons[drinkLog.drinkType]} size={20} color={accent} />
         </View>
       </View>

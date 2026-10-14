@@ -20,7 +20,7 @@ export function ParticipantRow({ user, joinedAt, role }: Props) {
   return (
     <Pressable
       onPress={() => router.push(`/(tabs)/profile/${user.id}`)}
-      style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm }}
+      style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.inset, paddingVertical: spacing.sm, gap: spacing.sm }}
     >
       <Avatar uri={user.avatarUrl} name={user.name} size={36} />
       <View style={{ flex: 1 }}>
@@ -29,7 +29,7 @@ export function ParticipantRow({ user, joinedAt, role }: Props) {
       </View>
       <Chip
         label={role === 'admin' ? t('partyDetail.roleAdmin') : t('partyDetail.roleGuest')}
-        color={role === 'admin' ? colors.accentText : undefined}
+        color={role === 'admin' ? colors.textPrimary : undefined}
         tone={role === 'admin' ? 'accent' : 'neutral'}
       />
     </Pressable>

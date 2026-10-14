@@ -33,7 +33,7 @@ export function ConfirmDialog({ visible, title, message, confirmLabel, cancelLab
       >
         <Pressable
           onPress={(e) => e.stopPropagation()}
-          style={{ width: '100%', maxWidth: 360, backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm }}
+          style={{ width: '100%', maxWidth: 360, backgroundColor: colors.surface, borderRadius: radius.xl, padding: spacing.lg, gap: spacing.sm }}
         >
           <Text style={[typography.h3, { color: colors.textPrimary }]}>{title}</Text>
           <Text style={[typography.body, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{message}</Text>

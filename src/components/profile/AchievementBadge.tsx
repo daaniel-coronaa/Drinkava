@@ -21,13 +21,13 @@ export function AchievementBadge({ definition, unlockedAt }: Props) {
       <View
         style={[
           styles.iconCircle,
-          { backgroundColor: unlocked ? colors.accentPrimaryMuted : colors.surfaceElevated, borderRadius: radius.pill },
+          { backgroundColor: unlocked ? colors.border : colors.surfaceElevated, borderRadius: radius.pill },
         ]}
       >
         <MaterialCommunityIcons
           name={definition.icon as React.ComponentProps<typeof MaterialCommunityIcons>['name']}
           size={28}
-          color={unlocked ? colors.accentText : colors.textSecondary}
+          color={unlocked ? colors.textPrimary : colors.textSecondary}
         />
       </View>
       <Text style={[typography.bodyBold, { color: colors.textPrimary, textAlign: 'center', marginTop: spacing.xs }]}>

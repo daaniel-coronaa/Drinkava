@@ -103,7 +103,7 @@ export default function SafeModeScreen() {
           </View>
         </Card>
 
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('safeMode.goHomeTitle')}</Text>
+        <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('safeMode.goHomeTitle')}</Text>
         <Card>
           <View style={{ gap: spacing.sm }}>
             <Pressable

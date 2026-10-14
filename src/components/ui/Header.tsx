@@ -11,7 +11,7 @@ type Props = {
 export function Header({ title, subtitle, right }: Props) {
   const { colors, spacing, typography } = useTheme();
   return (
-    <View style={[styles.row, { paddingHorizontal: spacing.md, paddingTop: spacing.sm, paddingBottom: spacing.sm }]}>
+    <View style={[styles.row, { paddingHorizontal: spacing.inset, paddingTop: spacing.sm, paddingBottom: spacing.sm }]}>
       <View style={{ flex: 1 }}>
         <Text style={[typography.h1, { color: colors.textPrimary }]}>{title}</Text>
         {subtitle ? <Text style={[typography.body, { color: colors.textSecondary }]}>{subtitle}</Text> : null}

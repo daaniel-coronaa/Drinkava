@@ -52,10 +52,10 @@ export default function AgeGateScreen() {
             marginTop: spacing.md,
             padding: spacing.sm,
             borderRadius: radius.md,
-            backgroundColor: '#E5484D22',
+            backgroundColor: `${colors.dangerText}${colors.tintAlpha}`,
           }}
         >
-          <Text style={[typography.caption, { color: '#E5484D' }]}>{error}</Text>
+          <Text style={[typography.caption, { color: colors.dangerText }]}>{error}</Text>
         </View>
       ) : null}
 

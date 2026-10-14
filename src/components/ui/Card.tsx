@@ -13,7 +13,7 @@ export function Card({ children, style }: Props) {
     <View
       style={[
         styles.base,
-        { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.lg, padding: spacing.md },
+        { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.lg, padding: spacing.inset },
         style,
       ]}
     >

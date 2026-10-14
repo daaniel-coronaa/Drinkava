@@ -26,10 +26,10 @@ export function Avatar({ uri, name, size = 40 }: Props) {
     <View
       style={[
         styles.fallback,
-        { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.accentPrimaryMuted },
+        { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.border },
       ]}
     >
-      <Text style={{ color: colors.accentText, fontWeight: '800', fontSize: size * 0.38 }}>{initials}</Text>
+      <Text style={{ color: colors.textPrimary, fontWeight: '600', fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );
 }

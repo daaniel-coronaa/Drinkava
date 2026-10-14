@@ -32,19 +32,19 @@ export default function OtherUserProfileScreen() {
           <Avatar uri={user.avatarUrl} name={user.name} size={80} />
           <Text style={[typography.h2, { color: colors.textPrimary }]}>{user.name}</Text>
           {globalEntry ? (
-            <Text style={[typography.caption, { color: colors.accentText }]}>
+            <Text style={[typography.caption, { color: colors.textSecondary }]}>
               {t('profile.otherUserRankLine', { rank: globalEntry.rank, score: globalEntry.score })}
             </Text>
           ) : null}
         </View>
 
-        <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
+        <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.inset, marginBottom: spacing.lg }}>
           <StatTile label={t('profile.totalDrinks')} value={totalDrinks} />
           <StatTile label={t('profile.parties')} value={parties.length} />
           <StatTile label={t('profile.favorite')} value={favoriteType ? t(`drinkTypes.${favoriteType}`) : t('profile.none')} />
         </View>
 
-        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.sm }}>
+        <View style={{ paddingHorizontal: spacing.inset, marginBottom: spacing.sm }}>
           <Text style={[typography.h3, { color: colors.textPrimary }]}>{t('profile.partyHistoryTitle')}</Text>
         </View>
         {parties.map((p) => (

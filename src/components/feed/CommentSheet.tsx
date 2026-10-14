@@ -45,14 +45,14 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
         <View
           style={[
             styles.sheet,
-            { backgroundColor: colors.surface, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
+            { backgroundColor: colors.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
           ]}
         >
           <Text style={[typography.h3, { color: colors.textPrimary, padding: spacing.md }]}>{t('feed.commentsTitle')}</Text>
           <FlatList
             data={comments}
             keyExtractor={(c) => c.id}
-            contentContainerStyle={{ paddingHorizontal: spacing.md, gap: spacing.sm }}
+            contentContainerStyle={{ paddingHorizontal: spacing.inset, gap: spacing.sm }}
             renderItem={({ item }) => {
               const author = usersById[item.userId];
               return (
@@ -82,7 +82,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
               placeholderTextColor={colors.textSecondary}
               style={[
                 styles.input,
-                { borderColor: colors.border, borderRadius: radius.md, color: colors.textPrimary },
+                { borderColor: colors.borderStrong, backgroundColor: colors.surfaceElevated, borderRadius: radius.md, color: colors.textPrimary },
               ]}
             />
             <Pressable onPress={handleSend} disabled={sending || !text.trim()}>
@@ -104,5 +104,5 @@ const styles = StyleSheet.create({
   sheetWrapper: { position: 'absolute', bottom: 0, left: 0, right: 0 },
   sheet: { maxHeight: '70%' },
   inputRow: { flexDirection: 'row', alignItems: 'center', borderTopWidth: StyleSheet.hairlineWidth },
-  input: { flex: 1, borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: 12, paddingVertical: 8 },
+  input: { flex: 1, borderWidth: 1, minHeight: 44, paddingHorizontal: 12, paddingVertical: 8 },
 });

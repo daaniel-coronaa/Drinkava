@@ -14,17 +14,24 @@ type Props = {
   icon?: React.ReactNode;
 };
 
+// Pill, 52dp tall (>= 44dp touch target). Filled variants carry a white label — the fill
+// colors are chosen so white clears 4.5:1 (see DESIGN.md §2).
 export function Button({ label, onPress, variant = 'primary', loading, disabled, style, icon }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
 
   const backgroundColor = {
     primary: colors.accentPrimary,
-    secondary: colors.surfaceElevated,
+    secondary: 'transparent',
     ghost: 'transparent',
-    danger: '#E5484D',
+    danger: colors.danger,
   }[variant];
 
-  const textColor = variant === 'primary' || variant === 'danger' ? '#FFFFFF' : colors.textPrimary;
+  const textColor = {
+    primary: '#FFFFFF',
+    secondary: colors.textPrimary,
+    ghost: colors.accentText,
+    danger: '#FFFFFF',
+  }[variant];
 
   return (
     <Pressable
@@ -34,12 +41,11 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
         styles.base,
         {
           backgroundColor,
-          borderRadius: radius.md,
-          paddingVertical: spacing.md - 2,
+          borderRadius: radius.pill,
           paddingHorizontal: spacing.lg,
-          opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
+          opacity: disabled ? 0.4 : pressed ? 0.9 : 1,
           borderWidth: variant === 'secondary' ? 1 : 0,
-          borderColor: colors.border,
+          borderColor: colors.borderStrong,
         },
         style,
       ]}
@@ -62,5 +68,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    minHeight: 52,
   },
 });

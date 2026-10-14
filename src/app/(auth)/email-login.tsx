@@ -21,9 +21,12 @@ export default function EmailLoginScreen() {
 
   const inputStyle = {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderStrong,
     borderRadius: radius.md,
-    padding: spacing.sm,
+    backgroundColor: colors.surfaceElevated,
+    minHeight: 48,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     color: colors.textPrimary,
   };
 
@@ -79,7 +82,7 @@ export default function EmailLoginScreen() {
           />
         </View>
 
-        {error ? <Text style={[typography.caption, { color: '#E5484D' }]}>{error}</Text> : null}
+        {error ? <Text style={[typography.caption, { color: colors.dangerText }]}>{error}</Text> : null}
 
         <Button label={t('auth.emailLogin.submitButton')} onPress={handleSubmit} loading={loading} />
 

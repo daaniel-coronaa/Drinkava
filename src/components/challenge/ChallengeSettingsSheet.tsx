@@ -71,7 +71,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
       <View
         style={[
           styles.sheet,
-          { backgroundColor: colors.surface, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
+          { backgroundColor: colors.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
         ]}
       >
         <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
@@ -88,7 +88,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
               <Pressable
                 key={mode}
                 onPress={() => setPaceMode(mode)}
-                style={[styles.segment, { borderRadius: radius.sm, backgroundColor: paceMode === mode ? colors.accentPrimary : 'transparent' }]}
+                style={[styles.segment, { borderRadius: radius.md - spacing.xs, backgroundColor: paceMode === mode ? colors.accentPrimary : 'transparent' }]}
               >
                 <Text style={[typography.caption, { color: paceMode === mode ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' }]}>
                   {label}

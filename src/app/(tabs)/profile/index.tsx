@@ -28,7 +28,7 @@ export default function MyProfileScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
       <ScrollView contentContainerStyle={{ paddingBottom: spacing.xl }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: spacing.md }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: spacing.inset }}>
           <Pressable onPress={() => router.push('/settings')}>
             <MaterialCommunityIcons name="cog-outline" size={24} color={colors.textPrimary} />
           </Pressable>
@@ -44,13 +44,13 @@ export default function MyProfileScreen() {
           <Text style={[typography.h2, { color: colors.textPrimary }]}>{session.user.name}</Text>
         </View>
 
-        <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.md, marginBottom: spacing.md }}>
+        <View style={{ flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.inset, marginBottom: spacing.md }}>
           <StatTile label={t('profile.totalDrinks')} value={totalDrinks} />
           <StatTile label={t('profile.parties')} value={parties.length} />
           <StatTile label={t('profile.favorite')} value={favoriteType ? t(`drinkTypes.${favoriteType}`) : t('profile.none')} />
         </View>
 
-        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
+        <View style={{ paddingHorizontal: spacing.inset, marginBottom: spacing.lg }}>
           <Pressable onPress={() => router.push('/leaderboard')}>
             <Card style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View
@@ -58,13 +58,13 @@ export default function MyProfileScreen() {
                   width: 44,
                   height: 44,
                   borderRadius: 22,
-                  backgroundColor: colors.accentPrimaryMuted,
+                  backgroundColor: colors.border,
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginRight: spacing.sm,
                 }}
               >
-                <MaterialCommunityIcons name="trophy" size={22} color={colors.accentText} />
+                <MaterialCommunityIcons name="trophy" size={22} color={colors.textPrimary} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('profile.rankingTitle')}</Text>
@@ -79,11 +79,11 @@ export default function MyProfileScreen() {
           </Pressable>
         </View>
 
-        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.lg }}>
+        <View style={{ paddingHorizontal: spacing.inset, marginBottom: spacing.lg }}>
           <ScoringTable />
         </View>
 
-        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.sm }}>
+        <View style={{ paddingHorizontal: spacing.inset, marginBottom: spacing.sm }}>
           <Pressable onPress={() => router.push('/achievements')} style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[typography.h3, { color: colors.textPrimary, flex: 1 }]}>{t('profile.achievementsTitle')}</Text>
             <MaterialCommunityIcons name="chevron-right" size={20} color={colors.textSecondary} />
@@ -95,7 +95,7 @@ export default function MyProfileScreen() {
           ))}
         </ScrollView>
 
-        <View style={{ paddingHorizontal: spacing.md, marginTop: spacing.lg, marginBottom: spacing.sm }}>
+        <View style={{ paddingHorizontal: spacing.inset, marginTop: spacing.lg, marginBottom: spacing.sm }}>
           <Text style={[typography.h3, { color: colors.textPrimary }]}>{t('profile.partyHistoryTitle')}</Text>
         </View>
         {parties.map((p) => (

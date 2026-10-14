@@ -9,15 +9,15 @@ type Props = {
 };
 
 export function Chip({ label, color, tone = 'neutral' }: Props) {
-  const { colors, spacing, radius, typography } = useTheme();
-  const backgroundColor = color ? `${color}22` : tone === 'accent' ? colors.accentPrimaryMuted : colors.surfaceElevated;
+  const { colors, radius, typography } = useTheme();
+  const backgroundColor = color ? `${color}${colors.tintAlpha}` : tone === 'accent' ? colors.accentPrimaryMuted : colors.surfaceElevated;
   const textColor = color ?? (tone === 'accent' ? colors.accentText : colors.textSecondary);
 
   return (
     <View
       style={[
         styles.base,
-        { backgroundColor, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs / 2 },
+        { backgroundColor, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
       ]}
     >
       <Text style={[typography.tiny, { color: textColor }]}>{label}</Text>

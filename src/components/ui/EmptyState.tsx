@@ -12,7 +12,7 @@ type Props = {
 export function EmptyState({ icon, title, description }: Props) {
   const { colors, spacing, typography } = useTheme();
   return (
-    <View style={[styles.base, { paddingVertical: spacing.xxl, gap: spacing.sm }]}>
+    <View style={[styles.base, { paddingVertical: spacing.xxxl, gap: spacing.sm }]}>
       <MaterialCommunityIcons name={icon} size={40} color={colors.textSecondary} />
       <Text style={[typography.h3, { color: colors.textPrimary }]}>{title}</Text>
       {description ? (
