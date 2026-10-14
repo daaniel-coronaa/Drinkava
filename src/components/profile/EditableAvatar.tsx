@@ -72,7 +72,7 @@ export function EditableAvatar({ uri, name, size = 80, onChange }: Props) {
             justifyContent: 'center',
           }}
         >
-          <MaterialCommunityIcons name="camera" size={size * 0.18} color="#FFFFFF" />
+          <MaterialCommunityIcons name="camera" size={size * 0.18} color={colors.onAccent} />
         </View>
       )}
     </Pressable>

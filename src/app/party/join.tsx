@@ -1,8 +1,9 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
@@ -12,7 +13,7 @@ import { useTheme } from '@/theme';
 // "Compartir invitación" — the code param pre-fills the input below.
 export default function JoinPartyScreen() {
   const { code: codeParam } = useLocalSearchParams<{ code?: string }>();
-  const { colors, spacing, radius, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
   const [code, setCode] = useState(codeParam?.toUpperCase() ?? '');
@@ -38,23 +39,12 @@ export default function JoinPartyScreen() {
       <Text style={[typography.body, { color: colors.textSecondary }]}>
         {codeParam ? t('parties.join.promptWithCode') : t('parties.join.promptNoCode')}
       </Text>
-      <TextInput
+      <Input
         value={code}
         onChangeText={(value) => setCode(value.toUpperCase())}
         placeholder={t('parties.join.placeholder')}
         autoCapitalize="characters"
-        placeholderTextColor={colors.textSecondary}
-        style={{
-          borderWidth: 1,
-          borderColor: colors.borderStrong,
-          backgroundColor: colors.surfaceElevated,
-          borderRadius: radius.md,
-          padding: spacing.md,
-          color: colors.textPrimary,
-          fontSize: 20,
-          letterSpacing: 4,
-          textAlign: 'center',
-        }}
+        style={{ fontSize: 20, letterSpacing: 4, textAlign: 'center', paddingVertical: spacing.md }}
       />
       {error ? <Text style={{ color: colors.dangerText }}>{error}</Text> : null}
       <Button label={t('parties.join.submitButton')} onPress={handleJoin} loading={submitting} disabled={!code.trim()} />

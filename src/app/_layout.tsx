@@ -1,14 +1,16 @@
 import '@/global.css';
 
 import { DarkTheme, DefaultTheme, router, Stack, ThemeProvider as RouterThemeProvider, useSegments } from 'expo-router';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { HeaderBackButton } from '@/components/ui/HeaderBackButton';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { SettingsProvider, useTranslation } from '@/context/SettingsContext';
-import { ThemeProvider as AppThemeProvider, useTheme } from '@/theme';
+import { ContentMaxWidth, FontAssets, Fonts, ThemeProvider as AppThemeProvider, useTheme } from '@/theme';
 
 // Screens under (auth) that don't require a session to be reachable — everything else
 // there (age-gate, onboarding-tos) needs one to actually function.
@@ -64,20 +66,36 @@ function RootNavigator() {
   const { loading } = useAuth();
   const { mode, colors } = useTheme();
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
+  const wide = width > ContentMaxWidth;
+  const [fontsLoaded, fontError] = useFonts(FontAssets);
 
   useAuthGate();
 
-  if (loading) return null;
+  // Hold the first paint until the editorial fonts are ready (or failed — then fall back).
+  if (loading || (!fontsLoaded && !fontError)) return null;
 
   return (
     <RouterThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.background }}>
+        <View
+          style={{
+            flex: 1,
+            width: '100%',
+            maxWidth: ContentMaxWidth,
+            borderColor: colors.border,
+            borderLeftWidth: wide ? StyleSheet.hairlineWidth : 0,
+            borderRightWidth: wide ? StyleSheet.hairlineWidth : 0,
+          }}
+        >
       <Stack
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: colors.background },
           headerStyle: { backgroundColor: colors.surface },
           headerTintColor: colors.textPrimary,
+          headerTitleStyle: { fontFamily: Fonts.serifSemiBold, fontSize: 18 },
           headerShadowVisible: false,
           headerLeft: () => <HeaderBackButton />,
         }}
@@ -113,6 +131,8 @@ function RootNavigator() {
           options={{ headerShown: true, title: t('settings.privacyRow'), headerLeft: () => <HeaderBackButton fallbackHref="/settings" /> }}
         />
       </Stack>
+        </View>
+      </View>
     </RouterThemeProvider>
   );
 }

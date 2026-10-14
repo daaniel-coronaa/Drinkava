@@ -3,7 +3,7 @@ import { router, Tabs } from 'expo-router';
 import { View } from 'react-native';
 
 import { useTranslation } from '@/context/SettingsContext';
-import { useTheme } from '@/theme';
+import { Fonts, useTheme } from '@/theme';
 
 export default function TabsLayout() {
   const { colors, radius } = useTheme();
@@ -15,6 +15,8 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.accentText,
         tabBarInactiveTintColor: colors.textSecondary,
+        // Jost's default line box is taller than the bar's label slot, which clipped the text.
+        tabBarLabelStyle: { fontFamily: Fonts.sansMedium, fontSize: 11, lineHeight: 13 },
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
       }}
     >
@@ -43,7 +45,7 @@ export default function TabsLayout() {
                 marginBottom: 12,
               }}
             >
-              <MaterialCommunityIcons name="plus" size={26} color="#FFFFFF" />
+              <MaterialCommunityIcons name="plus" size={26} color={colors.onAccent} />
             </View>
           ),
         }}

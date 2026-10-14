@@ -29,7 +29,7 @@ export default function MyProfileScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
       <ScrollView contentContainerStyle={{ paddingBottom: spacing.xl }}>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: spacing.inset }}>
-          <Pressable onPress={() => router.push('/settings')}>
+          <Pressable onPress={() => router.push('/settings')} hitSlop={10}>
             <MaterialCommunityIcons name="cog-outline" size={24} color={colors.textPrimary} />
           </Pressable>
         </View>

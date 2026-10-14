@@ -1,10 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Avatar } from '@/components/ui/Avatar';
+import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
+import { useSheetFrame } from '@/hooks/useSheetFrame';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { Comment, User } from '@/types';
@@ -21,6 +23,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
   const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
+  const sheetFrame = useSheetFrame();
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
@@ -41,7 +44,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.sheetWrapper}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={[styles.sheetWrapper, sheetFrame]}>
         <View
           style={[
             styles.sheet,
@@ -75,15 +78,11 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
               { padding: spacing.md, borderTopColor: colors.border, gap: spacing.sm },
             ]}
           >
-            <TextInput
+            <Input
               value={text}
               onChangeText={setText}
               placeholder={t('feed.commentPlaceholder')}
-              placeholderTextColor={colors.textSecondary}
-              style={[
-                styles.input,
-                { borderColor: colors.borderStrong, backgroundColor: colors.surfaceElevated, borderRadius: radius.md, color: colors.textPrimary },
-              ]}
+              style={{ flex: 1, paddingVertical: spacing.xs + 4 }}
             />
             <Pressable onPress={handleSend} disabled={sending || !text.trim()}>
               <MaterialCommunityIcons
@@ -101,8 +100,7 @@ export function CommentSheet({ visible, onClose, drinkLogId, usersById }: Props)
 
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: '#00000066' },
-  sheetWrapper: { position: 'absolute', bottom: 0, left: 0, right: 0 },
+  sheetWrapper: {},
   sheet: { maxHeight: '70%' },
   inputRow: { flexDirection: 'row', alignItems: 'center', borderTopWidth: StyleSheet.hairlineWidth },
-  input: { flex: 1, borderWidth: 1, minHeight: 44, paddingHorizontal: 12, paddingVertical: 8 },
 });

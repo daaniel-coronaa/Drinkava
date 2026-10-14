@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
 import { HeaderBackButton } from '@/components/ui/HeaderBackButton';
+import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { EmailInUseError } from '@/services';
@@ -13,7 +14,7 @@ import { useTheme } from '@/theme';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function EmailRegisterScreen() {
-  const { colors, spacing, typography, radius } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const { t } = useTranslation();
   const { registerWithEmail } = useAuth();
   const [name, setName] = useState('');
@@ -22,17 +23,6 @@ export default function EmailRegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const inputStyle = {
-    borderWidth: 1,
-    borderColor: colors.borderStrong,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceElevated,
-    minHeight: 48,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    color: colors.textPrimary,
-  };
 
   const handleSubmit = async () => {
     setError(null);
@@ -61,54 +51,46 @@ export default function EmailRegisterScreen() {
         <Text style={[typography.h1, { color: colors.textPrimary }]}>{t('auth.emailRegister.title')}</Text>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.nameLabel')}</Text>
-          <TextInput
+          <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('auth.emailRegister.nameLabel')}</Text>
+          <Input
             value={name}
             onChangeText={setName}
             placeholder={t('auth.emailRegister.namePlaceholder')}
-            placeholderTextColor={colors.textSecondary}
             autoComplete="name"
-            style={inputStyle}
           />
         </View>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.emailLabel')}</Text>
-          <TextInput
+          <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('auth.emailRegister.emailLabel')}</Text>
+          <Input
             value={email}
             onChangeText={setEmail}
             placeholder={t('auth.emailRegister.emailPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
             autoCapitalize="none"
             keyboardType="email-address"
             autoComplete="email"
-            style={inputStyle}
           />
         </View>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.passwordLabel')}</Text>
-          <TextInput
+          <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('auth.emailRegister.passwordLabel')}</Text>
+          <Input
             value={password}
             onChangeText={setPassword}
             placeholder={t('auth.emailRegister.passwordPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
             secureTextEntry
             autoComplete="new-password"
-            style={inputStyle}
           />
         </View>
 
         <View style={{ gap: spacing.xs }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.emailRegister.confirmLabel')}</Text>
-          <TextInput
+          <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('auth.emailRegister.confirmLabel')}</Text>
+          <Input
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             placeholder={t('auth.emailRegister.confirmPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
             secureTextEntry
             autoComplete="new-password"
-            style={inputStyle}
           />
         </View>
 
@@ -116,7 +98,7 @@ export default function EmailRegisterScreen() {
 
         <Button label={t('auth.emailRegister.submitButton')} onPress={handleSubmit} loading={loading} />
 
-        <Pressable onPress={() => router.replace('/(auth)/email-login')} style={{ alignItems: 'center', marginTop: spacing.sm }}>
+        <Pressable onPress={() => router.replace('/(auth)/email-login')} style={{ alignItems: 'center', paddingVertical: spacing.md }}>
           <Text style={[typography.caption, { color: colors.accentText }]}>{t('auth.emailRegister.haveAccount')}</Text>
         </Pressable>
       </View>

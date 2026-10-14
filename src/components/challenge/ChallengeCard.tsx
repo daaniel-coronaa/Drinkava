@@ -137,7 +137,7 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
           {showPhotoPicker ? (
             <PhotoPicker uri={photoUrl} onChange={setPhotoUrl} label={t('challenges.addPhotoEvidence')} />
           ) : (
-            <Pressable onPress={() => setShowPhotoPicker(true)}>
+            <Pressable onPress={() => setShowPhotoPicker(true)} hitSlop={{ top: 12, bottom: 12 }}>
               <Text style={[typography.caption, { color: colors.accentText, marginBottom: spacing.sm }]}>
                 {t('challenges.addPhotoEvidence')}
               </Text>

@@ -5,6 +5,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 import { Button } from '@/components/ui/Button';
 import { CalendarPicker } from '@/components/ui/CalendarPicker';
 import { useTranslation } from '@/context/SettingsContext';
+import { useSheetFrame } from '@/hooks/useSheetFrame';
 import { useTheme } from '@/theme';
 import { formatDate, formatDateTime } from '@/utils/date';
 
@@ -25,6 +26,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 export function DateTimePickerField({ value, onChange, mode, maximumDate, minimumDate }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
+  const sheetFrame = useSheetFrame();
   const [visible, setVisible] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -68,6 +70,7 @@ export function DateTimePickerField({ value, onChange, mode, maximumDate, minimu
         <View
           style={[
             styles.sheet,
+            sheetFrame,
             { backgroundColor: colors.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
           ]}
         >
@@ -123,8 +126,8 @@ function TimeStepper({ value, onChange, max }: { value: number; onChange: (v: nu
 const styles = StyleSheet.create({
   field: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, minHeight: 48 },
   backdrop: { flex: 1, backgroundColor: '#00000066' },
-  sheet: { position: 'absolute', bottom: 0, left: 0, right: 0, maxHeight: '85%' },
+  sheet: { maxHeight: '85%' },
   timeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   timeStepper: { alignItems: 'center', gap: 4 },
-  timeButton: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  timeButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
 });

@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useTheme } from '@/theme';
+import { Fonts, useTheme } from '@/theme';
 
 type Props = {
   uri?: string;
@@ -29,7 +29,7 @@ export function Avatar({ uri, name, size = 40 }: Props) {
         { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.border },
       ]}
     >
-      <Text style={{ color: colors.textPrimary, fontWeight: '600', fontSize: size * 0.38 }}>{initials}</Text>
+      <Text style={{ color: colors.textPrimary, fontFamily: Fonts.sansSemiBold, fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );
 }

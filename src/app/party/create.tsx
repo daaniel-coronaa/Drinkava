@@ -1,17 +1,18 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { Button } from '@/components/ui/Button';
 import { DateTimePickerField } from '@/components/ui/DateTimePickerField';
+import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 
 export default function CreatePartyScreen() {
-  const { colors, spacing, radius, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
   const [name, setName] = useState('');
@@ -42,52 +43,30 @@ export default function CreatePartyScreen() {
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}>
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.nameLabel')}</Text>
-        <TextInput
+        <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.nameLabel')}</Text>
+        <Input
           value={name}
           onChangeText={setName}
           placeholder={t('parties.create.namePlaceholder')}
-          placeholderTextColor={colors.textSecondary}
-          style={{
-            borderWidth: 1,
-            borderColor: colors.borderStrong,
-            borderRadius: radius.md,
-            backgroundColor: colors.surfaceElevated,
-            minHeight: 48,
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.sm,
-            color: colors.textPrimary,
-          }}
         />
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.dateLabel')}</Text>
+        <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.dateLabel')}</Text>
         <DateTimePickerField value={date} onChange={setDate} mode="datetime" />
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.locationLabel')}</Text>
-        <TextInput
+        <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.locationLabel')}</Text>
+        <Input
           value={location}
           onChangeText={setLocation}
           placeholder={t('parties.create.locationPlaceholder')}
-          placeholderTextColor={colors.textSecondary}
-          style={{
-            borderWidth: 1,
-            borderColor: colors.borderStrong,
-            borderRadius: radius.md,
-            backgroundColor: colors.surfaceElevated,
-            minHeight: 48,
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.sm,
-            color: colors.textPrimary,
-          }}
         />
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('parties.create.coverLabel')}</Text>
+        <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('parties.create.coverLabel')}</Text>
         <PhotoPicker uri={coverImageUrl} onChange={setCoverImageUrl} label={t('parties.create.coverButton')} />
       </View>
 

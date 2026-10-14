@@ -166,7 +166,7 @@ export default function PartyDetailScreen() {
           <Text style={[typography.caption, { color: colors.textSecondary }]}>{party.location}</Text>
         ) : null}
 
-        <Pressable onPress={handleShare} style={[styles.row, { marginTop: spacing.xs }]}>
+        <Pressable onPress={handleShare} hitSlop={{ top: 12, bottom: 12 }} style={[styles.row, { marginTop: spacing.xs }]}>
           <MaterialCommunityIcons name="share-variant-outline" size={16} color={colors.accentText} />
           <Text style={[typography.caption, { color: colors.accentText, marginLeft: 6 }]}>
             {t('partyDetail.inviteRow', { code: party.inviteCode })}
@@ -228,7 +228,7 @@ export default function PartyDetailScreen() {
             onPress={() => setSection(key)}
             style={[styles.segment, { borderRadius: radius.md - spacing.xs, backgroundColor: section === key ? colors.accentPrimary : 'transparent' }]}
           >
-            <Text style={[typography.caption, { color: section === key ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' }]}>
+            <Text style={[typography.caption, { color: section === key ? colors.onAccent : colors.textSecondary, textAlign: 'center' }]}>
               {label}
             </Text>
           </Pressable>
@@ -320,5 +320,5 @@ export default function PartyDetailScreen() {
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   segmented: { flexDirection: 'row', padding: 4 },
-  segment: { flex: 1, paddingVertical: 8 },
+  segment: { flex: 1, paddingVertical: 13 },
 });

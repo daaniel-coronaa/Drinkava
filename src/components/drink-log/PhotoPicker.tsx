@@ -31,6 +31,7 @@ export function PhotoPicker({ uri, onChange, label }: Props) {
         <Image source={{ uri }} style={{ width: '100%', height: 160, borderRadius: radius.md }} contentFit="cover" />
         <Pressable
           onPress={() => onChange(undefined)}
+          hitSlop={8}
           style={[styles.removeBadge, { backgroundColor: colors.surface, borderRadius: radius.pill }]}
         >
           <MaterialCommunityIcons name="close" size={16} color={colors.textPrimary} />

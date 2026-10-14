@@ -7,6 +7,7 @@ import { Chip } from '@/components/ui/Chip';
 import { QuantityStepper } from '@/components/drink-log/QuantityStepper';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
+import { useSheetFrame } from '@/hooks/useSheetFrame';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { ChallengeCategory, ChallengePaceMode } from '@/types';
@@ -22,9 +23,10 @@ type Props = {
 };
 
 export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: Props) {
-  const { colors, spacing, radius, typography } = useTheme();
+  const { colors, spacing, radius, typography, challengeCategoryColors } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
+  const sheetFrame = useSheetFrame();
   const [paceMode, setPaceMode] = useState<ChallengePaceMode>('aleatorio');
   const [intervalMinutes, setIntervalMinutes] = useState(20);
   const [categories, setCategories] = useState<ChallengeCategory[]>([]);
@@ -71,13 +73,14 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
       <View
         style={[
           styles.sheet,
+          sheetFrame,
           { backgroundColor: colors.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
         ]}
       >
         <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
           <Text style={[typography.h3, { color: colors.textPrimary, marginBottom: spacing.md }]}>{t('challenges.settingsTitle')}</Text>
 
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('challenges.paceLabel')}</Text>
+          <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('challenges.paceLabel')}</Text>
           <View style={[styles.segmented, { backgroundColor: colors.surfaceElevated, borderRadius: radius.md, marginBottom: spacing.md }]}>
             {(
               [
@@ -90,7 +93,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
                 onPress={() => setPaceMode(mode)}
                 style={[styles.segment, { borderRadius: radius.md - spacing.xs, backgroundColor: paceMode === mode ? colors.accentPrimary : 'transparent' }]}
               >
-                <Text style={[typography.caption, { color: paceMode === mode ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' }]}>
+                <Text style={[typography.caption, { color: paceMode === mode ? colors.onAccent : colors.textSecondary, textAlign: 'center' }]}>
                   {label}
                 </Text>
               </Pressable>
@@ -101,18 +104,22 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
             <Text style={[typography.tiny, { color: colors.textSecondary, marginBottom: spacing.md }]}>{t('challenges.randomExplain')}</Text>
           ) : (
             <View style={{ alignItems: 'center', marginBottom: spacing.md, gap: spacing.xs }}>
-              <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('challenges.intervalLabel')}</Text>
+              <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('challenges.intervalLabel')}</Text>
               <QuantityStepper value={intervalMinutes} onChange={setIntervalMinutes} min={5} max={180} />
             </View>
           )}
 
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>
+          <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>
             {t('challenges.categoriesLabel')}
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.sm }}>
             {ALL_CATEGORIES.map((cat) => (
               <Pressable key={cat} onPress={() => toggleCategory(cat)}>
-                <Chip label={t(`challenges.categories.${cat}.label`)} tone={categories.includes(cat) ? 'accent' : 'neutral'} />
+                <Chip
+                  label={t(`challenges.categories.${cat}.label`)}
+                  color={categories.includes(cat) ? challengeCategoryColors[cat] : undefined}
+                  size="lg"
+                />
               </Pressable>
             ))}
           </View>
@@ -128,7 +135,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
                 marginBottom: spacing.sm,
               }}
             >
-              <MaterialCommunityIcons name={challengeCategoryIcons[infoCategory]} size={16} color={colors.textSecondary} />
+              <MaterialCommunityIcons name={challengeCategoryIcons[infoCategory]} size={16} color={challengeCategoryColors[infoCategory]} />
               <Text style={[typography.tiny, { color: colors.textSecondary, flex: 1 }]}>
                 {t(`challenges.categories.${infoCategory}.description`)}
               </Text>
@@ -148,7 +155,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
 
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: '#00000066' },
-  sheet: { position: 'absolute', bottom: 0, left: 0, right: 0, maxHeight: '85%' },
+  sheet: { maxHeight: '85%' },
   segmented: { flexDirection: 'row', padding: 4 },
-  segment: { flex: 1, paddingVertical: 8 },
+  segment: { flex: 1, paddingVertical: 13 },
 });

@@ -14,8 +14,8 @@ type Props = {
   icon?: React.ReactNode;
 };
 
-// Pill, 52dp tall (>= 44dp touch target). Filled variants carry a white label — the fill
-// colors are chosen so white clears 4.5:1 (see DESIGN.md §2).
+// Pill, 52dp tall (>= 44dp touch target). Primary is a gold fill with a dark ink label
+// (onAccent); danger is a deep red with a white label — both clear 4.5:1 (DESIGN.md §2).
 export function Button({ label, onPress, variant = 'primary', loading, disabled, style, icon }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
 
@@ -27,7 +27,7 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
   }[variant];
 
   const textColor = {
-    primary: '#FFFFFF',
+    primary: colors.onAccent,
     secondary: colors.textPrimary,
     ghost: colors.accentText,
     danger: '#FFFFFF',

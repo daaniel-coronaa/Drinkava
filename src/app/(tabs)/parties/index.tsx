@@ -24,10 +24,10 @@ export default function PartiesScreen() {
         title={t('parties.headerTitle')}
         right={
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-            <Pressable onPress={() => router.push('/party/join')}>
+            <Pressable onPress={() => router.push('/party/join')} hitSlop={10}>
               <MaterialCommunityIcons name="account-multiple-plus-outline" size={24} color={colors.textPrimary} />
             </Pressable>
-            <Pressable onPress={() => router.push('/party/create')}>
+            <Pressable onPress={() => router.push('/party/create')} hitSlop={10}>
               <MaterialCommunityIcons name="plus-circle" size={26} color={colors.accentText} />
             </Pressable>
           </View>
@@ -47,7 +47,7 @@ export default function PartiesScreen() {
             <Text
               style={[
                 typography.bodyBold,
-                { color: filter === status ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' },
+                { color: filter === status ? colors.onAccent : colors.textSecondary, textAlign: 'center' },
               ]}
             >
               {status === 'active' ? t('parties.filterActive') : t('parties.filterFinished')}
@@ -77,5 +77,5 @@ export default function PartiesScreen() {
 
 const styles = StyleSheet.create({
   segmented: { flexDirection: 'row', padding: 4 },
-  segment: { flex: 1, paddingVertical: 8 },
+  segment: { flex: 1, paddingVertical: 13 },
 });

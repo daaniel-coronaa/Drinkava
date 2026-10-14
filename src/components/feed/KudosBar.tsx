@@ -43,7 +43,7 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
 
   return (
     <View style={[styles.row, { gap: spacing.lg, marginTop: spacing.sm }]}>
-      <Pressable onPress={toggleKudos} style={styles.row}>
+      <Pressable onPress={toggleKudos} style={styles.row} hitSlop={12}>
         <MaterialCommunityIcons
           name={given ? 'thumb-up' : 'thumb-up-outline'}
           size={18}
@@ -53,7 +53,7 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
           {kudosUserIds.length > 0 ? kudosUserIds.length : t('feed.kudosLabel')}
         </Text>
       </Pressable>
-      <Pressable onPress={onOpenComments} style={styles.row}>
+      <Pressable onPress={onOpenComments} style={styles.row} hitSlop={12}>
         <MaterialCommunityIcons name="comment-outline" size={18} color={colors.textSecondary} />
         <Text style={[typography.caption, { color: colors.textSecondary, marginLeft: 6 }]}>
           {commentsCount > 0 ? commentsCount : t('feed.commentLabel')}

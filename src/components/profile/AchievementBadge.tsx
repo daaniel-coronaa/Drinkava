@@ -27,7 +27,7 @@ export function AchievementBadge({ definition, unlockedAt }: Props) {
         <MaterialCommunityIcons
           name={definition.icon as React.ComponentProps<typeof MaterialCommunityIcons>['name']}
           size={28}
-          color={unlocked ? colors.textPrimary : colors.textSecondary}
+          color={unlocked ? colors.accentText : colors.textSecondary}
         />
       </View>
       <Text style={[typography.bodyBold, { color: colors.textPrimary, textAlign: 'center', marginTop: spacing.xs }]}>

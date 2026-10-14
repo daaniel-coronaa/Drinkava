@@ -62,7 +62,7 @@ export default function OnboardingTosScreen() {
               },
             ]}
           >
-            {accepted ? <MaterialCommunityIcons name="check" size={16} color="#FFFFFF" /> : null}
+            {accepted ? <MaterialCommunityIcons name="check" size={16} color={colors.onAccent} /> : null}
           </View>
           <Text style={[typography.body, { color: colors.textPrimary, flex: 1 }]}>{t('auth.onboardingTos.checkboxLabel')}</Text>
         </Pressable>

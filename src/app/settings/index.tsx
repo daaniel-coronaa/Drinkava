@@ -15,7 +15,7 @@ import { useTheme, type ThemeMode } from '@/theme';
 function Row({ icon, label, onPress }: { icon: React.ComponentProps<typeof MaterialCommunityIcons>['name']; label: string; onPress: () => void }) {
   const { colors, spacing, typography } = useTheme();
   return (
-    <Pressable onPress={onPress} style={[styles.row, { paddingVertical: spacing.sm }]}>
+    <Pressable onPress={onPress} style={[styles.row, { paddingVertical: spacing.sm, minHeight: 44 }]}>
       <MaterialCommunityIcons name={icon} size={20} color={colors.textPrimary} style={{ marginRight: spacing.sm }} />
       <Text style={[typography.body, { color: colors.textPrimary, flex: 1 }]}>{label}</Text>
       <MaterialCommunityIcons name="chevron-right" size={20} color={colors.textSecondary} />
@@ -79,7 +79,7 @@ export default function SettingsScreen() {
                 onPress={() => setModeOverride(mode)}
                 style={{
                   flex: 1,
-                  paddingVertical: 8,
+                  paddingVertical: 13,
                   borderRadius: radius.pill,
                   backgroundColor: modeOverride === mode ? colors.accentPrimary : colors.surfaceElevated,
                 }}
@@ -87,7 +87,7 @@ export default function SettingsScreen() {
                 <Text
                   style={[
                     typography.caption,
-                    { color: modeOverride === mode ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' },
+                    { color: modeOverride === mode ? colors.onAccent : colors.textSecondary, textAlign: 'center' },
                   ]}
                 >
                   {mode === 'system' ? t('settings.systemOption') : mode === 'light' ? t('settings.lightOption') : t('settings.darkOption')}
@@ -106,7 +106,7 @@ export default function SettingsScreen() {
                 onPress={() => setLanguage(lang)}
                 style={{
                   flex: 1,
-                  paddingVertical: 8,
+                  paddingVertical: 13,
                   borderRadius: radius.pill,
                   backgroundColor: language === lang ? colors.accentPrimary : colors.surfaceElevated,
                 }}
@@ -114,7 +114,7 @@ export default function SettingsScreen() {
                 <Text
                   style={[
                     typography.caption,
-                    { color: language === lang ? '#FFFFFF' : colors.textSecondary, textAlign: 'center' },
+                    { color: language === lang ? colors.onAccent : colors.textSecondary, textAlign: 'center' },
                   ]}
                 >
                   {lang === 'es' ? t('settings.languageSpanish') : t('settings.languageEnglish')}
@@ -126,12 +126,17 @@ export default function SettingsScreen() {
 
         <Card>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialCommunityIcons name="crown-outline" size={20} color={colors.textPrimary} style={{ marginRight: spacing.sm }} />
+            <MaterialCommunityIcons name="crown-outline" size={20} color={colors.accentText} style={{ marginRight: spacing.sm }} />
             <View style={{ flex: 1 }}>
               <Text style={[typography.body, { color: colors.textPrimary }]}>{t('settings.subscriptionTitle')}</Text>
               <Text style={[typography.tiny, { color: colors.textSecondary }]}>{t('settings.subscriptionSubtitle')}</Text>
             </View>
-            <Switch value={hasActiveSubscription} onValueChange={toggleSubscription} disabled={savingSubscription} />
+            <Switch
+              value={hasActiveSubscription}
+              onValueChange={toggleSubscription}
+              disabled={savingSubscription}
+              trackColor={{ false: colors.borderStrong, true: colors.accentPrimary }} thumbColor="#FFFFFF" ios_backgroundColor={colors.borderStrong}
+            />
           </View>
         </Card>
 
@@ -141,11 +146,11 @@ export default function SettingsScreen() {
           <Row icon="lock-outline" label={t('settings.privacyRow')} onPress={() => router.push('/settings/privacy')} />
         </Card>
 
-        <Pressable onPress={handleSignOut} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
+        <Pressable onPress={handleSignOut} style={{ alignItems: 'center', paddingVertical: spacing.md }}>
           <Text style={[typography.bodyBold, { color: colors.dangerText }]}>{t('settings.signOut')}</Text>
         </Pressable>
 
-        <Pressable onPress={handleResetData} style={{ alignItems: 'center', paddingVertical: spacing.sm }}>
+        <Pressable onPress={handleResetData} style={{ alignItems: 'center', paddingVertical: spacing.md }}>
           <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('settings.resetDataButton')}</Text>
         </Pressable>
       </View>

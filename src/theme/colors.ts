@@ -3,20 +3,26 @@ import type { ChallengeCategory } from '@/types/challenge';
 export type DrinkType = 'shot' | 'cocktail' | 'beer' | 'wine' | 'other';
 export type ThemeMode = 'light' | 'dark';
 
-// Design direction: "Midnight Garnet" (see DESIGN.md). Every text/icon color below was
-// checked for >= 4.5:1 against the surfaces and tints it sits on in its own theme.
-
-// One brand rose, two roles — a single pink can't be both a filled surface under white
-// text AND readable as small text on near-black (the two pull luminance opposite ways).
-//   accentPrimary  = fills/borders (buttons, selected segments, badges). White on it: 5.50:1.
-//   accentText     = accent-colored text and icons. Dark theme gets a lighter rose
-//                    (6.4–7.3:1 on every dark surface); light theme reuses the fill (5.05:1+).
-const ACCENT_FILL = '#C8244F';
+// Design direction: "Noir Champagne" (see DESIGN.md) — near-black, warm ivory, and one
+// house color: champagne gold. Every text/icon color below was checked for >= 4.5:1
+// against the surfaces and tints it sits on in its own theme.
+//
+// Gold is light, so filled surfaces carry a dark ink label (onAccent), the way a gold
+// plate carries black lettering — and text/icons use a bronze in light mode, where gold
+// itself is too pale to read on paper.
+//   accentPrimary  = fills/borders (buttons, selected segments, badges). Ink on it: 9.6:1 dark / 5.3:1 light.
+//   accentText     = accent-colored text and icons. Champagne on dark (9.1–10.4:1), bronze on light (5.8–6.3:1).
+//   onAccent       = label/icon color placed on an accentPrimary fill.
+const INK = '#16141A';
+const GOLD_DARK = '#D9B877'; // champagne
+const GOLD_LIGHT = '#A98530'; // brass fill for light surfaces
+const BRONZE = '#7D5A0F'; // text/icons on light surfaces
 
 export type ThemeColors = {
   accentPrimary: string;
   accentPrimaryMuted: string;
   accentText: string;
+  onAccent: string;
   accentSuccess: string;
   accentWarning: string;
   accentInfo: string;
@@ -45,9 +51,10 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
     textSecondary: '#6A6670',
     border: '#E6E2DC',
     borderStrong: '#8A8690',
-    accentPrimary: ACCENT_FILL,
-    accentPrimaryMuted: `${ACCENT_FILL}14`,
-    accentText: ACCENT_FILL,
+    accentPrimary: GOLD_LIGHT,
+    accentPrimaryMuted: `${GOLD_LIGHT}14`,
+    accentText: BRONZE,
+    onAccent: INK,
     accentSuccess: '#197E43',
     accentWarning: '#9A6400',
     accentInfo: '#0062F5',
@@ -63,9 +70,10 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
     textSecondary: '#9C98A1',
     border: '#26262B',
     borderStrong: '#68656F',
-    accentPrimary: ACCENT_FILL,
-    accentPrimaryMuted: `${ACCENT_FILL}22`,
-    accentText: '#FF6B8E',
+    accentPrimary: GOLD_DARK,
+    accentPrimaryMuted: `${GOLD_DARK}22`,
+    accentText: GOLD_DARK,
+    onAccent: INK,
     accentSuccess: '#2ED573',
     accentWarning: '#FFB020',
     accentInfo: '#428EFF',
@@ -82,7 +90,8 @@ export const drinkTypeColors: Record<ThemeMode, Record<DrinkType, string>> = {
   light: { shot: '#D42700', cocktail: '#A500FA', beer: '#976107', wine: '#B8123B', other: '#2871BE' },
 };
 
+// "bebida" reuses the shot orange (not beer amber) so it never reads as the gold house color.
 export const challengeCategoryColors: Record<ThemeMode, Record<ChallengeCategory, string>> = {
-  dark: { bebida: '#F5A623', social: '#428EFF', fisico: '#2ED573', social_premium: '#C961FF' },
-  light: { bebida: '#976107', social: '#0062F5', fisico: '#197E43', social_premium: '#A500FA' },
+  dark: { bebida: '#FF6B4A', social: '#428EFF', fisico: '#2ED573', social_premium: GOLD_DARK },
+  light: { bebida: '#D42700', social: '#0062F5', fisico: '#197E43', social_premium: BRONZE },
 };

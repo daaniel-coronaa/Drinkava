@@ -99,7 +99,12 @@ export default function SafeModeScreen() {
               <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('safeMode.waterTitle')}</Text>
               <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('safeMode.waterSubtitle')}</Text>
             </View>
-            <Switch value={safeModeEnabled} onValueChange={handleToggle} disabled={busy} />
+            <Switch
+              value={safeModeEnabled}
+              onValueChange={handleToggle}
+              disabled={busy}
+              trackColor={{ false: colors.borderStrong, true: colors.accentPrimary }} thumbColor="#FFFFFF" ios_backgroundColor={colors.borderStrong}
+            />
           </View>
         </Card>
 

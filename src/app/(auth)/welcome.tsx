@@ -61,7 +61,7 @@ export default function WelcomeScreen() {
           onPress={handleGoogle}
           loading={pending === 'google'}
           disabled={pending !== null || !google.configured}
-          icon={<MaterialCommunityIcons name="google" size={18} color="#FFFFFF" />}
+          icon={<MaterialCommunityIcons name="google" size={18} color={colors.onAccent} />}
         />
         {!google.configured ? (
           <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center' }]}>{t('auth.welcome.googleNotConfigured')}</Text>

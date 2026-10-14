@@ -54,6 +54,7 @@ export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Pr
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
         <Pressable
           onPress={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1))}
+          hitSlop={10}
           style={{ padding: spacing.xs }}
         >
           <MaterialCommunityIcons name="chevron-left" size={22} color={colors.textPrimary} />
@@ -68,6 +69,7 @@ export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Pr
         </Text>
         <Pressable
           onPress={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))}
+          hitSlop={10}
           style={{ padding: spacing.xs }}
         >
           <MaterialCommunityIcons name="chevron-right" size={22} color={colors.textPrimary} />
@@ -90,13 +92,17 @@ export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Pr
             const isToday = isSameDay(day, today);
             const disabled = !!isDisabled(day);
             return (
-              <View key={di} style={{ flex: 1, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Pressable
-                  onPress={() =>
-                    !disabled &&
-                    onChange(new Date(day.getFullYear(), day.getMonth(), day.getDate(), value.getHours(), value.getMinutes()))
-                  }
-                  disabled={disabled}
+              // The whole cell is the touch target (>= 44dp on phones); the circle is purely visual.
+              <Pressable
+                key={di}
+                onPress={() =>
+                  !disabled &&
+                  onChange(new Date(day.getFullYear(), day.getMonth(), day.getDate(), value.getHours(), value.getMinutes()))
+                }
+                disabled={disabled}
+                style={{ flex: 1, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' }}
+              >
+                <View
                   style={{
                     width: '78%',
                     aspectRatio: 1,
@@ -111,13 +117,13 @@ export function CalendarPicker({ value, onChange, minimumDate, maximumDate }: Pr
                   <Text
                     style={[
                       typography.body,
-                      { color: selected ? '#FFFFFF' : disabled ? colors.border : colors.textPrimary },
+                      { color: selected ? colors.onAccent : disabled ? colors.textSecondary : colors.textPrimary, opacity: disabled ? 0.35 : 1 },
                     ]}
                   >
                     {day.getDate()}
                   </Text>
-                </Pressable>
-              </View>
+                </View>
+              </Pressable>
             );
           })}
         </View>

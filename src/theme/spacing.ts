@@ -17,3 +17,6 @@ export const Radius = {
   xl: 24, // sheets, dialogs
   pill: 999, // buttons, chips, avatars
 } as const;
+
+// App column width on wide screens (web, tablets) — phones are narrower so it's a no-op there.
+export const ContentMaxWidth = 560;

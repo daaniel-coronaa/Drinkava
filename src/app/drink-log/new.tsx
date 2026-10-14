@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { DisclaimerBanner } from '@/components/compliance/DisclaimerBanner';
 import { DrinkTypePicker } from '@/components/drink-log/DrinkTypePicker';
@@ -8,6 +8,7 @@ import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { QuantityStepper } from '@/components/drink-log/QuantityStepper';
 import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
@@ -19,7 +20,7 @@ import type { DrinkType, Party } from '@/types';
 // (Claude/GPT-4V) would run before the log is accepted.
 export default function NewDrinkLogScreen() {
   const { partyId: partyIdParam } = useLocalSearchParams<{ partyId?: string }>();
-  const { colors, spacing, radius, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
 
@@ -68,11 +69,11 @@ export default function NewDrinkLogScreen() {
       <DisclaimerBanner />
       {!partyIdParam && (
         <View style={{ gap: spacing.sm }}>
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('drinkLog.whichParty')}</Text>
+          <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('drinkLog.whichParty')}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
             {activeParties.map((p) => (
               <Pressable key={p.id} onPress={() => setPartyId(p.id)}>
-                <Chip label={p.name} tone={partyId === p.id ? 'accent' : 'neutral'} />
+                <Chip label={p.name} tone={partyId === p.id ? 'accent' : 'neutral'} size="lg" />
               </Pressable>
             ))}
           </View>
@@ -80,26 +81,24 @@ export default function NewDrinkLogScreen() {
       )}
 
       <View style={{ gap: spacing.sm }}>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('drinkLog.drinkTypeLabel')}</Text>
+        <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('drinkLog.drinkTypeLabel')}</Text>
         <DrinkTypePicker value={drinkType} onChange={setDrinkType} />
         {drinkType === 'other' && (
-          <TextInput
+          <Input
             value={customLabel}
             onChangeText={setCustomLabel}
             placeholder={t('drinkLog.customPlaceholder')}
-            placeholderTextColor={colors.textSecondary}
-            style={{ borderWidth: 1, borderColor: colors.borderStrong, backgroundColor: colors.surfaceElevated, borderRadius: radius.md, minHeight: 48, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, color: colors.textPrimary }}
           />
         )}
       </View>
 
       <View style={{ gap: spacing.sm, alignItems: 'center' }}>
-        <Text style={[typography.caption, { color: colors.textSecondary, alignSelf: 'flex-start' }]}>{t('drinkLog.quantityLabel')}</Text>
+        <Text style={[typography.eyebrow, { color: colors.textSecondary, alignSelf: 'flex-start' }]}>{t('drinkLog.quantityLabel')}</Text>
         <QuantityStepper value={quantity} onChange={setQuantity} />
       </View>
 
       <View>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('drinkLog.photoLabel')}</Text>
+        <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('drinkLog.photoLabel')}</Text>
         <PhotoPicker uri={photoUrl} onChange={setPhotoUrl} label={t('drinkLog.addPhotoLabel')} />
       </View>
 
