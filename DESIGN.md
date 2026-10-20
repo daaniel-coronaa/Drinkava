@@ -100,8 +100,8 @@ Tab labels need `lineHeight: 13`; header titles are styled once in the root Stac
 - **Chip**: neutral by default; `accent` tone only for selected/yours.
 - **Input**: always use `ui/Input` (eyebrow label, `surface` field, `borderStrong` on focus).
 - **ConfirmDialog**: every confirmation. Never `Alert.alert`/`window.confirm` (broken on web).
-- **Icon buttons**: 44×44 hit area; the one "create" action in a header is a filled accent circle with an `onAccent` "+".
-- **Bottom tabs**: three tabs, center "+" is a 48dp accent circle that opens the drink-log screen. Tab switches fade.
+- **Icon buttons**: 44×44 hit area, plain `textPrimary` outline icons. The Parties header has two: add friends (`account-multiple-plus-outline`) and join by invite code (`ticket-confirmation-outline`).
+- **Bottom tabs**: three tabs, center "+" is a 48dp accent circle that opens an `ActionSheet` (Log a drink / Create a party). Tab switches fade.
 
 ## 5. Layout Principles
 

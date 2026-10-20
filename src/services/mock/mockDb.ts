@@ -3,10 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { achievementDefinitions, seedAchievements } from '@/data/seed/achievementDefinitions';
 import { challengeCatalog as seedChallengeCatalog, seedChallengeAssignments } from '@/data/seed/challenges';
 import { seedDrinkLogs } from '@/data/seed/drinkLogs';
+import { seedFriendships } from '@/data/seed/friendships';
 import { seedComments, seedKudos } from '@/data/seed/kudosAndComments';
 import { seedParties, seedPartyMembers } from '@/data/seed/parties';
 import { CURRENT_USER_ID, seedUsers } from '@/data/seed/users';
-import type { Achievement, ChallengeAssignment, Comment, DrinkLog, Kudos, Party, PartyMember, User } from '@/types';
+import type { Achievement, ChallengeAssignment, Comment, DrinkLog, Friendship, Kudos, Party, PartyMember, User } from '@/types';
 
 const STORAGE_KEY = 'drinkava:mockDb:v1';
 
@@ -22,6 +23,7 @@ type Snapshot = {
   users: User[];
   parties: Party[];
   partyMembers: PartyMember[];
+  friendships: Friendship[];
   drinkLogs: DrinkLog[];
   kudos: Kudos[];
   comments: Comment[];
@@ -42,6 +44,7 @@ function freshSnapshot(): Snapshot {
     users: [...seedUsers],
     parties: [...seedParties],
     partyMembers: [...seedPartyMembers],
+    friendships: [...seedFriendships],
     drinkLogs: [...seedDrinkLogs],
     kudos: [...seedKudos],
     comments: [...seedComments],

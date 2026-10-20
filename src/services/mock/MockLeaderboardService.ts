@@ -74,12 +74,18 @@ export const MockLeaderboardService: LeaderboardService = {
         .filter((m) => m.userId === userId)
         .map((m) => m.partyId),
     );
-    const friendIds = new Set(
-      mockDb
+    // Friends = people you've partied with plus anyone you've added by search (and you).
+    const friendIds = new Set([
+      userId,
+      ...mockDb
         .get('partyMembers')
         .filter((m) => myPartyIds.has(m.partyId))
         .map((m) => m.userId),
-    );
+      ...mockDb
+        .get('friendships')
+        .filter((f) => f.userId === userId || f.friendId === userId)
+        .map((f) => (f.userId === userId ? f.friendId : f.userId)),
+    ]);
 
     const allLogs = mockDb.get('drinkLogs');
     const allAssignments = mockDb.get('challengeAssignments');

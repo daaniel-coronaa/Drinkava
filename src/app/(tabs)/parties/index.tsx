@@ -29,18 +29,18 @@ export default function PartiesScreen() {
         right={
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
             <PressableScale
+              onPress={() => router.push('/friends/add')}
+              accessibilityLabel={t('friends.title')}
+              style={styles.iconButton}
+            >
+              <MaterialCommunityIcons name="account-multiple-plus-outline" size={26} color={colors.textPrimary} />
+            </PressableScale>
+            <PressableScale
               onPress={() => router.push('/party/join')}
               accessibilityLabel={t('parties.join.title')}
               style={styles.iconButton}
             >
-              <MaterialCommunityIcons name="account-multiple-plus-outline" size={24} color={colors.textPrimary} />
-            </PressableScale>
-            <PressableScale
-              onPress={() => router.push('/party/create')}
-              accessibilityLabel={t('parties.create.title')}
-              style={[styles.iconButton, { backgroundColor: colors.accentPrimary }]}
-            >
-              <MaterialCommunityIcons name="plus" size={24} color={colors.onAccent} />
+              <MaterialCommunityIcons name="ticket-confirmation-outline" size={26} color={colors.textPrimary} />
             </PressableScale>
           </View>
         }

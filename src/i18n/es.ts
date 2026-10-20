@@ -76,8 +76,24 @@ const es: TranslationSchema = {
   },
 
   tabs: {
+    createMenuTitle: '¿Qué hacemos?',
+    addDrink: 'Agregar trago',
+    createParty: 'Crear fiesta',
     parties: 'Fiestas',
     profile: 'Perfil',
+  },
+
+  friends: {
+    title: 'Agregar amigos',
+    searchPlaceholder: 'Buscar por nombre',
+    yourFriends: 'Tus amigos',
+    resultsTitle: 'Resultados',
+    addButton: 'Agregar',
+    friendsBadge: 'Amigos',
+    noResultsTitle: 'Nadie con ese nombre',
+    noResultsDescription: 'Revisa cómo lo escribiste o prueba con menos letras.',
+    noFriendsTitle: 'Aún no tienes amigos',
+    noFriendsDescription: 'Busca por nombre y agrega a la gente con la que sales de fiesta.',
   },
 
   parties: {

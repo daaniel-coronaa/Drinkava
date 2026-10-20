@@ -5,3 +5,4 @@ export * from './kudos';
 export * from './leaderboard';
 export * from './party';
 export * from './user';
+export * from './friend';

@@ -2,6 +2,7 @@ import { MockAchievementService } from './mock/MockAchievementService';
 import { MockAuthService } from './mock/MockAuthService';
 import { MockChallengeService } from './mock/MockChallengeService';
 import { MockDrinkLogService } from './mock/MockDrinkLogService';
+import { MockFriendService } from './mock/MockFriendService';
 import { MockLeaderboardService } from './mock/MockLeaderboardService';
 import { MockPartyService } from './mock/MockPartyService';
 import { MockUserService } from './mock/MockUserService';
@@ -17,6 +18,7 @@ export const services = {
   achievements: MockAchievementService,
   challenges: MockChallengeService,
   users: MockUserService,
+  friends: MockFriendService,
 };
 
 export { AgeRestrictedError, EmailInUseError, InvalidCredentialsError } from './mock/MockAuthService';

@@ -105,6 +105,7 @@ function RootNavigator() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="party/create" options={{ presentation: 'modal', headerShown: true, title: t('parties.create.title') }} />
         <Stack.Screen name="party/join" options={{ presentation: 'modal', headerShown: true, title: t('parties.join.title') }} />
+        <Stack.Screen name="friends/add" options={{ presentation: 'modal', headerShown: true, title: t('friends.title') }} />
         <Stack.Screen name="drink-log/new" options={{ presentation: 'modal', headerShown: true, title: t('drinkLog.screenTitle') }} />
         <Stack.Screen
           name="achievements/index"

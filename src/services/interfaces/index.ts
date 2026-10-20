@@ -4,3 +4,4 @@ export type { DrinkLogService } from './DrinkLogService';
 export type { LeaderboardService } from './LeaderboardService';
 export type { PartyService } from './PartyService';
 export type { UserService } from './UserService';
+export type { FriendService } from './FriendService';

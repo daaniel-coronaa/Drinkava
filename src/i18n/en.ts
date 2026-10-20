@@ -74,8 +74,24 @@ const en = {
   },
 
   tabs: {
+    createMenuTitle: 'What now?',
+    addDrink: 'Log a drink',
+    createParty: 'Create a party',
     parties: 'Parties',
     profile: 'Profile',
+  },
+
+  friends: {
+    title: 'Add friends',
+    searchPlaceholder: 'Search by name',
+    yourFriends: 'Your friends',
+    resultsTitle: 'Results',
+    addButton: 'Add',
+    friendsBadge: 'Friends',
+    noResultsTitle: 'No one with that name',
+    noResultsDescription: 'Check the spelling or try a shorter name.',
+    noFriendsTitle: 'No friends yet',
+    noFriendsDescription: 'Search by name to add the people you party with.',
   },
 
   parties: {
