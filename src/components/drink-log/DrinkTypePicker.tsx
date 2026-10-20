@@ -14,14 +14,13 @@ type Props = {
 };
 
 export function DrinkTypePicker({ value, onChange }: Props) {
-  const { colors, spacing, radius, typography, drinkTypeColors } = useTheme();
+  const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
 
   return (
     <View style={[styles.wrap, { gap: spacing.sm }]}>
       {TYPES.map((type) => {
         const active = type === value;
-        const accent = drinkTypeColors[type];
         return (
           <Pressable
             key={type}
@@ -31,13 +30,13 @@ export function DrinkTypePicker({ value, onChange }: Props) {
               {
                 borderRadius: radius.lg,
                 borderWidth: active ? 1.5 : StyleSheet.hairlineWidth,
-                borderColor: active ? accent : colors.border,
-                backgroundColor: active ? `${accent}${colors.tintAlpha}` : colors.surface,
+                borderColor: active ? colors.accentPrimary : colors.border,
+                backgroundColor: active ? colors.accentPrimaryMuted : colors.surface,
               },
             ]}
           >
-            <MaterialCommunityIcons name={drinkTypeIcons[type]} size={24} color={active ? accent : colors.textSecondary} />
-            <Text style={[typography.caption, { color: active ? accent : colors.textSecondary, marginTop: 4 }]}>
+            <MaterialCommunityIcons name={drinkTypeIcons[type]} size={24} color={active ? colors.accentText : colors.textSecondary} />
+            <Text style={[typography.caption, { color: active ? colors.accentText : colors.textSecondary, marginTop: 4 }]}>
               {t(`drinkTypes.${type}`)}
             </Text>
           </Pressable>

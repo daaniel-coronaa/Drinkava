@@ -2,13 +2,16 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { BrandMark } from '@/components/ui/BrandMark';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { useGoogleSignIn, GoogleSignInCancelledError } from '@/hooks/useGoogleSignIn';
 import { useTheme } from '@/theme';
+import { enter, fadeIn } from '@/theme/motion';
 
 export default function WelcomeScreen() {
   const { colors, spacing, typography } = useTheme();
@@ -48,14 +51,18 @@ export default function WelcomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.hero, { gap: spacing.md }]}>
-        <View style={[styles.iconCircle, { backgroundColor: colors.surfaceElevated }]}>
-          <MaterialCommunityIcons name="glass-cocktail" size={56} color={colors.textPrimary} />
-        </View>
-        <Text style={[typography.display, { color: colors.textPrimary, textAlign: 'center' }]}>Drinkava</Text>
-        <Text style={[typography.body, { color: colors.textSecondary, textAlign: 'center' }]}>{t('auth.welcome.tagline')}</Text>
+        <Animated.View entering={fadeIn(0)}>
+          <BrandMark height={120} animated />
+        </Animated.View>
+        <Animated.Text entering={enter(1)} style={[typography.display, { color: colors.textPrimary, textAlign: 'center' }]}>
+          Drinkava
+        </Animated.Text>
+        <Animated.Text entering={enter(2)} style={[typography.body, { color: colors.textSecondary, textAlign: 'center' }]}>
+          {t('auth.welcome.tagline')}
+        </Animated.Text>
       </View>
 
-      <View style={{ gap: spacing.sm, paddingHorizontal: spacing.lg, width: '100%' }}>
+      <Animated.View entering={enter(3)} style={{ gap: spacing.sm, paddingHorizontal: spacing.lg, width: '100%' }}>
         <Button
           label={t('auth.welcome.continueWithGoogle')}
           onPress={handleGoogle}
@@ -89,7 +96,7 @@ export default function WelcomeScreen() {
         <Text style={[typography.tiny, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>
           {t('auth.welcome.ageDisclaimer')}
         </Text>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }
@@ -97,5 +104,4 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'space-between', paddingVertical: 40 },
   hero: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
-  iconCircle: { width: 96, height: 96, borderRadius: 48, alignItems: 'center', justifyContent: 'center' },
 });

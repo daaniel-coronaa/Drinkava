@@ -1,12 +1,13 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Platform, ScrollView, Text, View } from 'react-native';
 
 import { DisclaimerBanner } from '@/components/compliance/DisclaimerBanner';
 import { DrinkTypePicker } from '@/components/drink-log/DrinkTypePicker';
 import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { QuantityStepper } from '@/components/drink-log/QuantityStepper';
 import { Chip } from '@/components/ui/Chip';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
@@ -14,6 +15,7 @@ import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { DrinkType, Party } from '@/types';
+import { hapticSelect, hapticSuccess } from '@/utils/haptics';
 
 // SEAM: photoUrl stays a local file URI in the mock flow. Real impl uploads to
 // Supabase Storage here, and this is also where Phase 2 AI photo validation
@@ -32,11 +34,17 @@ export default function NewDrinkLogScreen() {
   const [photoUrl, setPhotoUrl] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
 
+  // Only the parties the user is actually in — and pre-pick the first so the common case
+  // (one live party) needs zero taps before "Log it".
+  const userId = session?.user.id;
   useEffect(() => {
-    if (!partyIdParam) {
-      services.parties.list('active').then(setActiveParties);
-    }
-  }, [partyIdParam]);
+    if (partyIdParam || !userId) return;
+    services.parties.listForUser(userId).then((mine) => {
+      const live = mine.filter((p) => p.status === 'active');
+      setActiveParties(live);
+      setPartyId((current) => current ?? live[0]?.id);
+    });
+  }, [partyIdParam, userId]);
 
   const handleSubmit = async () => {
     if (!partyId || !session) return;
@@ -51,6 +59,7 @@ export default function NewDrinkLogScreen() {
       const unlocked = await services.achievements.evaluateAndUnlock(session.user.id);
       // Every logged drink is a "turno" for the party's random challenge pacing.
       await services.challenges.maybeTriggerNextChallenge(partyId);
+      hapticSuccess();
       router.back();
       if (unlocked.length > 0) {
         const names = unlocked.map((a) => t(`achievements.${a.achievementKey}.title`)).join(', ');
@@ -72,9 +81,15 @@ export default function NewDrinkLogScreen() {
           <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('drinkLog.whichParty')}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
             {activeParties.map((p) => (
-              <Pressable key={p.id} onPress={() => setPartyId(p.id)}>
+              <PressableScale
+                key={p.id}
+                onPress={() => {
+                  hapticSelect();
+                  setPartyId(p.id);
+                }}
+              >
                 <Chip label={p.name} tone={partyId === p.id ? 'accent' : 'neutral'} size="lg" />
-              </Pressable>
+              </PressableScale>
             ))}
           </View>
         </View>

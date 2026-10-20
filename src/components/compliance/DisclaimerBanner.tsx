@@ -12,7 +12,7 @@ export function DisclaimerBanner() {
       style={[
         styles.base,
         {
-          backgroundColor: `${colors.accentWarning}1A`,
+          backgroundColor: `${colors.accentPrimary}${colors.tintAlpha}`,
           borderRadius: radius.md,
           padding: spacing.sm,
           marginHorizontal: spacing.inset,
@@ -21,7 +21,7 @@ export function DisclaimerBanner() {
         },
       ]}
     >
-      <MaterialCommunityIcons name="alert-circle-outline" size={16} color={colors.accentWarning} />
+      <MaterialCommunityIcons name="alert-circle-outline" size={16} color={colors.accentText} />
       <Text style={[typography.tiny, { color: colors.textSecondary, flex: 1 }]}>{t('common.disclaimerBanner')}</Text>
     </View>
   );

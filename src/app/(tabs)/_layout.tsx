@@ -13,9 +13,10 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        animation: 'fade',
         tabBarActiveTintColor: colors.accentText,
         tabBarInactiveTintColor: colors.textSecondary,
-        // Jost's default line box is taller than the bar's label slot, which clipped the text.
+        // DM Sans' default line box is taller than the bar's label slot, which clipped the text.
         tabBarLabelStyle: { fontFamily: Fonts.sansMedium, fontSize: 11, lineHeight: 13 },
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
       }}

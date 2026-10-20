@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 
 import { services } from '@/services';
 import type { ChallengeAssignment, DrinkLog, Party, PartyMember, User } from '@/types';
@@ -11,9 +12,9 @@ export function useParty(partyId: string | undefined) {
   const [challengeAssignments, setChallengeAssignments] = useState<ChallengeAssignment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const refetch = useCallback(async () => {
+  const refetch = useCallback(async ({ silent = false }: { silent?: boolean } = {}) => {
     if (!partyId) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     const [p, m, l, c] = await Promise.all([
       services.parties.get(partyId),
       services.parties.listMembers(partyId),
@@ -29,9 +30,13 @@ export function useParty(partyId: string | undefined) {
     setLoading(false);
   }, [partyId]);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  // Refresh whenever the screen regains focus (e.g. back from logging a drink) — silently,
+  // so returning to a screen never flashes a loading spinner.
+  useFocusEffect(
+    useCallback(() => {
+      refetch({ silent: true });
+    }, [refetch]),
+  );
 
   return { party, members, memberUsers, logs, challengeAssignments, loading, refetch };
 }

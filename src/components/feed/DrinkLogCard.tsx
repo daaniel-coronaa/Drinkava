@@ -20,11 +20,10 @@ type Props = {
 };
 
 export function DrinkLogCard({ drinkLog, usersById }: Props) {
-  const { colors, spacing, radius, typography, drinkTypeColors } = useTheme();
+  const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
   const [commentsOpen, setCommentsOpen] = useState(false);
   const author = usersById[drinkLog.userId];
-  const accent = drinkTypeColors[drinkLog.drinkType];
 
   return (
     <Card style={{ marginHorizontal: spacing.inset, marginBottom: spacing.md }}>
@@ -36,8 +35,8 @@ export function DrinkLogCard({ drinkLog, usersById }: Props) {
           <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{author?.name ?? t('feed.someone')}</Text>
           <Text style={[typography.tiny, { color: colors.textSecondary }]}>{timeAgo(drinkLog.timestamp)}</Text>
         </View>
-        <View style={[styles.iconCircle, { backgroundColor: `${accent}${colors.tintAlpha}`, borderRadius: radius.pill }]}>
-          <MaterialCommunityIcons name={drinkTypeIcons[drinkLog.drinkType]} size={20} color={accent} />
+        <View style={[styles.iconCircle, { backgroundColor: colors.border, borderRadius: radius.pill }]}>
+          <MaterialCommunityIcons name={drinkTypeIcons[drinkLog.drinkType]} size={20} color={colors.textPrimary} />
         </View>
       </View>
 

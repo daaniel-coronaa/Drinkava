@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+<linearGradient id="foil" gradientUnits="userSpaceOnUse" x1="275" y1="250" x2="749" y2="774"><stop offset="0" stop-color="#FFC08A"/><stop offset="0.5" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E8601C"/></linearGradient>
+<radialGradient id="vignette" gradientUnits="userSpaceOnUse" cx="512" cy="470" r="720"><stop offset="0" stop-color="#1F1814"/><stop offset="1" stop-color="#0A0A0B"/></radialGradient>
+</defs>
+<rect width="1024" height="1024" fill="url(#vignette)"/>
+<g transform="translate(512 512) scale(1.15) translate(-512 -512)" fill="url(#foil)">
+<rect x="275" y="250" width="72" height="524"/>
+<path d="M339 257 H487 A255 255 0 0 1 487 767 H339" fill="none" stroke="url(#foil)" stroke-width="14"/>
+<circle cx="548" cy="622" r="30"/><circle cx="500" cy="505" r="20"/><circle cx="556" cy="410" r="13"/><circle cx="512" cy="335" r="8"/>
+</g>
+</svg>

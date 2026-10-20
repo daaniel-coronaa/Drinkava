@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 
 import { services } from '@/services';
 import type { LeaderboardEntry } from '@/types';
@@ -9,9 +10,9 @@ export function useLeaderboard(scope: { partyId: string } | { userId: string } |
 
   const scopeKey = scope ? ('partyId' in scope ? `party:${scope.partyId}` : `user:${scope.userId}`) : null;
 
-  const refetch = useCallback(async () => {
+  const refetch = useCallback(async ({ silent = false }: { silent?: boolean } = {}) => {
     if (!scope) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     const result =
       'partyId' in scope
         ? await services.leaderboard.getPartyLeaderboard(scope.partyId)
@@ -22,9 +23,13 @@ export function useLeaderboard(scope: { partyId: string } | { userId: string } |
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scopeKey]);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  // Refresh whenever the screen regains focus (e.g. back from logging a drink) — silently,
+  // so returning to a screen never flashes a loading spinner.
+  useFocusEffect(
+    useCallback(() => {
+      refetch({ silent: true });
+    }, [refetch]),
+  );
 
   return { entries, loading, refetch };
 }

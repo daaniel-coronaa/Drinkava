@@ -169,6 +169,8 @@ const en = {
   },
 
   partyDetail: {
+    moreActions: 'More actions',
+    actionsTitle: 'Party options',
     inviteRow: 'Code {{code}} · Share invite',
     shareCopied: 'Invite copied to clipboard.',
     shareCodeFallback: 'Invite code: {{code}}',

@@ -1,6 +1,8 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useTheme } from '@/theme';
+
+import { PressableScale } from './PressableScale';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -14,8 +16,9 @@ type Props = {
   icon?: React.ReactNode;
 };
 
-// Pill, 52dp tall (>= 44dp touch target). Primary is a gold fill with a dark ink label
-// (onAccent); danger is a deep red with a white label — both clear 4.5:1 (DESIGN.md §2).
+// Pill, 52dp tall (>= 44dp touch target) with a springy press. Primary is a spritz fill
+// with a dark ink label (onAccent); danger is a deep red with a white label — both clear
+// 4.5:1 (DESIGN.md §2).
 export function Button({ label, onPress, variant = 'primary', loading, disabled, style, icon }: Props) {
   const { colors, spacing, radius, typography } = useTheme();
 
@@ -34,16 +37,18 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
   }[variant];
 
   return (
-    <Pressable
+    <PressableScale
       onPress={onPress}
       disabled={disabled || loading}
-      style={({ pressed }) => [
+      accessibilityRole="button"
+      accessibilityState={{ disabled: !!disabled, busy: !!loading }}
+      style={[
         styles.base,
         {
           backgroundColor,
           borderRadius: radius.pill,
           paddingHorizontal: spacing.lg,
-          opacity: disabled ? 0.4 : pressed ? 0.9 : 1,
+          opacity: disabled ? 0.4 : 1,
           borderWidth: variant === 'secondary' ? 1 : 0,
           borderColor: colors.borderStrong,
         },
@@ -58,7 +63,7 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
           <Text style={[typography.bodyBold, { color: textColor }]}>{label}</Text>
         </>
       )}
-    </Pressable>
+    </PressableScale>
   );
 }
 

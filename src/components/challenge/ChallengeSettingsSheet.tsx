@@ -4,6 +4,8 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
+import { PressableScale } from '@/components/ui/PressableScale';
+import { Segmented } from '@/components/ui/Segmented';
 import { QuantityStepper } from '@/components/drink-log/QuantityStepper';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
@@ -12,6 +14,7 @@ import { services } from '@/services';
 import { useTheme } from '@/theme';
 import type { ChallengeCategory, ChallengePaceMode } from '@/types';
 import { challengeCategoryIcons } from '@/utils/challengeCategory';
+import { hapticSelect } from '@/utils/haptics';
 
 const ALL_CATEGORIES: ChallengeCategory[] = ['bebida', 'social', 'fisico', 'social_premium'];
 
@@ -23,7 +26,7 @@ type Props = {
 };
 
 export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: Props) {
-  const { colors, spacing, radius, typography, challengeCategoryColors } = useTheme();
+  const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
   const sheetFrame = useSheetFrame();
@@ -49,6 +52,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
   const toggleCategory = (cat: ChallengeCategory) => {
     setCategories((prev) => (prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]));
     setInfoCategory(cat);
+    hapticSelect();
   };
 
   const save = async () => {
@@ -81,23 +85,15 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
           <Text style={[typography.h3, { color: colors.textPrimary, marginBottom: spacing.md }]}>{t('challenges.settingsTitle')}</Text>
 
           <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('challenges.paceLabel')}</Text>
-          <View style={[styles.segmented, { backgroundColor: colors.surfaceElevated, borderRadius: radius.md, marginBottom: spacing.md }]}>
-            {(
-              [
-                ['aleatorio', t('challenges.paceRandom')],
-                ['fijo', t('challenges.paceFixed')],
-              ] as [ChallengePaceMode, string][]
-            ).map(([mode, label]) => (
-              <Pressable
-                key={mode}
-                onPress={() => setPaceMode(mode)}
-                style={[styles.segment, { borderRadius: radius.md - spacing.xs, backgroundColor: paceMode === mode ? colors.accentPrimary : 'transparent' }]}
-              >
-                <Text style={[typography.caption, { color: paceMode === mode ? colors.onAccent : colors.textSecondary, textAlign: 'center' }]}>
-                  {label}
-                </Text>
-              </Pressable>
-            ))}
+          <View style={{ marginBottom: spacing.md }}>
+            <Segmented<ChallengePaceMode>
+              options={[
+                { key: 'aleatorio', label: t('challenges.paceRandom') },
+                { key: 'fijo', label: t('challenges.paceFixed') },
+              ]}
+              value={paceMode}
+              onChange={setPaceMode}
+            />
           </View>
 
           {paceMode === 'aleatorio' ? (
@@ -114,13 +110,9 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.sm }}>
             {ALL_CATEGORIES.map((cat) => (
-              <Pressable key={cat} onPress={() => toggleCategory(cat)}>
-                <Chip
-                  label={t(`challenges.categories.${cat}.label`)}
-                  color={categories.includes(cat) ? challengeCategoryColors[cat] : undefined}
-                  size="lg"
-                />
-              </Pressable>
+              <PressableScale key={cat} onPress={() => toggleCategory(cat)} accessibilityRole="button" accessibilityState={{ selected: categories.includes(cat) }}>
+                <Chip label={t(`challenges.categories.${cat}.label`)} tone={categories.includes(cat) ? 'accent' : 'neutral'} size="lg" />
+              </PressableScale>
             ))}
           </View>
 
@@ -135,7 +127,7 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
                 marginBottom: spacing.sm,
               }}
             >
-              <MaterialCommunityIcons name={challengeCategoryIcons[infoCategory]} size={16} color={challengeCategoryColors[infoCategory]} />
+              <MaterialCommunityIcons name={challengeCategoryIcons[infoCategory]} size={16} color={colors.accentText} />
               <Text style={[typography.tiny, { color: colors.textSecondary, flex: 1 }]}>
                 {t(`challenges.categories.${infoCategory}.description`)}
               </Text>
@@ -156,6 +148,4 @@ export function ChallengeSettingsSheet({ visible, onClose, partyId, onSaved }: P
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: '#00000066' },
   sheet: { maxHeight: '85%' },
-  segmented: { flexDirection: 'row', padding: 4 },
-  segment: { flex: 1, paddingVertical: 13 },
 });

@@ -1,4 +1,4 @@
-export { Colors, challengeCategoryColors, drinkTypeColors, type DrinkType, type ThemeColors, type ThemeMode } from './colors';
+export { Colors, type ThemeColors, type ThemeMode } from './colors';
 export { ContentMaxWidth, Radius, Spacing } from './spacing';
 export { FontAssets, Fonts } from './fonts';
 export { Typography } from './typography';

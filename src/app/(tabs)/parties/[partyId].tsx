@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, FlatList, Platform, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Platform, Share, StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ChallengeCard } from '@/components/challenge/ChallengeCard';
@@ -12,9 +13,12 @@ import { ScoreBreakdownSheet } from '@/components/leaderboard/ScoreBreakdownShee
 import { DrinkLogCard } from '@/components/feed/DrinkLogCard';
 import { ParticipantRow } from '@/components/party/ParticipantRow';
 import { PartyStatusBadge } from '@/components/party/PartyStatusBadge';
+import { ActionSheet, type SheetAction } from '@/components/ui/ActionSheet';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { PressableScale } from '@/components/ui/PressableScale';
+import { Segmented } from '@/components/ui/Segmented';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
@@ -22,6 +26,7 @@ import { useParty } from '@/hooks/useParty';
 import { useUsersMap } from '@/hooks/useUsersMap';
 import { NotAuthorizedError, services } from '@/services';
 import { useTheme } from '@/theme';
+import { enter, smoothLayout } from '@/theme/motion';
 import type { ChallengeAssignment, DrinkLog, LeaderboardEntry } from '@/types';
 import { formatDateTime } from '@/utils/date';
 
@@ -32,7 +37,7 @@ type FeedItem =
 
 export default function PartyDetailScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>();
-  const { colors, spacing, radius, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const { t } = useTranslation();
   const { session } = useAuth();
   const { party, members, memberUsers, logs, challengeAssignments, loading, refetch } = useParty(partyId);
@@ -40,11 +45,10 @@ export default function PartyDetailScreen() {
   const { entries } = useLeaderboard(partyId ? { partyId } : null);
   const [section, setSection] = useState<Section>('feed');
   const [selectedEntry, setSelectedEntry] = useState<LeaderboardEntry | null>(null);
-  const [finishing, setFinishing] = useState(false);
-  const [leaving, setLeaving] = useState(false);
   const [challengeSettingsVisible, setChallengeSettingsVisible] = useState(false);
   const [finishConfirmVisible, setFinishConfirmVisible] = useState(false);
   const [leaveConfirmVisible, setLeaveConfirmVisible] = useState(false);
+  const [actionsVisible, setActionsVisible] = useState(false);
 
   if (!party) {
     return (
@@ -57,6 +61,19 @@ export default function PartyDetailScreen() {
   const myRole = members.find((m) => m.userId === session?.user.id)?.role;
   const isAdmin = myRole === 'admin';
   const isHost = session?.user.id === party.hostId;
+
+  // Secondary actions live behind the "···" header button so the screen keeps one obvious
+  // primary action (log a drink).
+  const actions: SheetAction[] = [];
+  if (isHost && party.status === 'active') {
+    actions.push({ key: 'configure', label: t('partyDetail.configureButton'), icon: 'sword-cross', onPress: () => setChallengeSettingsVisible(true) });
+  }
+  if (isAdmin && party.status === 'active') {
+    actions.push({ key: 'finish', label: t('partyDetail.finishButton'), icon: 'flag-checkered', onPress: () => setFinishConfirmVisible(true), destructive: true });
+  }
+  if (!isAdmin && myRole) {
+    actions.push({ key: 'leave', label: t('partyDetail.leaveButton'), icon: 'exit-run', onPress: () => setLeaveConfirmVisible(true), destructive: true });
+  }
 
   const feedItems: FeedItem[] = [
     ...logs.map((log): FeedItem => ({ type: 'drink', timestamp: log.timestamp, log })),
@@ -110,7 +127,6 @@ export default function PartyDetailScreen() {
 
   const finishParty = async () => {
     if (!session) return;
-    setFinishing(true);
     try {
       await services.parties.updateStatus(party.id, 'finished', session.user.id);
       await refetch();
@@ -119,12 +135,8 @@ export default function PartyDetailScreen() {
         t('partyDetail.finishErrorTitle'),
         e instanceof NotAuthorizedError ? t('partyDetail.finishErrorNotAuthorized') : t('common.genericError'),
       );
-    } finally {
-      setFinishing(false);
     }
   };
-
-  const handleFinishParty = () => setFinishConfirmVisible(true);
 
   const confirmFinishParty = () => {
     setFinishConfirmVisible(false);
@@ -133,7 +145,6 @@ export default function PartyDetailScreen() {
 
   const leaveParty = async () => {
     if (!session) return;
-    setLeaving(true);
     try {
       await services.parties.leave(party.id, session.user.id);
       router.replace('/(tabs)/parties');
@@ -142,12 +153,8 @@ export default function PartyDetailScreen() {
         t('partyDetail.leaveErrorTitle'),
         e instanceof NotAuthorizedError ? t('partyDetail.leaveErrorNotAuthorized') : t('common.genericError'),
       );
-    } finally {
-      setLeaving(false);
     }
   };
-
-  const handleLeaveParty = () => setLeaveConfirmVisible(true);
 
   const confirmLeaveParty = () => {
     setLeaveConfirmVisible(false);
@@ -156,22 +163,36 @@ export default function PartyDetailScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
-      <View style={{ padding: spacing.inset, gap: spacing.xs }}>
+      <Stack.Screen
+        options={{
+          headerRight: () =>
+            actions.length > 0 ? (
+              <PressableScale
+                onPress={() => setActionsVisible(true)}
+                accessibilityLabel={t('partyDetail.moreActions')}
+                style={styles.moreButton}
+              >
+                <MaterialCommunityIcons name="dots-horizontal" size={26} color={colors.textPrimary} />
+              </PressableScale>
+            ) : null,
+        }}
+      />
+
+      <Animated.View entering={enter(0)} style={{ paddingHorizontal: spacing.inset, paddingTop: spacing.sm, paddingBottom: spacing.md, gap: spacing.xs }}>
         <View style={styles.row}>
-          <Text style={[typography.h2, { color: colors.textPrimary, flex: 1 }]}>{party.name}</Text>
+          <Text style={[typography.h1, { color: colors.textPrimary, flex: 1 }]}>{party.name}</Text>
           <PartyStatusBadge status={party.status} />
         </View>
-        <Text style={[typography.caption, { color: colors.textSecondary }]}>{formatDateTime(party.date)}</Text>
-        {party.location ? (
-          <Text style={[typography.caption, { color: colors.textSecondary }]}>{party.location}</Text>
-        ) : null}
+        <Text style={[typography.caption, { color: colors.textSecondary }]}>
+          {[formatDateTime(party.date), party.location].filter(Boolean).join(' · ')}
+        </Text>
 
-        <Pressable onPress={handleShare} hitSlop={{ top: 12, bottom: 12 }} style={[styles.row, { marginTop: spacing.xs }]}>
+        <PressableScale onPress={handleShare} hitSlop={{ top: 12, bottom: 12 }} style={[styles.row, { marginTop: spacing.xs, alignSelf: 'flex-start' }]}>
           <MaterialCommunityIcons name="share-variant-outline" size={16} color={colors.accentText} />
           <Text style={[typography.caption, { color: colors.accentText, marginLeft: 6 }]}>
             {t('partyDetail.inviteRow', { code: party.inviteCode })}
           </Text>
-        </Pressable>
+        </PressableScale>
 
         {party.status === 'active' ? (
           <Button
@@ -184,55 +205,18 @@ export default function PartyDetailScreen() {
             {t('partyDetail.partyEndedNote')}
           </Text>
         )}
+      </Animated.View>
 
-        {isHost && party.status === 'active' ? (
-          <Button
-            label={t('partyDetail.configureButton')}
-            onPress={() => setChallengeSettingsVisible(true)}
-            variant="secondary"
-            style={{ marginTop: spacing.xs }}
-          />
-        ) : null}
-
-        {isAdmin && party.status === 'active' ? (
-          <Button
-            label={t('partyDetail.finishButton')}
-            onPress={handleFinishParty}
-            loading={finishing}
-            variant="secondary"
-            style={{ marginTop: spacing.xs }}
-          />
-        ) : null}
-
-        {!isAdmin && myRole ? (
-          <Button
-            label={t('partyDetail.leaveButton')}
-            onPress={handleLeaveParty}
-            loading={leaving}
-            variant="secondary"
-            style={{ marginTop: spacing.xs }}
-          />
-        ) : null}
-      </View>
-
-      <View style={[styles.segmented, { marginHorizontal: spacing.inset, marginBottom: spacing.sm, backgroundColor: colors.surfaceElevated, borderRadius: radius.md }]}>
-        {(
-          [
-            ['feed', t('partyDetail.tabFeed')],
-            ['members', t('partyDetail.tabMembers')],
-            ['leaderboard', t('partyDetail.tabRanking')],
-          ] as [Section, string][]
-        ).map(([key, label]) => (
-          <Pressable
-            key={key}
-            onPress={() => setSection(key)}
-            style={[styles.segment, { borderRadius: radius.md - spacing.xs, backgroundColor: section === key ? colors.accentPrimary : 'transparent' }]}
-          >
-            <Text style={[typography.caption, { color: section === key ? colors.onAccent : colors.textSecondary, textAlign: 'center' }]}>
-              {label}
-            </Text>
-          </Pressable>
-        ))}
+      <View style={{ marginHorizontal: spacing.inset, marginBottom: spacing.sm }}>
+        <Segmented<Section>
+          options={[
+            { key: 'feed', label: t('partyDetail.tabFeed') },
+            { key: 'members', label: t('partyDetail.tabMembers') },
+            { key: 'leaderboard', label: t('partyDetail.tabRanking') },
+          ]}
+          value={section}
+          onChange={setSection}
+        />
       </View>
 
       {section === 'feed' && (
@@ -241,19 +225,21 @@ export default function PartyDetailScreen() {
           keyExtractor={(item) => (item.type === 'drink' ? item.log.id : item.assignment.id)}
           ListHeaderComponent={<DisclaimerBanner />}
           ListEmptyComponent={<EmptyState icon="glass-cocktail" title={t('partyDetail.emptyFeed')} />}
-          renderItem={({ item }) =>
-            item.type === 'drink' ? (
-              <DrinkLogCard drinkLog={item.log} usersById={usersById} />
-            ) : (
-              <ChallengeCard
-                assignment={item.assignment}
-                usersById={usersById}
-                currentUserId={session?.user.id ?? ''}
-                isHost={isHost}
-                onChanged={handleChallengeChanged}
-              />
-            )
-          }
+          renderItem={({ item, index }) => (
+            <Animated.View entering={enter(index)} layout={smoothLayout}>
+              {item.type === 'drink' ? (
+                <DrinkLogCard drinkLog={item.log} usersById={usersById} />
+              ) : (
+                <ChallengeCard
+                  assignment={item.assignment}
+                  usersById={usersById}
+                  currentUserId={session?.user.id ?? ''}
+                  isHost={isHost}
+                  onChanged={handleChallengeChanged}
+                />
+              )}
+            </Animated.View>
+          )}
         />
       )}
 
@@ -261,10 +247,14 @@ export default function PartyDetailScreen() {
         <FlatList
           data={members}
           keyExtractor={(m) => m.userId}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             const user = memberUsers.find((u) => u.id === item.userId);
             if (!user) return null;
-            return <ParticipantRow user={user} joinedAt={item.joinedAt} role={item.role} />;
+            return (
+              <Animated.View entering={enter(index)}>
+                <ParticipantRow user={user} joinedAt={item.joinedAt} role={item.role} />
+              </Animated.View>
+            );
           }}
         />
       )}
@@ -274,11 +264,20 @@ export default function PartyDetailScreen() {
           data={entries}
           keyExtractor={(e) => e.userId}
           ListEmptyComponent={<EmptyState icon="trophy-outline" title={t('partyDetail.emptyRanking')} />}
-          renderItem={({ item }) => (
-            <LeaderboardRow entry={item} user={usersById[item.userId]} onPress={() => setSelectedEntry(item)} />
+          renderItem={({ item, index }) => (
+            <Animated.View entering={enter(index)}>
+              <LeaderboardRow entry={item} user={usersById[item.userId]} onPress={() => setSelectedEntry(item)} />
+            </Animated.View>
           )}
         />
       )}
+
+      <ActionSheet
+        visible={actionsVisible}
+        onClose={() => setActionsVisible(false)}
+        title={t('partyDetail.actionsTitle')}
+        actions={actions}
+      />
 
       <ScoreBreakdownSheet
         visible={!!selectedEntry}
@@ -319,6 +318,5 @@ export default function PartyDetailScreen() {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  segmented: { flexDirection: 'row', padding: 4 },
-  segment: { flex: 1, paddingVertical: 13 },
+  moreButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
 });

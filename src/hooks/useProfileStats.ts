@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 
 import { services } from '@/services';
 import type { DrinkLog, DrinkType, LeaderboardEntry, Party } from '@/types';
@@ -9,9 +10,9 @@ export function useProfileStats(userId: string | undefined) {
   const [globalEntry, setGlobalEntry] = useState<LeaderboardEntry | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refetch = useCallback(async () => {
+  const refetch = useCallback(async ({ silent = false }: { silent?: boolean } = {}) => {
     if (!userId) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     const [userLogs, userParties, leaderboard] = await Promise.all([
       services.drinkLogs.listByUser(userId),
       services.parties.listForUser(userId),
@@ -23,9 +24,13 @@ export function useProfileStats(userId: string | undefined) {
     setLoading(false);
   }, [userId]);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  // Refresh whenever the screen regains focus (e.g. back from logging a drink) — silently,
+  // so returning to a screen never flashes a loading spinner.
+  useFocusEffect(
+    useCallback(() => {
+      refetch({ silent: true });
+    }, [refetch]),
+  );
 
   const favoriteType: DrinkType | null = (() => {
     if (logs.length === 0) return null;

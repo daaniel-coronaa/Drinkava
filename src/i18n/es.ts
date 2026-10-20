@@ -171,6 +171,8 @@ const es: TranslationSchema = {
   },
 
   partyDetail: {
+    moreActions: 'Más opciones',
+    actionsTitle: 'Opciones de la fiesta',
     inviteRow: 'Código {{code}} · Compartir invitación',
     shareCopied: 'Invitación copiada al portapapeles.',
     shareCodeFallback: 'Código de invitación: {{code}}',

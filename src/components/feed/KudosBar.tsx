@@ -1,11 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring } from 'react-native-reanimated';
 
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
+import { hapticSelect } from '@/utils/haptics';
 
 type Props = {
   drinkLogId: string;
@@ -19,6 +21,8 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
   const [kudosUserIds, setKudosUserIds] = useState<string[]>([]);
   const [commentsCount, setCommentsCount] = useState(0);
   const [pending, setPending] = useState(false);
+  const pop = useSharedValue(1);
+  const popStyle = useAnimatedStyle(() => ({ transform: [{ scale: pop.get() }] }));
 
   useEffect(() => {
     services.drinkLogs.listKudos(drinkLogId).then(setKudosUserIds);
@@ -33,6 +37,11 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
     setPending(true);
     const next = given ? kudosUserIds.filter((id) => id !== userId) : [...kudosUserIds, userId];
     setKudosUserIds(next);
+    if (!given) {
+      // Give the new kudos a little pop so the tap feels acknowledged.
+      hapticSelect();
+      pop.set(withSequence(withSpring(1.35, { damping: 6, stiffness: 400 }), withSpring(1, { damping: 10, stiffness: 260 })));
+    }
     try {
       if (given) await services.drinkLogs.removeKudos(drinkLogId, userId);
       else await services.drinkLogs.addKudos(drinkLogId, userId);
@@ -44,11 +53,13 @@ export function KudosBar({ drinkLogId, onOpenComments }: Props) {
   return (
     <View style={[styles.row, { gap: spacing.lg, marginTop: spacing.sm }]}>
       <Pressable onPress={toggleKudos} style={styles.row} hitSlop={12}>
-        <MaterialCommunityIcons
-          name={given ? 'thumb-up' : 'thumb-up-outline'}
-          size={18}
-          color={given ? colors.accentText : colors.textSecondary}
-        />
+        <Animated.View style={popStyle}>
+          <MaterialCommunityIcons
+            name={given ? 'thumb-up' : 'thumb-up-outline'}
+            size={18}
+            color={given ? colors.accentText : colors.textSecondary}
+          />
+        </Animated.View>
         <Text style={[typography.caption, { color: given ? colors.accentText : colors.textSecondary, marginLeft: 6 }]}>
           {kudosUserIds.length > 0 ? kudosUserIds.length : t('feed.kudosLabel')}
         </Text>

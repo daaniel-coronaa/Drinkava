@@ -28,7 +28,7 @@ type Props = {
 };
 
 export function ChallengeCard({ assignment, usersById, currentUserId, isHost, onChanged }: Props) {
-  const { colors, spacing, radius, typography, challengeCategoryColors } = useTheme();
+  const { colors, spacing, radius, typography } = useTheme();
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | undefined>();
@@ -37,7 +37,7 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
   const challenge = challengeCatalog.find((c) => c.id === assignment.challengeId);
   if (!challenge) return null;
 
-  const accent = challengeCategoryColors[challenge.category];
+  const accent = colors.accentText;
   const userA = usersById[assignment.userIdA];
   const userB = assignment.userIdB ? usersById[assignment.userIdB] : undefined;
   const isFisico = challenge.category === 'fisico';
@@ -60,17 +60,17 @@ export function ChallengeCard({ assignment, usersById, currentUserId, isHost, on
       : assignment.status === 'rechazado'
         ? colors.dangerText
         : assignment.status === 'completado'
-          ? colors.accentInfo
+          ? colors.accentText
           : colors.textSecondary;
 
   return (
-    <Card style={{ marginHorizontal: spacing.inset, marginBottom: spacing.md, borderColor: accent }}>
+    <Card style={{ marginHorizontal: spacing.inset, marginBottom: spacing.md, borderColor: assignment.status === 'pendiente' ? colors.accentPrimary : colors.border }}>
       <View style={styles.headerRow}>
         <View style={[styles.iconCircle, { backgroundColor: `${accent}${colors.tintAlpha}`, borderRadius: radius.pill }]}>
           <MaterialCommunityIcons name={challengeCategoryIcons[challenge.category]} size={20} color={accent} />
         </View>
         <View style={{ flex: 1, marginLeft: spacing.sm }}>
-          <Chip label={t(`challenges.categories.${challenge.category}.label`)} color={accent} />
+          <Chip label={t(`challenges.categories.${challenge.category}.label`)} />
           <Text style={[typography.tiny, { color: colors.textSecondary, marginTop: 2 }]}>{timeAgo(assignment.sentAt)}</Text>
         </View>
         <Chip label={t(`challenges.status.${assignment.status}`)} color={statusColor} />

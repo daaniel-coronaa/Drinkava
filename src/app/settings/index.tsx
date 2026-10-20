@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/ui/Card';
+import { Segmented } from '@/components/ui/Segmented';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings, useTranslation } from '@/context/SettingsContext';
@@ -24,7 +25,7 @@ function Row({ icon, label, onPress }: { icon: React.ComponentProps<typeof Mater
 }
 
 export default function SettingsScreen() {
-  const { colors, spacing, radius, typography, modeOverride, setModeOverride } = useTheme();
+  const { colors, spacing, typography, modeOverride, setModeOverride } = useTheme();
   const { t } = useTranslation();
   const { language, setLanguage } = useSettings();
   const { session, signOut, updateProfile } = useAuth();
@@ -72,56 +73,27 @@ export default function SettingsScreen() {
       <View style={{ padding: spacing.lg, gap: spacing.md }}>
         <Card>
           <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.appearanceTitle')}</Text>
-          <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-            {(['system', 'light', 'dark'] as (ThemeMode | 'system')[]).map((mode) => (
-              <Pressable
-                key={mode}
-                onPress={() => setModeOverride(mode)}
-                style={{
-                  flex: 1,
-                  paddingVertical: 13,
-                  borderRadius: radius.pill,
-                  backgroundColor: modeOverride === mode ? colors.accentPrimary : colors.surfaceElevated,
-                }}
-              >
-                <Text
-                  style={[
-                    typography.caption,
-                    { color: modeOverride === mode ? colors.onAccent : colors.textSecondary, textAlign: 'center' },
-                  ]}
-                >
-                  {mode === 'system' ? t('settings.systemOption') : mode === 'light' ? t('settings.lightOption') : t('settings.darkOption')}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          <Segmented<ThemeMode | 'system'>
+            options={[
+              { key: 'system', label: t('settings.systemOption') },
+              { key: 'light', label: t('settings.lightOption') },
+              { key: 'dark', label: t('settings.darkOption') },
+            ]}
+            value={modeOverride}
+            onChange={setModeOverride}
+          />
         </Card>
 
         <Card>
           <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{t('settings.languageTitle')}</Text>
-          <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-            {(['es', 'en'] as Language[]).map((lang) => (
-              <Pressable
-                key={lang}
-                onPress={() => setLanguage(lang)}
-                style={{
-                  flex: 1,
-                  paddingVertical: 13,
-                  borderRadius: radius.pill,
-                  backgroundColor: language === lang ? colors.accentPrimary : colors.surfaceElevated,
-                }}
-              >
-                <Text
-                  style={[
-                    typography.caption,
-                    { color: language === lang ? colors.onAccent : colors.textSecondary, textAlign: 'center' },
-                  ]}
-                >
-                  {lang === 'es' ? t('settings.languageSpanish') : t('settings.languageEnglish')}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          <Segmented<Language>
+            options={[
+              { key: 'es', label: t('settings.languageSpanish') },
+              { key: 'en', label: t('settings.languageEnglish') },
+            ]}
+            value={language}
+            onChange={setLanguage}
+          />
         </Card>
 
         <Card>

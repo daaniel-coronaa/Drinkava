@@ -33,14 +33,14 @@ export default function OnboardingTosScreen() {
 
         <View
           style={{
-            backgroundColor: `${colors.accentWarning}1A`,
+            backgroundColor: `${colors.accentPrimary}${colors.tintAlpha}`,
             borderRadius: radius.md,
             padding: spacing.md,
             gap: spacing.xs,
           }}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
-            <MaterialCommunityIcons name="alert-circle-outline" size={18} color={colors.accentWarning} />
+            <MaterialCommunityIcons name="alert-circle-outline" size={18} color={colors.accentText} />
             <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('auth.onboardingTos.disclaimerTitle')}</Text>
           </View>
           <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('auth.onboardingTos.disclaimerBody')}</Text>

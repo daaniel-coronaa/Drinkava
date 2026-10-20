@@ -94,7 +94,7 @@ export default function SafeModeScreen() {
       <View style={{ padding: spacing.lg, gap: spacing.md }}>
         <Card>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialCommunityIcons name="cup-water" size={28} color={colors.accentInfo} style={{ marginRight: spacing.sm }} />
+            <MaterialCommunityIcons name="cup-water" size={28} color={colors.accentText} style={{ marginRight: spacing.sm }} />
             <View style={{ flex: 1 }}>
               <Text style={[typography.bodyBold, { color: colors.textPrimary }]}>{t('safeMode.waterTitle')}</Text>
               <Text style={[typography.caption, { color: colors.textSecondary }]}>{t('safeMode.waterSubtitle')}</Text>
