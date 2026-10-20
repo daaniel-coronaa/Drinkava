@@ -1,6 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Avatar } from '@/components/ui/Avatar';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { LeaderboardEntry, User } from '@/types';
@@ -17,7 +18,8 @@ export function LeaderboardRow({ entry, user, onPress }: Props) {
   const { colors, spacing, typography } = useTheme();
   const { t } = useTranslation();
   return (
-    <Pressable
+    <PressableScale
+      scaleTo={0.985}
       onPress={onPress}
       style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.inset, paddingVertical: spacing.sm, gap: spacing.sm }}
     >
@@ -32,6 +34,6 @@ export function LeaderboardRow({ entry, user, onPress }: Props) {
         </Text>
       </View>
       <Text style={[typography.h3, { color: colors.textPrimary }]}>{entry.score}</Text>
-    </Pressable>
+    </PressableScale>
   );
 }

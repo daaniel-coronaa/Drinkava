@@ -84,6 +84,13 @@ const es: TranslationSchema = {
   },
 
   friends: {
+    listTitle: 'Amigos',
+    tabFriends: 'Amigos · {{count}}',
+    tabActivity: 'Actividad',
+    statsLine: '{{drinks}} tragos · {{parties}} fiestas',
+    inParty: 'en {{party}}',
+    noActivityTitle: 'Todo muy tranquilo',
+    noActivityDescription: 'Cuando tus amigos registren un trago, aparecerá aquí.',
     title: 'Agregar amigos',
     searchPlaceholder: 'Buscar por nombre',
     yourFriends: 'Tus amigos',
@@ -289,6 +296,11 @@ const es: TranslationSchema = {
   },
 
   profile: {
+    friendsTitle: 'Amigos',
+    friendsCount: '{{count}} amigos',
+    friendsEmpty: 'Agrega a la gente con la que sales de fiesta',
+    recentActivityTitle: 'Actividad reciente',
+    noActivity: 'Aún no ha registrado tragos',
     settingsIcon: 'Ajustes',
     totalDrinks: 'Bebidas totales',
     parties: 'Fiestas',

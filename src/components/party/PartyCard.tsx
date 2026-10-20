@@ -1,9 +1,10 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { PartyStatusBadge } from '@/components/party/PartyStatusBadge';
 import { Card } from '@/components/ui/Card';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
 import type { Party } from '@/types';
@@ -18,7 +19,7 @@ export function PartyCard({ party }: { party: Party }) {
   useTranslation();
 
   return (
-    <Pressable onPress={() => router.push(`/(tabs)/parties/${party.id}`)}>
+    <PressableScale scaleTo={0.985} onPress={() => router.push(`/(tabs)/parties/${party.id}`)}>
       <Card style={{ marginHorizontal: spacing.inset, marginBottom: spacing.md, padding: 0, overflow: 'hidden' }}>
         {party.coverImageUrl ? (
           <Image source={{ uri: party.coverImageUrl }} style={{ width: '100%', height: 120 }} contentFit="cover" />
@@ -34,7 +35,7 @@ export function PartyCard({ party }: { party: Party }) {
           ) : null}
         </View>
       </Card>
-    </Pressable>
+    </PressableScale>
   );
 }
 

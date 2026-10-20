@@ -120,6 +120,7 @@ Flat. Depth comes from the surface ramp (`background → surface → surfaceElev
 ### Do
 - Use `accentPrimary` + `onAccent` for the single most important action per screen.
 - Reveal lists with `enter(index)` (staggered), reorder/resize with `smoothLayout`, press with `PressableScale`, confirm with a light haptic (`hapticSelect`) or `hapticSuccess`.
+- Every tappable is a `PressableScale` (rows, cards, icon buttons, steppers); every new screen staggers its blocks with `enter(index)`; errors get `hapticError()` plus a short shake on the field; changing numbers re-key and roll in.
 - Keep copy short and casual (Spanish uses "tú").
 - Refetch on focus (`useFocusEffect`, silent) so returning to a screen shows fresh data.
 

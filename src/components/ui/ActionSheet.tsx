@@ -1,8 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+
+import { PressableScale } from '@/components/ui/PressableScale';
 
 import { useSheetFrame } from '@/hooks/useSheetFrame';
 import { useTheme } from '@/theme';
+import { enter } from '@/theme/motion';
+import { hapticSelect } from '@/utils/haptics';
 
 export type SheetAction = {
   key: string;
@@ -45,27 +50,27 @@ export function ActionSheet({ visible, onClose, title, actions }: Props) {
         {title ? (
           <Text style={[typography.eyebrow, { color: colors.textSecondary, paddingHorizontal: spacing.sm, marginBottom: spacing.xs }]}>{title}</Text>
         ) : null}
-        {actions.map((action) => (
-          <Pressable
-            key={action.key}
-            accessibilityRole="button"
-            onPress={() => {
-              onClose();
-              action.onPress();
-            }}
-            style={({ pressed }) => [
-              styles.row,
-              { paddingHorizontal: spacing.sm, borderRadius: radius.md, backgroundColor: pressed ? colors.surfaceElevated : 'transparent' },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name={action.icon}
-              size={22}
-              color={action.destructive ? colors.dangerText : colors.textPrimary}
-              style={{ marginRight: spacing.md }}
-            />
-            <Text style={[typography.body, { color: action.destructive ? colors.dangerText : colors.textPrimary }]}>{action.label}</Text>
-          </Pressable>
+        {actions.map((action, index) => (
+          <Animated.View key={action.key} entering={enter(index + 1)}>
+            <PressableScale
+              accessibilityRole="button"
+              scaleTo={0.98}
+              onPress={() => {
+                hapticSelect();
+                onClose();
+                action.onPress();
+              }}
+              style={[styles.row, { paddingHorizontal: spacing.sm, borderRadius: radius.md }]}
+            >
+              <MaterialCommunityIcons
+                name={action.icon}
+                size={22}
+                color={action.destructive ? colors.dangerText : colors.textPrimary}
+                style={{ marginRight: spacing.md }}
+              />
+              <Text style={[typography.body, { color: action.destructive ? colors.dangerText : colors.textPrimary }]}>{action.label}</Text>
+            </PressableScale>
+          </Animated.View>
         ))}
       </View>
     </Modal>

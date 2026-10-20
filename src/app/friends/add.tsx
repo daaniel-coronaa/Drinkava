@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
-import { enter } from '@/theme/motion';
+import { enter, smoothLayout } from '@/theme/motion';
 import type { User } from '@/types';
 import { hapticSelect } from '@/utils/haptics';
 
@@ -118,7 +118,7 @@ export default function AddFriendsScreen() {
           )
         }
         renderItem={({ item, index }) => (
-          <Animated.View entering={enter(index)}>
+          <Animated.View entering={enter(index)} layout={smoothLayout}>
             <FriendRow user={item} isFriend={friendIds.has(item.id)} onToggle={() => toggle(item)} />
           </Animated.View>
         )}

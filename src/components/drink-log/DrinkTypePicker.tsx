@@ -1,10 +1,15 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+
+import { PressableScale } from '@/components/ui/PressableScale';
 
 import { useTranslation } from '@/context/SettingsContext';
 import { useTheme } from '@/theme';
+import { enter } from '@/theme/motion';
 import type { DrinkType } from '@/types';
 import { drinkTypeIcons } from '@/utils/drinkType';
+import { hapticSelect } from '@/utils/haptics';
 
 const TYPES: DrinkType[] = ['beer', 'wine', 'cocktail', 'shot', 'other'];
 
@@ -19,12 +24,15 @@ export function DrinkTypePicker({ value, onChange }: Props) {
 
   return (
     <View style={[styles.wrap, { gap: spacing.sm }]}>
-      {TYPES.map((type) => {
+      {TYPES.map((type, index) => {
         const active = type === value;
         return (
-          <Pressable
-            key={type}
-            onPress={() => onChange(type)}
+          <Animated.View key={type} entering={enter(index)}>
+          <PressableScale
+            onPress={() => {
+              if (!active) hapticSelect();
+              onChange(type);
+            }}
             style={[
               styles.item,
               {
@@ -39,7 +47,8 @@ export function DrinkTypePicker({ value, onChange }: Props) {
             <Text style={[typography.caption, { color: active ? colors.accentText : colors.textSecondary, marginTop: 4 }]}>
               {t(`drinkTypes.${type}`)}
             </Text>
-          </Pressable>
+          </PressableScale>
+          </Animated.View>
         );
       })}
     </View>

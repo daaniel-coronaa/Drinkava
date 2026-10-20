@@ -82,6 +82,13 @@ const en = {
   },
 
   friends: {
+    listTitle: 'Friends',
+    tabFriends: 'Friends · {{count}}',
+    tabActivity: 'Activity',
+    statsLine: '{{drinks}} drinks · {{parties}} parties',
+    inParty: 'at {{party}}',
+    noActivityTitle: 'Quiet so far',
+    noActivityDescription: "When your friends log a drink, it shows up here.",
     title: 'Add friends',
     searchPlaceholder: 'Search by name',
     yourFriends: 'Your friends',
@@ -287,6 +294,11 @@ const en = {
   },
 
   profile: {
+    friendsTitle: 'Friends',
+    friendsCount: '{{count}} friends',
+    friendsEmpty: 'Add the people you party with',
+    recentActivityTitle: 'Recent activity',
+    noActivity: 'No drinks logged yet',
     settingsIcon: 'Settings',
     totalDrinks: 'Total drinks',
     parties: 'Parties',

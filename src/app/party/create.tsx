@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { PhotoPicker } from '@/components/drink-log/PhotoPicker';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +11,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/SettingsContext';
 import { services } from '@/services';
 import { useTheme } from '@/theme';
+import { enter } from '@/theme/motion';
+import { hapticSuccess } from '@/utils/haptics';
 
 export default function CreatePartyScreen() {
   const { colors, spacing, typography } = useTheme();
@@ -34,6 +37,7 @@ export default function CreatePartyScreen() {
         },
         session.user.id,
       );
+      hapticSuccess();
       router.replace(`/(tabs)/parties/${party.id}`);
     } finally {
       setSubmitting(false);
@@ -42,35 +46,37 @@ export default function CreatePartyScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}>
-      <View>
+      <Animated.View entering={enter(0)}>
         <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.nameLabel')}</Text>
         <Input
           value={name}
           onChangeText={setName}
           placeholder={t('parties.create.namePlaceholder')}
         />
-      </View>
+      </Animated.View>
 
-      <View>
+      <Animated.View entering={enter(1)}>
         <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.dateLabel')}</Text>
         <DateTimePickerField value={date} onChange={setDate} mode="datetime" />
-      </View>
+      </Animated.View>
 
-      <View>
+      <Animated.View entering={enter(2)}>
         <Text style={[typography.eyebrow, { color: colors.textSecondary, marginBottom: spacing.xs }]}>{t('parties.create.locationLabel')}</Text>
         <Input
           value={location}
           onChangeText={setLocation}
           placeholder={t('parties.create.locationPlaceholder')}
         />
-      </View>
+      </Animated.View>
 
-      <View>
+      <Animated.View entering={enter(3)}>
         <Text style={[typography.eyebrow, { color: colors.textSecondary }]}>{t('parties.create.coverLabel')}</Text>
         <PhotoPicker uri={coverImageUrl} onChange={setCoverImageUrl} label={t('parties.create.coverButton')} />
-      </View>
+      </Animated.View>
 
-      <Button label={t('parties.create.submitButton')} onPress={handleCreate} loading={submitting} disabled={!name.trim()} />
+      <Animated.View entering={enter(4)}>
+        <Button label={t('parties.create.submitButton')} onPress={handleCreate} loading={submitting} disabled={!name.trim()} />
+      </Animated.View>
     </ScrollView>
   );
 }

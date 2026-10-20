@@ -8,3 +8,4 @@ const run = (fn: () => Promise<void>) => {
 
 export const hapticSelect = () => run(() => Haptics.selectionAsync());
 export const hapticSuccess = () => run(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success));
+export const hapticError = () => run(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error));
